@@ -4,4 +4,4 @@ __pycache__/
 app.db
 .env
 .env.example
-.idea/*
+.idea/

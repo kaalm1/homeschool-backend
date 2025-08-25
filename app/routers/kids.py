@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from pydantic import BaseModel
-from ..db import Kid
+from app.models.kid import Kid
 from ..security import get_current_user, get_db
 
 router = APIRouter()

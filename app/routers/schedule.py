@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from pydantic import BaseModel
-from ..db import Activity, Kid
+from app.models.activity import Activity
+from app.models.kid import Kid
 from ..security import get_current_user, get_db
 
 router = APIRouter()

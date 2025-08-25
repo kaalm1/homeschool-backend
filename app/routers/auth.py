@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, EmailStr
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from ..db import User
+from app.models.user import User
 from ..security import create_access_token, verify_password, get_db
 from passlib.hash import bcrypt
 

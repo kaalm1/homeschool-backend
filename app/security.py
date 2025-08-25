@@ -5,7 +5,8 @@ from passlib.hash import bcrypt
 from fastapi import HTTPException, Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from .settings import settings
-from .db import SessionLocal, User
+from app.models.base import SessionLocal
+from app.models.user import User
 from sqlalchemy import select
 
 bearer = HTTPBearer(auto_error=False)

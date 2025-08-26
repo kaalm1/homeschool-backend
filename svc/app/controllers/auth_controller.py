@@ -1,10 +1,11 @@
 from typing import Annotated
+
 from fastapi import APIRouter, Depends, status
 
-from ..services.auth_service import AuthService
 from ..datatypes.auth import LoginRequest, RegisterRequest, TokenResponse
 from ..datatypes.user import UserResponse
-from ..dependencies import get_auth_service, CurrentUser
+from ..dependencies import CurrentUser, get_auth_service
+from ..services.auth_service import AuthService
 
 router = APIRouter()
 

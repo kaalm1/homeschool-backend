@@ -1,14 +1,15 @@
-from typing import Optional
 from datetime import datetime, timedelta, timezone
-from fastapi import HTTPException, status, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from typing import Optional
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from passlib.hash import bcrypt
 
 from ..config import get_settings
 from ..dal.user_repository import UserRepository
-from ..models.user import User
 from ..datatypes.auth import LoginRequest, RegisterRequest, TokenResponse
+from ..models.user import User
 from ..utils.exceptions import AuthenticationError, ValidationError
 
 security = HTTPBearer(auto_error=False)

@@ -1,17 +1,15 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .config import get_settings
-from .database import create_tables
-from .controllers import (
-    auth_controller,
-    kid_controller,
-    activity_controller,
-    reward_controller,
-)
-from .utils.exceptions import add_exception_handlers
 from scripts.seed_data import seed_demo_data
+
+from .config import get_settings
+from .controllers import (activity_controller, auth_controller, kid_controller,
+                          reward_controller)
+from .database import create_tables
+from .utils.exceptions import add_exception_handlers
 
 
 @asynccontextmanager

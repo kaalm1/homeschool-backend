@@ -1,13 +1,10 @@
 from typing import List
+
 from ..dal.activity_repository import ActivityRepository
 from ..dal.kid_repository import KidRepository
+from ..datatypes.activity import (ActivityCreate, ActivityResponse,
+                                  ActivityUpdate, RewardSummary)
 from ..models.activity import Activity
-from ..datatypes.activity import (
-    ActivityResponse,
-    ActivityCreate,
-    ActivityUpdate,
-    RewardSummary,
-)
 from ..utils.exceptions import NotFoundError, ValidationError
 
 

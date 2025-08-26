@@ -1,7 +1,8 @@
 import secrets
-from typing import Optional
 from datetime import datetime, timedelta, timezone
-from jose import jwt, JWTError
+from typing import Optional
+
+from jose import JWTError, jwt
 from passlib.hash import bcrypt
 
 from ..config import get_settings

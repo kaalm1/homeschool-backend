@@ -1,17 +1,17 @@
 from typing import Annotated
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from .database import get_db_session
-from .services.auth_service import AuthService
-from .services.user_service import UserService
-from .services.kid_service import KidService
-from .services.activity_service import ActivityService
-from .dal.user_repository import UserRepository
-from .dal.kid_repository import KidRepository
 from .dal.activity_repository import ActivityRepository
+from .dal.kid_repository import KidRepository
+from .dal.user_repository import UserRepository
+from .database import get_db_session
 from .models.user import User
-
+from .services.activity_service import ActivityService
+from .services.auth_service import AuthService
+from .services.kid_service import KidService
+from .services.user_service import UserService
 
 # Database dependency
 DatabaseSession = Annotated[Session, Depends(get_db_session)]

@@ -1,7 +1,8 @@
 from typing import List
+
 from ..dal.kid_repository import KidRepository
+from ..datatypes.kid import KidCreate, KidResponse, KidUpdate
 from ..models.kid import Kid
-from ..datatypes.kid import KidResponse, KidCreate, KidUpdate
 from ..utils.exceptions import NotFoundError, ValidationError
 
 

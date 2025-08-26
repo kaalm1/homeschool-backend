@@ -1,6 +1,7 @@
-from typing import TypeVar, Generic, Type, Optional, List, Any, Dict
+from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
+
+from sqlalchemy import delete, func, select, update
 from sqlalchemy.orm import Session
-from sqlalchemy import select, update, delete, func
 
 from ..database import Base
 

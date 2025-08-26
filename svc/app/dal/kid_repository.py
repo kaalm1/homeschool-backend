@@ -1,9 +1,10 @@
 from typing import List
-from sqlalchemy.orm import Session
-from sqlalchemy import select
 
-from .base_repository import BaseRepository
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
 from ..models.kid import Kid
+from .base_repository import BaseRepository
 
 
 class KidRepository(BaseRepository[Kid]):

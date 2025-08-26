@@ -1,9 +1,10 @@
-from typing import List, Annotated
+from typing import Annotated, List
+
 from fastapi import APIRouter, Depends, status
 
+from ..datatypes.kid import KidCreate, KidResponse, KidUpdate
+from ..dependencies import CurrentUser, get_kid_service
 from ..services.kid_service import KidService
-from ..datatypes.kid import KidResponse, KidCreate, KidUpdate
-from ..dependencies import get_kid_service, CurrentUser
 
 router = APIRouter()
 

@@ -1,9 +1,10 @@
-from typing import List, Annotated
+from typing import Annotated, List
+
 from fastapi import APIRouter, Depends, status
 
-from ..services.activity_service import ActivityService
 from ..datatypes.activity import RewardSummary
-from ..dependencies import get_activity_service, CurrentUser
+from ..dependencies import CurrentUser, get_activity_service
+from ..services.activity_service import ActivityService
 
 router = APIRouter()
 

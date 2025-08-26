@@ -1,10 +1,11 @@
 from typing import List
-from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import select, func
 
-from .base_repository import BaseRepository
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session, joinedload
+
 from ..models.activity import Activity
 from ..models.kid import Kid
+from .base_repository import BaseRepository
 
 
 class ActivityRepository(BaseRepository[Activity]):

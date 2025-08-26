@@ -1,7 +1,8 @@
 from typing import List, Optional
+
 from ..dal.user_repository import UserRepository
-from ..models.user import User
 from ..datatypes.user import UserResponse, UserUpdate, UserWithKidsResponse
+from ..models.user import User
 from ..utils.exceptions import NotFoundError
 
 

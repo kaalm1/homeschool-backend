@@ -1,9 +1,10 @@
-from svc.app.models.base import SessionLocal
-from svc.app.models.user import User
-from svc.app.models.kid import Kid
-from svc.app.models.activity import Activity
 from passlib.hash import bcrypt
 from sqlalchemy import select
+
+from svc.app.models.activity import Activity
+from svc.app.models.base import SessionLocal
+from svc.app.models.kid import Kid
+from svc.app.models.user import User
 
 
 def seed_demo():

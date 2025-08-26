@@ -1,12 +1,13 @@
-from sqlalchemy import String, ForeignKey
+from typing import TYPE_CHECKING, List
+
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import List, TYPE_CHECKING
 
 from .base import BaseModel
 
 if TYPE_CHECKING:
-    from .user import User
     from .activity import Activity
+    from .user import User
 
 
 class Kid(BaseModel):

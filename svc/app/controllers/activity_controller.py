@@ -1,14 +1,11 @@
-from typing import List, Annotated
-from fastapi import APIRouter, Depends, status, Query
+from typing import Annotated, List
 
+from fastapi import APIRouter, Depends, Query, status
+
+from ..datatypes.activity import (ActivityCreate, ActivityResponse,
+                                  ActivityToggleRequest, ActivityUpdate)
+from ..dependencies import CurrentUser, get_activity_service
 from ..services.activity_service import ActivityService
-from ..datatypes.activity import (
-    ActivityResponse,
-    ActivityCreate,
-    ActivityUpdate,
-    ActivityToggleRequest,
-)
-from ..dependencies import get_activity_service, CurrentUser
 
 router = APIRouter()
 

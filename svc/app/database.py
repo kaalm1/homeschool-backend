@@ -1,34 +1,17 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
-from sqlalchemy.pool import StaticPool
+from dotenv import load_dotenv
+import os
 
-from .config import get_settings
 
+load_dotenv()
 
-settings = get_settings()
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set")
 
-# Configure engine based on database type
-if settings.database_url.startswith("sqlite"):
-    engine = create_engine(
-        settings.database_url,
-        echo=settings.debug,
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
-else:
-    engine = create_engine(
-        settings.database_url,
-        echo=settings.debug,
-        pool_pre_ping=True,
-        pool_recycle=300,
-    )
-
-SessionLocal = sessionmaker(
-    bind=engine,
-    autoflush=False,
-    autocommit=False,
-    expire_on_commit=False,
-)
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 class Base(DeclarativeBase):

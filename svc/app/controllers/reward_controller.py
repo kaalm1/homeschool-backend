@@ -6,7 +6,7 @@ from ..datatypes.activity import RewardSummary
 from ..dependencies import CurrentUser, get_activity_service
 from ..services.activity_service import ActivityService
 
-router = APIRouter()
+router = APIRouter(tags=["rewards"])
 
 
 @router.get(

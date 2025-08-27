@@ -6,7 +6,7 @@ from ..datatypes.kid import KidCreate, KidResponse, KidUpdate
 from ..dependencies import CurrentUser, get_kid_service
 from ..services.kid_service import KidService
 
-router = APIRouter()
+router = APIRouter(tags=["kids"])
 
 
 @router.get("", response_model=List[KidResponse], status_code=status.HTTP_200_OK)

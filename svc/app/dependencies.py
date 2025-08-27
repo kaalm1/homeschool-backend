@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from .dal.activity_repository import ActivityRepository
@@ -12,6 +13,8 @@ from .services.activity_service import ActivityService
 from .services.auth_service import AuthService
 from .services.kid_service import KidService
 from .services.user_service import UserService
+
+security = HTTPBearer(auto_error=True)
 
 # Database dependency
 DatabaseSession = Annotated[Session, Depends(get_db_session)]
@@ -50,16 +53,18 @@ def get_kid_service(
 
 
 def get_activity_service(
-    activity_repo: Annotated[ActivityRepository, Depends(get_activity_repository)]
+    activity_repo: Annotated[ActivityRepository, Depends(get_activity_repository)],
+    kid_repo: Annotated[KidRepository, Depends(get_kid_repository)],
 ) -> ActivityService:
-    return ActivityService(activity_repo)
+    return ActivityService(activity_repo, kid_repo)
 
 
 # Authentication dependency
 def get_current_user(
-    auth_service: Annotated[AuthService, Depends(get_auth_service)]
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
 ) -> User:
-    return auth_service.get_current_user()
+    return auth_service.get_current_user_from_token(credentials)
 
 
 CurrentUser = Annotated[User, Depends(get_current_user)]

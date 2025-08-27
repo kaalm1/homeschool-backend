@@ -4,15 +4,15 @@ from fastapi import APIRouter, Depends, Query, status
 
 from ..datatypes.activity import (ActivityCreate, ActivityResponse,
                                   ActivityToggleRequest, ActivityUpdate)
-from ..dependencies import CurrentUser, get_activity_service
+from ..dependencies import CurrentUser, get_activity_service, get_current_user
 from ..services.activity_service import ActivityService
 
-router = APIRouter()
+router = APIRouter(tags=["activities"])
 
 
 @router.get("", response_model=List[ActivityResponse], status_code=status.HTTP_200_OK)
 async def get_activities(
-    current_user: CurrentUser,
+    current_user: Annotated[CurrentUser, Depends(get_current_user)],
     activity_service: Annotated[ActivityService, Depends(get_activity_service)],
     kid_id: int = Query(None, description="Filter by kid ID"),
 ):

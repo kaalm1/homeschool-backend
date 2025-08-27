@@ -7,7 +7,7 @@ from ..datatypes.user import UserResponse
 from ..dependencies import CurrentUser, get_auth_service
 from ..services.auth_service import AuthService
 
-router = APIRouter()
+router = APIRouter(tags=["authentication"])
 
 
 @router.post("/login", response_model=TokenResponse, status_code=status.HTTP_200_OK)

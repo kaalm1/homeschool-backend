@@ -74,32 +74,6 @@ class AuthService:
 
         return self.create_access_token(user)
 
-    # def get_current_user(
-    #     self, credentials: HTTPAuthorizationCredentials = Depends(security)
-    # ) -> User:
-    #     """Get current authenticated user from JWT token."""
-    #     if not credentials:
-    #         raise AuthenticationError("Authentication required")
-    #
-    #     try:
-    #         payload = jwt.decode(
-    #             credentials.credentials, self.settings.secret_key, algorithms=["HS256"]
-    #         )
-    #         email: str = payload.get("sub")
-    #         user_id: int = payload.get("user_id")
-    #
-    #         if email is None or user_id is None:
-    #             raise AuthenticationError("Invalid token payload")
-    #
-    #     except JWTError:
-    #         raise AuthenticationError("Invalid token")
-    #
-    #     user = self.user_repo.get(user_id)
-    #     if not user or not user.is_active:
-    #         raise AuthenticationError("User not found or inactive")
-    #
-    #     return user
-
     def get_current_user_from_token(
         self, credentials: HTTPAuthorizationCredentials
     ) -> User:

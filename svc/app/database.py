@@ -2,7 +2,7 @@ import os
 
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 load_dotenv()
 
@@ -32,3 +32,7 @@ def get_db_session():
         yield db
     finally:
         db.close()
+
+
+def get_raw_db_session() -> Session:
+    return next(get_db_session())

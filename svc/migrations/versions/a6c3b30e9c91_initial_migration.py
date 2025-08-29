@@ -1,8 +1,8 @@
-"""Initial migration
+"""initial migration
 
-Revision ID: e912d11c0590
+Revision ID: a6c3b30e9c91
 Revises: 
-Create Date: 2025-08-25 21:14:31.822775
+Create Date: 2025-08-29 18:42:00.021707
 
 """
 
@@ -10,9 +10,10 @@ from typing import Sequence, Union
 
 import sqlalchemy as sa
 from alembic import op
+from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "e912d11c0590"
+revision: str = "a6c3b30e9c91"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -69,9 +70,90 @@ def upgrade() -> None:
         "activities",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("title", sa.String(length=200), nullable=False),
-        sa.Column("subject", sa.String(length=100), nullable=False),
+        sa.Column("description", sa.String(), nullable=True),
         sa.Column("done", sa.Boolean(), nullable=False),
         sa.Column("kid_id", sa.Integer(), nullable=False),
+        sa.Column(
+            "costs",
+            sa.ARRAY(
+                postgresql.ENUM("FREE", "LOW", "MEDIUM", "HIGH", name="cost_enum")
+            ),
+            nullable=True,
+        ),
+        sa.Column(
+            "durations",
+            sa.ARRAY(
+                postgresql.ENUM(
+                    "SHORT",
+                    "MEDIUM",
+                    "LONG",
+                    "FULL_DAY",
+                    "MULTI_DAY",
+                    name="duration_enum",
+                )
+            ),
+            nullable=True,
+        ),
+        sa.Column(
+            "participants",
+            sa.ARRAY(
+                postgresql.ENUM(
+                    "SOLO",
+                    "TWO_PLAYER",
+                    "SMALL_GROUP",
+                    "MEDIUM_GROUP",
+                    "LARGE_GROUP",
+                    "FAMILY",
+                    name="participants_enum",
+                )
+            ),
+            nullable=True,
+        ),
+        sa.Column(
+            "locations",
+            sa.ARRAY(
+                postgresql.ENUM(
+                    "HOME_INDOOR",
+                    "HOME_OUTDOOR",
+                    "LOCAL",
+                    "REGIONAL",
+                    "TRAVEL",
+                    name="location_enum",
+                )
+            ),
+            nullable=True,
+        ),
+        sa.Column(
+            "seasons",
+            sa.ARRAY(
+                postgresql.ENUM(
+                    "ALL",
+                    "SPRING",
+                    "SUMMER",
+                    "FALL",
+                    "WINTER",
+                    "RAINY_DAY",
+                    "SNOWY_DAY",
+                    name="season_enum",
+                )
+            ),
+            nullable=True,
+        ),
+        sa.Column(
+            "age_groups",
+            sa.ARRAY(
+                postgresql.ENUM(
+                    "TODDLER",
+                    "CHILD",
+                    "TWEEN",
+                    "TEEN",
+                    "ADULT",
+                    "FAMILY",
+                    name="age_group_enum",
+                )
+            ),
+            nullable=True,
+        ),
         sa.Column(
             "created_at",
             sa.DateTime(timezone=True),

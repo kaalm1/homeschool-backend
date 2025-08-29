@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from scripts.seed_data import seed_demo_data
+from svc.app.database import get_raw_db_session
+from svc.app.llm.enum_loader import enum_cache
 
 from .config import get_settings
 from .controllers import (activity_controller, auth_controller, kid_controller,
@@ -17,6 +19,7 @@ async def lifespan(app: FastAPI):
     """Application lifespan events."""
     # Startup
     create_tables()
+    enum_cache.initialize(get_raw_db_session())
     await seed_demo_data()
     yield
     # Shutdown

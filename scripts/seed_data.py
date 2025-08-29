@@ -49,37 +49,31 @@ async def seed_demo_data():
         activities = [
             Activity(
                 title="Read for 20 minutes",
-                subject="Reading",
                 kid_id=ava.id,
                 done=False
             ),
             Activity(
                 title="Practice addition facts",
-                subject="Math",
                 kid_id=ava.id,
                 done=True
             ),
             Activity(
                 title="Write in journal",
-                subject="Writing",
                 kid_id=ava.id,
                 done=False
             ),
             Activity(
                 title="Nature observation",
-                subject="Science",
                 kid_id=ben.id,
                 done=True
             ),
             Activity(
                 title="Count to 100",
-                subject="Math",
                 kid_id=ben.id,
                 done=True
             ),
             Activity(
                 title="Draw a picture",
-                subject="Art",
                 kid_id=ben.id,
                 done=False
             ),

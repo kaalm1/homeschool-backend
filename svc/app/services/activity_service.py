@@ -1,4 +1,8 @@
-from typing import List
+from typing import List, Optional
+
+from svc.app.datatypes.enums import (AgeGroup, Cost, Duration, Location,
+                                     Participants, Season)
+from svc.app.llm.enum_loader import enum_cache
 
 from ..dal.activity_repository import ActivityRepository
 from ..dal.kid_repository import KidRepository
@@ -49,7 +53,6 @@ class ActivityService:
 
         activity = self.activity_repo.create_activity(
             title=activity_data.title,
-            subject=activity_data.subject,
             kid_id=activity_data.kid_id,
         )
         return ActivityResponse.model_validate(activity)
@@ -108,3 +111,29 @@ class ActivityService:
             )
 
         return summary
+
+    def search_activities(
+        self,
+        cost: Optional[List[Cost]] = None,
+        duration: Optional[List[Duration]] = None,
+        participants: Optional[List[Participants]] = None,
+        locations: Optional[List[Location]] = None,
+        seasons: Optional[List[Season]] = None,
+        age_groups: Optional[List[AgeGroup]] = None,
+        themes: Optional[List[str]] = None,
+        activity_types: Optional[List[str]] = None,
+    ):
+        return self.activity_repo.filter_activities(
+            cost=cost,
+            duration=duration,
+            participants=participants,
+            locations=locations,
+            seasons=seasons,
+            age_groups=age_groups,
+            themes=themes,
+            activity_types=activity_types,
+        )
+
+    def get_enum_values(self) -> dict:
+        """Get cached enum values for LLM tagging."""
+        return enum_cache.get_enum_values()

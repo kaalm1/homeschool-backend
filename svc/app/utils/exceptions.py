@@ -56,6 +56,12 @@ class ConflictError(HomeschoolException):
         super().__init__(message, status.HTTP_409_CONFLICT)
 
 
+class LLMProcessingError(Exception):
+    """Raised when LLM processing fails"""
+
+    pass
+
+
 async def homeschool_exception_handler(request: Request, exc: HomeschoolException):
     """Handle custom homeschool exceptions."""
     return JSONResponse(

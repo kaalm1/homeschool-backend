@@ -30,8 +30,18 @@ async def tag_activities(
             await activity_tagging_service.tag_activities(request.activities, enums)
         )
 
-        # TODO: Need to take these tagged activities and save it to the user
-        # TODO: For now kids will be manual, this works only on a family level
+        # TODO: Can decide whether to auto save or require user to see it first then save
+        #   for now we'll do auto save only
+        # TODO: For now kids will be manual, llm auto tagging only works only on a family level
+        # Save tagged activities to database
+        saved_activities = activity_service.create_tagged_activities(
+            tagged_activities, current_user.id
+        )
+
+        logger.info(
+            f"Successfully saved {len(saved_activities)} tagged activities "
+            f"for user {current_user.id}"
+        )
 
         return ActivityTaggingResponse(
             tagged_activities=tagged_activities, total_count=len(tagged_activities)

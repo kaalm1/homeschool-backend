@@ -24,7 +24,7 @@ You are a JSON tagging engine for a family activity planner. Your tasks:
 2. Tag each activity according to the allowed filters below.
 
 Return JSON list where each object has:
-- activity (string): The activity (as concise and clear as possible, preferably no longer than a sentence)
+- title (string): The activity (as concise and clear as possible, preferably no longer than a sentence)
 {enum_text}
 
 Activities:

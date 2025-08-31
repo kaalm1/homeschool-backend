@@ -1,3 +1,4 @@
+import logging
 from typing import List, Optional
 
 from svc.app.datatypes.enums import (DEFAULT_ENUMS_LLM, AgeGroup, Cost,
@@ -7,8 +8,11 @@ from ..dal.activity_repository import ActivityRepository
 from ..dal.kid_repository import KidRepository
 from ..datatypes.activity import (ActivityCreate, ActivityResponse,
                                   ActivityUpdate, RewardSummary)
+from ..llm.schemas.tagging_schemas import TaggedActivity
 from ..models.activity import Activity
 from ..utils.exceptions import NotFoundError, ValidationError
+
+logger = logging.getLogger(__name__)
 
 
 class ActivityService:
@@ -110,6 +114,28 @@ class ActivityService:
             )
 
         return summary
+
+    def create_tagged_activities(
+        self, activities_data: List[TaggedActivity], user_id: int
+    ) -> List[Activity]:
+        """Create multiple tagged activities from LLM response."""
+        try:
+            # Use the repository method to create activities
+            # TODO: Ensure that Activity has a decent``title``, if not filter it out
+            return self.activity_repo.create_tagged_activities(
+                TaggedActivity.to_db_dict_list(activities_data), user_id
+            )
+        except Exception as e:
+            logger.error(f"Error creating tagged activities for user {user_id}: {e}")
+            raise
+
+    def bulk_create_activities(self, activities_data: List[dict]) -> List[Activity]:
+        """Bulk create activities for better performance with large datasets."""
+        try:
+            return self.activity_repo.bulk_create_activities(activities_data)
+        except Exception as e:
+            logger.error(f"Error bulk creating activities: {e}")
+            raise
 
     def search_activities(
         self,

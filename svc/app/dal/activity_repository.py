@@ -20,13 +20,12 @@ class ActivityRepository(BaseRepository[Activity]):
     # Standard CRUD / helper methods
     # ---------------------------
     def get_by_parent_id(self, parent_id: int) -> Sequence[Activity]:
-        """Get all activities for a parent's kids."""
+        """Get all activities for a parent."""
         return (
             self.db.execute(
                 select(Activity)
-                .join(Kid)
-                .where(Kid.parent_id == parent_id)
-                .options(joinedload(Activity.kid))
+                .where(Activity.user_id == parent_id)
+                .options(joinedload(Activity.user))
             )
             .scalars()
             .all()
@@ -36,9 +35,42 @@ class ActivityRepository(BaseRepository[Activity]):
         """Get all activities for a specific kid."""
         return self.get_all(filters={"kid_id": kid_id})
 
-    def create_activity(self, title: str, kid_id: int) -> Activity:
-        """Create a new activity."""
-        return self.create({"title": title, "kid_id": kid_id, "done": False})
+    def create_activity(self, title: str, user_id: int, **kwargs) -> Activity:
+        """Create a new activity for a user/family."""
+        activity_data = {"title": title, "user_id": user_id, "done": False, **kwargs}
+        return self.create(activity_data)
+
+    def create_tagged_activities(
+        self, tagged_activities_data: List[dict], user_id: int
+    ) -> List[Activity]:
+        """Create multiple tagged activities from LLM response."""
+        created_activities = []
+
+        for activity_data in tagged_activities_data:
+            # Extract the basic activity info
+            activity_info = {
+                "user_id": user_id,
+                "done": False,
+                **activity_data,
+            }
+
+            # Create the activity
+            activity = self.create(activity_info)
+            created_activities.append(activity)
+
+        return created_activities
+
+    def bulk_create_activities(self, activities_data: List[dict]) -> List[Activity]:
+        """Bulk create activities for better performance."""
+        activities = [Activity(**data) for data in activities_data]
+        self.db.add_all(activities)
+        self.db.commit()
+
+        # Refresh all activities to get their IDs
+        for activity in activities:
+            self.db.refresh(activity)
+
+        return activities
 
     def toggle_done_status(self, activity_id: int) -> Optional[Activity]:
         """Toggle the done status of an activity."""
@@ -47,9 +79,9 @@ class ActivityRepository(BaseRepository[Activity]):
             return self.update(activity_id, {"done": not activity.done})
         return None
 
-    def get_completed_count_by_kid(self, kid_id: int) -> int:
-        """Get count of completed activities for a kid."""
-        return self.count({"kid_id": kid_id, "done": True})
+    def get_completed_count_by_parent(self, parent_id: int) -> int:
+        """Get count of completed activities for a parent/family."""
+        return self.count({"user_id": parent_id, "done": True})
 
     def get_activity_by_parent(
         self, activity_id: int, parent_id: int
@@ -57,9 +89,8 @@ class ActivityRepository(BaseRepository[Activity]):
         """Get activity by ID and parent ID for security."""
         return self.db.execute(
             select(Activity)
-            .join(Kid)
-            .where(Activity.id == activity_id, Kid.parent_id == parent_id)
-            .options(joinedload(Activity.kid))
+            .where(Activity.id == activity_id, Activity.user_id == parent_id)
+            .options(joinedload(Activity.user))
         ).scalar_one_or_none()
 
     # ---------------------------
@@ -99,12 +130,7 @@ class ActivityRepository(BaseRepository[Activity]):
         if activity_types:
             filters.append(Activity.activity_types.overlap(activity_types))
 
-        query = (
-            self.db.query(Activity)
-            .join(Kid)
-            .filter(Kid.parent_id == parent_id)
-            .distinct()
-        )
+        query = self.db.query(Activity).filter(Activity.user_id == parent_id).distinct()
 
         if filters:
             query = query.filter(and_(*filters))

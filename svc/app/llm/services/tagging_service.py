@@ -4,9 +4,7 @@ from typing import Any, Dict, List
 
 from svc.app.llm.client import llm_client
 from svc.app.llm.prompts.activity_tagging import (
-    ACTIVITY_TAGGING_SYSTEM_PROMPT,
-    build_activity_tagging_prompt,
-)
+    ACTIVITY_TAGGING_SYSTEM_PROMPT, build_activity_tagging_prompt)
 from svc.app.utils.exceptions import LLMProcessingError
 
 logger = logging.getLogger(__name__)

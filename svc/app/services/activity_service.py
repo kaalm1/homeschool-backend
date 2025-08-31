@@ -1,22 +1,12 @@
 from typing import List, Optional
 
-from svc.app.datatypes.enums import (
-    AgeGroup,
-    Cost,
-    Duration,
-    Location,
-    Participants,
-    Season,
-)
+from svc.app.datatypes.enums import (AgeGroup, Cost, Duration, Location,
+                                     Participants, Season)
 
 from ..dal.activity_repository import ActivityRepository
 from ..dal.kid_repository import KidRepository
-from ..datatypes.activity import (
-    ActivityCreate,
-    ActivityResponse,
-    ActivityUpdate,
-    RewardSummary,
-)
+from ..datatypes.activity import (ActivityCreate, ActivityResponse,
+                                  ActivityUpdate, RewardSummary)
 from ..models.activity import Activity
 from ..utils.exceptions import NotFoundError, ValidationError
 

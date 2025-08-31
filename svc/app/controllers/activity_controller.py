@@ -2,12 +2,8 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, Query, status
 
-from ..datatypes.activity import (
-    ActivityCreate,
-    ActivityResponse,
-    ActivityToggleRequest,
-    ActivityUpdate,
-)
+from ..datatypes.activity import (ActivityCreate, ActivityResponse,
+                                  ActivityToggleRequest, ActivityUpdate)
 from ..dependencies import CurrentUser, get_activity_service, get_current_user
 from ..services.activity_service import ActivityService
 

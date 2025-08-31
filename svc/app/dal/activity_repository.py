@@ -3,7 +3,8 @@ from typing import List, Optional, Sequence, cast
 from sqlalchemy import and_, select
 from sqlalchemy.orm import Session, joinedload
 
-from ..datatypes.enums import AgeGroup, Cost, Duration, Location, Participants, Season
+from ..datatypes.enums import (AgeGroup, Cost, Duration, Location,
+                               Participants, Season)
 from ..models.activity import Activity
 from ..models.kid import Kid
 from .base_repository import BaseRepository

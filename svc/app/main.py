@@ -7,12 +7,8 @@ from scripts.seed_data import seed_demo_data
 from svc.app.database import get_raw_db_session
 
 from .config import get_settings
-from .controllers import (
-    activity_controller,
-    auth_controller,
-    kid_controller,
-    reward_controller,
-)
+from .controllers import (activity_controller, auth_controller, kid_controller,
+                          reward_controller)
 from .database import create_tables
 from .utils.exceptions import add_exception_handlers
 

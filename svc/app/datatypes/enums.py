@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Any, Dict
 
 
 class FilterEnum(Enum):
@@ -157,3 +158,15 @@ class ActivityType(FilterEnum):
         "🦁 Zoo / Aquarium",
         "visiting zoo, aquarium, or wildlife park",
     )
+
+
+DEFAULT_ENUMS_AI: Dict[str, Any] = {
+    "activity_types": [e.ai_value for e in ActivityType],
+    "themes": [e.ai_value for e in Theme],
+    "cost": [e.ai_value for e in Cost],
+    "duration": [e.ai_value for e in Duration],
+    "participants": [e.ai_value for e in Participants],
+    "location": [e.ai_value for e in Location],
+    "season": [e.ai_value for e in Season],
+    "age_group": [e.ai_value for e in AgeGroup],
+}

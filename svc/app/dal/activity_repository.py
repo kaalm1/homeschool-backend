@@ -3,16 +3,10 @@ from typing import List, Optional, Sequence, cast
 from sqlalchemy import and_, select
 from sqlalchemy.orm import Session, joinedload
 
-from svc.app.llm.enum_loader import enum_cache
-from svc.app.models.activity_type import ActivityType
-from svc.app.models.theme import Theme
-
 from ..datatypes.enums import (AgeGroup, Cost, Duration, Location,
                                Participants, Season)
 from ..models.activity import Activity
-from ..models.activity_type import ActivityType
 from ..models.kid import Kid
-from ..models.theme import Theme
 from .base_repository import BaseRepository
 
 
@@ -100,6 +94,10 @@ class ActivityRepository(BaseRepository[Activity]):
             filters.append(Activity.seasons.overlap(seasons))
         if age_groups:
             filters.append(Activity.age_groups.overlap(age_groups))
+        if themes:
+            filters.append(Activity.themes.overlap(themes))
+        if activity_types:
+            filters.append(Activity.activity_types.overlap(activity_types))
 
         query = (
             self.db.query(Activity)
@@ -108,41 +106,7 @@ class ActivityRepository(BaseRepository[Activity]):
             .distinct()
         )
 
-        if themes:
-            query = query.join(Activity.themes).filter(Theme.name.in_(themes))
-        if activity_types:
-            query = query.join(Activity.types).filter(
-                ActivityType.name.in_(activity_types)
-            )
-
         if filters:
             query = query.filter(and_(*filters))
 
-        # use joinedload to eager load related objects if needed
-        query = query.options(joinedload(Activity.themes), joinedload(Activity.types))
-
         return cast(List[Activity], query.all())
-
-    # Add these methods to your ActivityRepository if you want to auto-refresh
-    # when creating new themes/types:
-
-    # In ActivityRepository:
-    def create_theme(self, name: str, description: str = None):
-        """Create a new theme and refresh cache."""
-        theme = Theme(name=name, description=description)
-        self.session.add(theme)
-        self.session.commit()
-
-        # Refresh cache
-        enum_cache.refresh_themes(self.session)
-        return theme
-
-    def create_activity_type(self, name: str, description: str = None):
-        """Create a new activity type and refresh cache."""
-        activity_type = ActivityType(name=name, description=description)
-        self.session.add(activity_type)
-        self.session.commit()
-
-        # Refresh cache
-        enum_cache.refresh_activity_types(self.session)
-        return activity_type

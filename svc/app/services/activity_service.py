@@ -2,7 +2,6 @@ from typing import List, Optional
 
 from svc.app.datatypes.enums import (AgeGroup, Cost, Duration, Location,
                                      Participants, Season)
-from svc.app.llm.enum_loader import enum_cache
 
 from ..dal.activity_repository import ActivityRepository
 from ..dal.kid_repository import KidRepository
@@ -133,7 +132,3 @@ class ActivityService:
             themes=themes,
             activity_types=activity_types,
         )
-
-    def get_enum_values(self) -> dict:
-        """Get cached enum values for LLM tagging."""
-        return enum_cache.get_enum_values()

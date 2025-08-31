@@ -1,18 +1,16 @@
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import ARRAY, Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import ARRAY, Boolean, ForeignKey, String
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from svc.app.datatypes.enums import (AgeGroup, Cost, Duration, Location,
-                                     Participants, Season)
+                                     Participants, Season, Theme, ActivityType)
 
 from .base import BaseModel
 
 if TYPE_CHECKING:
-    from .activity_type import ActivityType
     from .kid import Kid
-    from .theme import Theme
     from .user import User
 
 # Define PostgreSQL ENUMs
@@ -22,6 +20,8 @@ participants_enum = ENUM(Participants, name="participants_enum", create_type=Tru
 location_enum = ENUM(Location, name="location_enum", create_type=True)
 season_enum = ENUM(Season, name="season_enum", create_type=True)
 age_group_enum = ENUM(AgeGroup, name="age_group_enum", create_type=True)
+theme_enum = ENUM(Theme, name="theme_enum", create_type=True)
+activity_type_enum = ENUM(ActivityType, name="activity_type_enum", create_type=True)
 
 
 class Activity(BaseModel):
@@ -67,15 +67,11 @@ class Activity(BaseModel):
     age_groups: Mapped[Optional[List[AgeGroup]]] = mapped_column(
         ARRAY(age_group_enum), nullable=True
     )
-
-    # Many-to-many relationships
-    themes: Mapped[List["Theme"]] = relationship(
-        "Theme", secondary="activity_themes", back_populates="activities"
+    themes: Mapped[Optional[List[AgeGroup]]] = mapped_column(
+        ARRAY(theme_enum), nullable=True
     )
-    types: Mapped[List["ActivityType"]] = relationship(
-        "ActivityType",
-        secondary="activity_activity_types",  # ← this is the actual junction table
-        back_populates="activities",
+    types: Mapped[Optional[List[AgeGroup]]] = mapped_column(
+        ARRAY(activity_type_enum), nullable=True
     )
 
     # Properties for easier checking

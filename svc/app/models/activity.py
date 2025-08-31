@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from .activity_type import ActivityType
     from .kid import Kid
     from .theme import Theme
+    from .user import User
 
 # Define PostgreSQL ENUMs
 cost_enum = ENUM(Cost, name="cost_enum", create_type=True)
@@ -33,11 +34,21 @@ class Activity(BaseModel):
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     done: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
-    # Foreign key to Kid
-    kid_id: Mapped[int] = mapped_column(
-        ForeignKey("kids.id", ondelete="CASCADE"), nullable=False, index=True
+    # Foreign key to User (family) - every activity belongs to a family
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
     )
-    kid: Mapped["Kid"] = relationship("Kid", back_populates="activities")
+
+    # Foreign key to Kid - NULL means family-level activity, value means kid-specific
+    assigned_to_kid_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("kids.id", ondelete="CASCADE"), nullable=True, index=True
+    )
+
+    # Relationships
+    user: Mapped["User"] = relationship("User", back_populates="activities")
+    assigned_to_kid: Mapped[Optional["Kid"]] = relationship(
+        "Kid", foreign_keys=[assigned_to_kid_id], back_populates="assigned_activities"
+    )
 
     # ENUM arrays
     costs: Mapped[Optional[List[Cost]]] = mapped_column(ARRAY(cost_enum), nullable=True)
@@ -66,6 +77,24 @@ class Activity(BaseModel):
         secondary="activity_activity_types",  # ← this is the actual junction table
         back_populates="activities",
     )
+
+    # Properties for easier checking
+    @property
+    def is_family_activity(self) -> bool:
+        """True if this activity is assigned to the family (not a specific kid)."""
+        return self.assigned_to_kid_id is None
+
+    @property
+    def is_kid_activity(self) -> bool:
+        """True if this activity is assigned to a specific kid."""
+        return self.assigned_to_kid_id is not None
+
+    @property
+    def assignee_name(self) -> str:
+        """Returns the name of who the activity is assigned to."""
+        if self.is_family_activity:
+            return "Family"
+        return self.assigned_to_kid.name if self.assigned_to_kid else "Unknown Kid"
 
     def __repr__(self) -> str:
         return f"<Activity(id={self.id}, title='{self.title}', kid_id={self.kid_id})>"

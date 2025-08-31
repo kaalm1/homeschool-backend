@@ -24,8 +24,11 @@ class Kid(BaseModel):
 
     # Relationships
     parent: Mapped["User"] = relationship("User", back_populates="kids")
-    activities: Mapped[List["Activity"]] = relationship(
-        "Activity", back_populates="kid", cascade="all, delete-orphan"
+    assigned_activities: Mapped[List["Activity"]] = relationship(
+        "Activity",
+        foreign_keys="Activity.assigned_to_kid_id",
+        back_populates="assigned_to_kid",
+        cascade="all, delete-orphan",
     )
 
     def __repr__(self) -> str:

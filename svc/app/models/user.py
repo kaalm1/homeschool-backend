@@ -6,6 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import BaseModel
 
 if TYPE_CHECKING:
+    from .activity import Activity
     from .kid import Kid
 
 
@@ -24,6 +25,10 @@ class User(BaseModel):
     # Relationships
     kids: Mapped[List["Kid"]] = relationship(
         "Kid", back_populates="parent", cascade="all, delete-orphan"
+    )
+
+    activities: Mapped[List["Activity"]] = relationship(
+        "Activity", back_populates="user", cascade="all, delete-orphan"
     )
 
     def __repr__(self) -> str:

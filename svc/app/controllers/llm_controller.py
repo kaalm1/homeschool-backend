@@ -2,8 +2,10 @@ import logging
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from svc.app.llm.schemas.tagging_schemas import (ActivityTaggingRequest,
-                                                 ActivityTaggingResponse)
+from svc.app.llm.schemas.tagging_schemas import (
+    ActivityTaggingRequest,
+    ActivityTaggingResponse,
+)
 from svc.app.llm.services.tagging_service import activity_tagging_service
 from svc.app.services.activity_service import ActivityService
 from svc.app.utils.exceptions import LLMProcessingError

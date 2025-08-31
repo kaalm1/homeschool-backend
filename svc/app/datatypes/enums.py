@@ -122,7 +122,11 @@ class ActivityType(FilterEnum):
         "🎪 Festival / Fair",
         "attending festival, fair, or carnival",
     )
-    GAMES = ("games", "🎲 Games", "playing games of any kind, board, card, or group games")
+    GAMES = (
+        "games",
+        "🎲 Games",
+        "playing games of any kind, board, card, or group games",
+    )
     GARDENING = ("gardening", "🌱 Gardening", "gardening or horticulture activity")
     HIKING = ("hiking", "🥾 Hiking", "going on a hike or trail walk")
     INDOOR = ("indoor", "🏠 Indoor Fun", "indoor recreational activity")

@@ -124,9 +124,11 @@ class ActivityType(FilterEnum):
     )
     GAMES = ("games", "🎮 Video & Tech Games", "video games or tech-based games")
     GARDENING = ("gardening", "🌱 Gardening", "gardening or horticulture activity")
+    HIKING = ("hiking", "🥾 Hiking", "going on a hike or trail walk")
     INDOOR = ("indoor", "🏠 Indoor Fun", "indoor recreational activity")
     MUSIC = ("music", "🎶 Music", "music or musical activity")
     OUTDOOR = ("outdoor", "🌳 Outdoor Fun", "outdoor recreational activity")
+    PARK = ("park", "🏞️ Park Visit", "visiting a local park or public green space")
     PUZZLES = (
         "puzzles",
         "🧩 Puzzles & Brain Games",

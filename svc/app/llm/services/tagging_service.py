@@ -5,6 +5,7 @@ from typing import Any, Dict, List
 from svc.app.llm.client import llm_client
 from svc.app.llm.prompts.activity_tagging import (
     ACTIVITY_TAGGING_SYSTEM_PROMPT, build_activity_tagging_prompt)
+from svc.app.llm.schemas.tagging_schemas import TaggedActivity
 from svc.app.utils.exceptions import LLMProcessingError
 
 logger = logging.getLogger(__name__)
@@ -18,7 +19,7 @@ class ActivityTaggingService:
 
     async def tag_activities(
         self, activities: str, enums: Dict[str, Any]
-    ) -> List[Dict[str, Any]]:
+    ) -> List[Dict[str, List[str]]]:
         """Tag activities using LLM"""
         prompt = build_activity_tagging_prompt(activities, enums)
 
@@ -38,7 +39,9 @@ class ActivityTaggingService:
                     raise LLMProcessingError("Empty response from LLM")
 
                 # Parse and validate JSON
-                tagged_activities = json.loads(content)
+                tagged_activities: List[TaggedActivity] = TaggedActivity.parse_response(
+                    content
+                )
                 if not isinstance(tagged_activities, list):
                     raise LLMProcessingError("LLM response is not a JSON array")
 

@@ -1,7 +1,7 @@
 from typing import List, Optional
 
-from svc.app.datatypes.enums import (AgeGroup, Cost, Duration, Location,
-                                     Participants, Season)
+from svc.app.datatypes.enums import (DEFAULT_ENUMS_LLM, AgeGroup, Cost,
+                                     Duration, Location, Participants, Season)
 
 from ..dal.activity_repository import ActivityRepository
 from ..dal.kid_repository import KidRepository
@@ -132,3 +132,6 @@ class ActivityService:
             themes=themes,
             activity_types=activity_types,
         )
+
+    def get_llm_enum_values(self):
+        return DEFAULT_ENUMS_LLM

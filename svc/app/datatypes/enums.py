@@ -75,6 +75,14 @@ class Season(FilterEnum):
     SNOWY_DAY = ("snowy_day", "Snowy Day", "snow day activity")
 
 
+class Frequency(FilterEnum):
+    DAILY = ("daily", "Daily", "daily activity")
+    WEEKLY = ("weekly", "Weekly", "weekly activity")
+    MONTHLY = ("monthly", "Monthly", "monthly activity")
+    ANNUALLY = ("annually", "Annually", "annually activity")
+    SEASONAL = ("seasonal", "Seasonal", "seasonal activity")
+
+
 class Theme(FilterEnum):
     ADVENTURE = ("adventure", "🌋 Adventure", "adventurous or exciting activity")
     CREATIVE = ("creative", "🎨 Creative / Arts", "creative, arts, or craft activity")
@@ -160,7 +168,7 @@ class ActivityType(FilterEnum):
     )
 
 
-DEFAULT_ENUMS_AI: Dict[str, Any] = {
+DEFAULT_ENUMS_LLM: Dict[str, Any] = {
     "activity_types": [e.ai_value for e in ActivityType],
     "themes": [e.ai_value for e in Theme],
     "cost": [e.ai_value for e in Cost],
@@ -169,4 +177,5 @@ DEFAULT_ENUMS_AI: Dict[str, Any] = {
     "location": [e.ai_value for e in Location],
     "season": [e.ai_value for e in Season],
     "age_group": [e.ai_value for e in AgeGroup],
+    "frequency": [e.ai_value for e in Frequency],
 }

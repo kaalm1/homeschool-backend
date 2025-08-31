@@ -16,6 +16,8 @@ Return JSON list where each object has:
 - locations (list): Must be subset of {enums.get('location', [])}
 - seasons (list): Must be subset of {enums.get('season', [])}
 - age_groups (list): Must be subset of {enums.get('age_group', [])}
+- themes (list): Must be subset of {enums.get('themes', [])}
+- activity_types (list): Must be subset of {enums.get('activity_types', [])}
 
 Activities:
 {activities}

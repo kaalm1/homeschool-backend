@@ -90,6 +90,8 @@ class ActivityTaggingService:
                 "locations",
                 "seasons",
                 "age_groups",
+                "themes",
+                "activity_types",
             ]:
                 if enum_field in enums:
                     invalid_values = set(activity[enum_field]) - set(enums[enum_field])

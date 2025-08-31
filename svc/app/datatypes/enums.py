@@ -122,7 +122,7 @@ class ActivityType(FilterEnum):
         "🎪 Festival / Fair",
         "attending festival, fair, or carnival",
     )
-    GAMES = ("games", "🎮 Video & Tech Games", "video games or tech-based games")
+    GAMES = ("games", "🎲 Games", "playing games of any kind, board, card, or group games")
     GARDENING = ("gardening", "🌱 Gardening", "gardening or horticulture activity")
     HIKING = ("hiking", "🥾 Hiking", "going on a hike or trail walk")
     INDOOR = ("indoor", "🏠 Indoor Fun", "indoor recreational activity")
@@ -145,6 +145,7 @@ class ActivityType(FilterEnum):
         "storytelling, reading, or literary activity",
     )
     TRAVEL = ("travel", "✈️ Trips & Excursions", "travel or excursion activity")
+    VIDEO_GAMES = ("video_games", "🎮 Video Games", "playing video or digital games")
     VOLUNTEERING = ("volunteering", "🤝 Volunteering", "volunteer or community service")
     SPORTS = ("sports", "🏀 Sports", "sports or physical games")
     ZOO_AQUARIUM = (

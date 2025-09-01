@@ -1,9 +1,8 @@
 from typing import List
 
-from ..dal.kid_repository import KidRepository
-from ..datatypes.kid import KidCreate, KidResponse, KidUpdate
-from ..models.kid import Kid
-from ..utils.exceptions import NotFoundError, ValidationError
+from svc.app.dal.kid_repository import KidRepository
+from svc.app.datatypes.kid import KidCreate, KidResponse, KidUpdate
+from svc.app.utils.exceptions import NotFoundError
 
 
 class KidService:

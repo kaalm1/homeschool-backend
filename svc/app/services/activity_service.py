@@ -1,16 +1,27 @@
 import logging
 from typing import List, Optional
 
-from svc.app.datatypes.enums import (DEFAULT_ENUMS_LLM, AgeGroup, Cost,
-                                     Duration, Location, Participants, Season)
+from svc.app.datatypes.enums import (
+    DEFAULT_ENUMS_LLM,
+    AgeGroup,
+    Cost,
+    Duration,
+    Location,
+    Participants,
+    Season,
+)
 
-from ..dal.activity_repository import ActivityRepository
-from ..dal.kid_repository import KidRepository
-from ..datatypes.activity import (ActivityCreate, ActivityResponse,
-                                  ActivityUpdate, RewardSummary)
-from ..llm.schemas.tagging_schemas import TaggedActivity
-from ..models.activity import Activity
-from ..utils.exceptions import NotFoundError, ValidationError
+from svc.app.dal.activity_repository import ActivityRepository
+from svc.app.dal.kid_repository import KidRepository
+from svc.app.datatypes.activity import (
+    ActivityCreate,
+    ActivityResponse,
+    ActivityUpdate,
+    RewardSummary,
+)
+from svc.app.llm.schemas.tagging_schemas import TaggedActivity
+from svc.app.models.activity import Activity
+from svc.app.utils.exceptions import NotFoundError, ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -121,7 +132,7 @@ class ActivityService:
         """Create multiple tagged activities from LLM response."""
         try:
             # Use the repository method to create activities
-            # TODO: Ensure that Activity has a decent``title``, if not filter it out
+            activities_data = self.filter_missing_titles(activities_data)
             return self.activity_repo.create_tagged_activities(
                 TaggedActivity.to_db_dict_list(activities_data), user_id
             )
@@ -161,3 +172,8 @@ class ActivityService:
 
     def get_llm_enum_values(self):
         return DEFAULT_ENUMS_LLM
+
+    def filter_missing_titles(
+        self, tagged_activities: List[TaggedActivity]
+    ) -> List[TaggedActivity]:
+        return [activity for activity in tagged_activities if activity.title]

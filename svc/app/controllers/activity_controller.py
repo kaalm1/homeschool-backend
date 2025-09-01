@@ -7,9 +7,28 @@ from svc.app.datatypes.activity import (ActivityCreate, ActivityResponse,
 from svc.app.dependencies import (CurrentUser, get_activity_service,
                                   get_current_user)
 from svc.app.services.activity_service import ActivityService
+from svc.app.datatypes.enums import (
+    Cost, Duration, Participants, Location, Season,
+    AgeGroup, Frequency, Theme, ActivityType
+)
 
 router = APIRouter(tags=["activities"])
 
+
+@router.get("/filters", status_code=status.HTTP_200_OK)
+async def get_activity_filters():
+    """Get all available filter options for activities."""
+    return {
+        "costs": Cost.to_frontend(),
+        "durations": Duration.to_frontend(),
+        "participants": Participants.to_frontend(),
+        "locations": Location.to_frontend(),
+        "seasons": Season.to_frontend(),
+        "age_groups": AgeGroup.to_frontend(),
+        "frequency": Frequency.to_frontend(),
+        "themes": Theme.to_frontend(),
+        "activity_types": ActivityType.to_frontend()
+    }
 
 @router.get("", response_model=List[ActivityResponse], status_code=status.HTTP_200_OK)
 async def get_activities(

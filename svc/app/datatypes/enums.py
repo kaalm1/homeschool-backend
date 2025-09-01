@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 
 
 class FilterEnum(Enum):
@@ -19,6 +19,75 @@ class FilterEnum(Enum):
     @classmethod
     def from_ai(cls, ai_values):
         return [f.db_value for f in cls if f.ai_value in ai_values]
+
+    @classmethod
+    def from_ai_safe(cls, ai_values: Optional[List[str]]) -> List[str]:
+        """Convert AI values to DB values with safe handling of None/empty lists."""
+        if not ai_values:
+            return []
+
+        db_values = []
+        for ai_value in ai_values:
+            # Try exact match first
+            found = False
+            for enum_item in cls:
+                if enum_item.ai_value == ai_value:
+                    db_values.append(enum_item.db_value)
+                    found = True
+                    break
+
+            # Try case-insensitive partial match
+            if not found:
+                ai_value_lower = ai_value.lower()
+                for enum_item in cls:
+                    if (
+                        ai_value_lower in enum_item.ai_value.lower()
+                        or enum_item.ai_value.lower() in ai_value_lower
+                    ):
+                        db_values.append(enum_item.db_value)
+                        found = True
+                        break
+
+            if not found:
+                # Log unmatched values but continue processing
+                print(
+                    f"Warning: Could not match '{ai_value}' to any {cls.__name__} value"
+                )
+
+        return db_values
+
+    @classmethod
+    def bulk_convert_from_ai(cls, tagged_data: dict) -> dict:
+        """Convert multiple AI value lists to DB values in a dictionary."""
+        converted_data = {}
+
+        # Map of field names to their corresponding enum classes
+        field_enum_map = {
+            "themes": Theme,
+            "activity_types": ActivityType,
+            "costs": Cost,
+            "durations": Duration,
+            "participants": Participants,
+            "locations": Location,
+            "seasons": Season,
+            "age_groups": AgeGroup,
+            "frequency": Frequency,
+        }
+
+        for field_name, enum_class in field_enum_map.items():
+            if field_name in tagged_data:
+                converted_data[field_name] = enum_class.from_ai_safe(
+                    tagged_data[field_name]
+                )
+            else:
+                converted_data[field_name] = []
+
+        # Copy non-enum fields as-is
+        for key, value in tagged_data.items():
+            if key not in field_enum_map:
+                converted_data[key] = value
+
+        return converted_data
 
 
 # ---------------------------

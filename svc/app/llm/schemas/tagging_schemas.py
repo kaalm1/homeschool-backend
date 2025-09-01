@@ -3,6 +3,8 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
+from svc.app.datatypes.enums import FilterEnum
+
 
 class ActivityTaggingRequest(BaseModel):
     activities: str = Field(..., description="Raw activities text to be tagged")
@@ -45,6 +47,23 @@ class TaggedActivity(BaseModel):
     def to_db_dict_list(cls, tagged_activities: List["TaggedActivity"]) -> List[dict]:
         """Convert a list of TaggedActivity objects to database-ready dictionaries."""
         return [activity.to_db_dict() for activity in tagged_activities]
+
+    def convert_ai_to_db(self) -> dict:
+        """Get a summary of how AI values were converted to DB values."""
+        activity_data = self.model_dump()
+        converted_data = FilterEnum.bulk_convert_from_ai(activity_data)
+
+        self.themes = converted_data["themes"]
+        self.activity_types = converted_data["activity_types"]
+        self.costs = converted_data["costs"]
+        self.durations = converted_data["durations"]
+        self.participants = converted_data["participants"]
+        self.locations = converted_data["locations"]
+        self.seasons = converted_data["seasons"]
+        self.age_groups = converted_data["age_groups"]
+        self.frequency = converted_data["frequency"]
+
+        return converted_data
 
 
 class ActivityTaggingResponse(BaseModel):

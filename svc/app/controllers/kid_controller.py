@@ -2,9 +2,9 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, status
 
-from ..datatypes.kid import KidCreate, KidResponse, KidUpdate
-from ..dependencies import CurrentUser, get_kid_service
-from ..services.kid_service import KidService
+from svc.app.datatypes.kid import KidCreate, KidResponse, KidUpdate
+from svc.app.dependencies import CurrentUser, get_kid_service
+from svc.app.services.kid_service import KidService
 
 router = APIRouter(tags=["kids"])
 

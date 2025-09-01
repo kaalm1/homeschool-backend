@@ -3,8 +3,8 @@ from typing import List
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ..models.kid import Kid
-from .base_repository import BaseRepository
+from svc.app.dal.base_repository import BaseRepository
+from svc.app.models.kid import Kid
 
 
 class KidRepository(BaseRepository[Kid]):

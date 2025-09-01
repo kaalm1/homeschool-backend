@@ -2,10 +2,11 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, Query, status
 
-from ..datatypes.activity import (ActivityCreate, ActivityResponse,
-                                  ActivityToggleRequest, ActivityUpdate)
-from ..dependencies import CurrentUser, get_activity_service, get_current_user
-from ..services.activity_service import ActivityService
+from svc.app.datatypes.activity import (ActivityCreate, ActivityResponse,
+                                        ActivityUpdate)
+from svc.app.dependencies import (CurrentUser, get_activity_service,
+                                  get_current_user)
+from svc.app.services.activity_service import ActivityService
 
 router = APIRouter(tags=["activities"])
 

@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -29,6 +29,11 @@ async def tag_activities(
         tagged_activities: List[TaggedActivity] = (
             await activity_tagging_service.tag_activities(request.activities, enums)
         )
+
+        # Convert tag values from LLM to DB
+        tagged_activities = [
+            activity.convert_ai_to_db() for activity in tagged_activities
+        ]
 
         # TODO: Can decide whether to auto save or require user to see it first then save
         #   for now we'll do auto save only

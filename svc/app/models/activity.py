@@ -4,8 +4,17 @@ from sqlalchemy import ARRAY, Boolean, ForeignKey, String
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from svc.app.datatypes.enums import (ActivityType, AgeGroup, Cost, Duration,
-                                     Location, Participants, Season, Theme)
+from svc.app.datatypes.enums import (
+    ActivityType,
+    AgeGroup,
+    Cost,
+    Duration,
+    Frequency,
+    Location,
+    Participants,
+    Season,
+    Theme,
+)
 
 from .base import BaseModel
 
@@ -20,6 +29,7 @@ participants_enum = ENUM(Participants, name="participants_enum", create_type=Tru
 location_enum = ENUM(Location, name="location_enum", create_type=True)
 season_enum = ENUM(Season, name="season_enum", create_type=True)
 age_group_enum = ENUM(AgeGroup, name="age_group_enum", create_type=True)
+frequency_enum = ENUM(Frequency, name="frequency_enum", create_type=True)
 theme_enum = ENUM(Theme, name="theme_enum", create_type=True)
 activity_type_enum = ENUM(ActivityType, name="activity_type_enum", create_type=True)
 
@@ -66,6 +76,9 @@ class Activity(BaseModel):
     )
     age_groups: Mapped[Optional[List[AgeGroup]]] = mapped_column(
         ARRAY(age_group_enum), nullable=True
+    )
+    frequency: Mapped[Optional[List[Frequency]]] = mapped_column(
+        ARRAY(frequency_enum), nullable=True
     )
     themes: Mapped[Optional[List[AgeGroup]]] = mapped_column(
         ARRAY(theme_enum), nullable=True

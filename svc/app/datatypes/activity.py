@@ -3,8 +3,18 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
-from .common import TimestampMixin
-from .enums import AgeGroup, Cost, Duration, Location, Participants, Season
+from svc.app.datatypes.common import TimestampMixin
+from svc.app.datatypes.enums import (
+    ActivityType,
+    AgeGroup,
+    Cost,
+    Duration,
+    Frequency,
+    Location,
+    Participants,
+    Season,
+    Theme,
+)
 
 
 # ---------------------------
@@ -44,10 +54,13 @@ class ActivityBase(BaseModel):
     age_groups: Optional[List[AgeGroup]] = Field(
         None, description="Activity age groups"
     )
+    frequency: Optional[Frequency] = Field(None, description="Activity frequency")
+    themes: Optional[Theme] = Field(None, description="Activity theme")
+    types: Optional[ActivityType] = Field(None, description="Activity type")
 
 
 class ActivityCreate(ActivityBase):
-    kid_id: int = Field(..., description="Kid ID")
+    kid_id: Optional[int] = Field(None, description="Kid ID")
 
 
 class ActivityUpdate(BaseModel):
@@ -67,21 +80,15 @@ class ActivityUpdate(BaseModel):
     age_groups: Optional[List[AgeGroup]] = Field(
         None, description="Activity age groups"
     )
-
-    themes: Optional[List[int]] = Field(None, description="Theme IDs")
-    types: Optional[List[int]] = Field(None, description="ActivityType IDs")
+    frequency: Optional[Frequency] = Field(None, description="Activity frequency")
+    themes: Optional[List[Theme]] = Field(None, description="Theme IDs")
+    types: Optional[List[ActivityType]] = Field(None, description="ActivityType IDs")
 
 
 class ActivityResponse(ActivityBase, TimestampMixin):
     id: int = Field(..., description="Activity ID")
     done: bool = Field(..., description="Activity completion status")
-    kid_id: int = Field(..., description="Kid ID")
-
-    # Nested responses
-    themes: Optional[List[ThemeResponse]] = Field(None, description="Activity themes")
-    types: Optional[List[ActivityTypeResponse]] = Field(
-        None, description="Activity types"
-    )
+    kid_id: Optional[int] = Field(None, description="Kid ID")
 
     class Config:
         from_attributes = True

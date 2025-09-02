@@ -7,15 +7,16 @@ from svc.app.llm.prompts.activity_tagging import (
     ACTIVITY_TAGGING_SYSTEM_PROMPT, build_activity_tagging_prompt)
 from svc.app.llm.schemas.tagging_schemas import TaggedActivity
 from svc.app.utils.exceptions import LLMProcessingError
+from svc.app.config import settings
 
 logger = logging.getLogger(__name__)
 
 
 class ActivityTaggingService:
     def __init__(self):
-        self.model = "gpt-4o-mini"  # or gpt-4 for better quality
-        self.temperature = 0
-        self.max_retries = 2
+        self.model = settings.llm_model
+        self.temperature = settings.llm_temperature
+        self.max_retries = settings.llm_max_retries
 
     async def tag_activities(
         self, activities: str, enums: Dict[str, Any]

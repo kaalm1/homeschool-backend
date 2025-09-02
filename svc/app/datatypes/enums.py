@@ -247,11 +247,11 @@ class ActivityType(FilterEnum):
 DEFAULT_ENUMS_LLM: Dict[str, Any] = {
     "activity_types": [e.ai_value for e in ActivityType],
     "themes": [e.ai_value for e in Theme],
-    "cost": [e.ai_value for e in Cost],
-    "duration": [e.ai_value for e in Duration],
+    "costs": [e.ai_value for e in Cost],
+    "durations": [e.ai_value for e in Duration],
     "participants": [e.ai_value for e in Participants],
-    "location": [e.ai_value for e in Location],
-    "season": [e.ai_value for e in Season],
-    "age_group": [e.ai_value for e in AgeGroup],
+    "locations": [e.ai_value for e in Location],
+    "seasons": [e.ai_value for e in Season],
+    "age_groups": [e.ai_value for e in AgeGroup],
     "frequency": [e.ai_value for e in Frequency],
 }

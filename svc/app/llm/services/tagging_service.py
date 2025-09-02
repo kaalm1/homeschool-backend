@@ -26,6 +26,7 @@ class ActivityTaggingService:
     ) -> List[TaggedActivity]:
         """Tag activities using LLM"""
         prompt = build_activity_tagging_prompt(activities, enums)
+        logger.info(prompt)
 
         for attempt in range(self.max_retries + 1):
             try:
@@ -47,9 +48,7 @@ class ActivityTaggingService:
                 self._validate_tagged_activities(content_parsed, enums)
 
                 # Parse and validate JSON
-                tagged_activities: List[TaggedActivity] = TaggedActivity.from_json(
-                    content_parsed
-                )
+                tagged_activities: List[TaggedActivity] = TaggedActivity.from_json(content_parsed)
                 if not isinstance(tagged_activities, list):
                     raise LLMProcessingError("LLM response is not a JSON array")
 
@@ -75,12 +74,6 @@ class ActivityTaggingService:
         valid_keys = set(enums.keys())
 
         for activity in activities:
-            # --- Remove keys that are not part of the enums ---
-            keys_to_remove = [k for k in activity.keys() if k not in valid_keys]
-            for k in keys_to_remove:
-                logger.error(f"Removing invalid key: {k}")
-                activity.pop(k, None)
-
             # --- Clean values for each enum key ---
             for enum_field, allowed_values in enums.items():
                 if enum_field in activity:

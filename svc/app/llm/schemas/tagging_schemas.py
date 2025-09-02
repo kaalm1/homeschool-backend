@@ -1,6 +1,5 @@
 import json
-import re
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -14,6 +13,10 @@ class ActivityTaggingRequest(BaseModel):
 
 class TaggedActivity(BaseModel):
     title: str
+    description: Optional[str] = None
+    price: Optional[float] = None
+    price_verified: Optional[bool] = None
+    website: Optional[str] = None
     themes: List[str] = []
     activity_types: List[str] = []
     costs: List[str] = []

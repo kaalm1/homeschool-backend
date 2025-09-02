@@ -32,7 +32,7 @@ You are a JSON tagging engine for a family activity planner. Your tasks:
 Return JSON list where each object has:
 - title (string): Clear activity name, **must be 8 words or less**
 - description (string): Up to two sentences, clear but concise
-- price (float, optional): Estimated or verified price in numeric format. Only include if a reasonable estimate or verified value is available.
+- price (float, optional): Estimated or verified price in numeric format. Only include if a reasonable estimate or verified value is available. If the activity is free, use 0.0.
 - price_verified (boolean, optional): true if the price is verified, false if it is a guesstimate. Only include if price is provided.
 - website (string, optional): Include if a known or plausible website exists
 {enum_text}

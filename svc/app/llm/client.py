@@ -15,6 +15,7 @@ class LLMClient:
     def client(self) -> OpenAI:
         if self._client is None:
             self._client = OpenAI(
+                base_url=settings.openai_base_url,
                 api_key=settings.openai_api_key,
                 timeout=30.0,
             )

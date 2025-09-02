@@ -1,4 +1,5 @@
 import json
+import re
 from typing import List
 
 from pydantic import BaseModel, Field
@@ -24,10 +25,15 @@ class TaggedActivity(BaseModel):
     frequency: List[str] = []
 
     @classmethod
-    def from_json(cls, content: str) -> List["TaggedActivity"]:
+    def from_llm(cls, content: str) -> List["TaggedActivity"]:
         """Parse a JSON string into a list of TaggedActivity objects."""
         raw_data = json.loads(content)  # list of dicts
         return [cls(**item) for item in raw_data]
+
+    @classmethod
+    def from_json(cls, content: list) -> List["TaggedActivity"]:
+        """Parse a JSON string into a list of TaggedActivity objects."""
+        return [cls(**item) for item in content]
 
     def to_db_dict(self) -> dict:
         """Convert TaggedActivity to a dictionary suitable for database insertion."""

@@ -2,12 +2,13 @@ import json
 import logging
 from typing import Any, Dict, List
 
+from svc.app.config import settings
 from svc.app.llm.client import llm_client
 from svc.app.llm.prompts.activity_tagging import (
     ACTIVITY_TAGGING_SYSTEM_PROMPT, build_activity_tagging_prompt)
 from svc.app.llm.schemas.tagging_schemas import TaggedActivity
+from svc.app.llm.utils.parsers import parse_response_to_json
 from svc.app.utils.exceptions import LLMProcessingError
-from svc.app.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ class ActivityTaggingService:
 
     async def tag_activities(
         self, activities: str, enums: Dict[str, Any]
-    ) -> List[Dict[str, List[str]]]:
+    ) -> List[TaggedActivity]:
         """Tag activities using LLM"""
         prompt = build_activity_tagging_prompt(activities, enums)
 
@@ -39,15 +40,16 @@ class ActivityTaggingService:
                 if not content:
                     raise LLMProcessingError("Empty response from LLM")
 
+                content_parsed: list = parse_response_to_json(content)
+                # Validate structure
+                self._validate_tagged_activities(content_parsed, enums)
+
                 # Parse and validate JSON
-                tagged_activities: List[TaggedActivity] = TaggedActivity.parse_response(
-                    content
+                tagged_activities: List[TaggedActivity] = TaggedActivity.from_json(
+                    content_parsed
                 )
                 if not isinstance(tagged_activities, list):
                     raise LLMProcessingError("LLM response is not a JSON array")
-
-                # Validate structure
-                self._validate_tagged_activities(tagged_activities, enums)
 
                 logger.info(f"Successfully tagged {len(tagged_activities)} activities")
                 return tagged_activities

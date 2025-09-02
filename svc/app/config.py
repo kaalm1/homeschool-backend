@@ -16,7 +16,8 @@ class Settings(BaseSettings):
 
     # Database
     database_url: str = Field(
-        default="sqlite:///./app.db", description="Database connection URL"
+        default="postgresql://homeschool_user:random@localhost:5432/homeschool_db",
+        description="Database connection URL",
     )
 
     # CORS
@@ -35,6 +36,10 @@ class Settings(BaseSettings):
     # LLM Configuration
     openai_api_key: Optional[str] = Field(
         default=None, description="OpenAI API key for LLM services"
+    )
+    openai_base_url: Optional[str] = Field(
+        default="https://openrouter.ai/api/v1",
+        description="OpenAI Base URL for LLM services",
     )
     llm_model: str = Field(
         default="gpt-4o-mini",
@@ -82,6 +87,7 @@ class Settings(BaseSettings):
             "gpt-4-turbo",
             "gpt-4",
             "gpt-3.5-turbo",
+            "deepseek/deepseek-chat-v3.1:free",
         ]
         if v not in allowed_models:
             raise ValueError(f"LLM model must be one of: {allowed_models}")

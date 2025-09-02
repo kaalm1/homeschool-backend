@@ -5,7 +5,9 @@ from typing import Any, Dict, List
 from svc.app.config import settings
 from svc.app.llm.client import llm_client
 from svc.app.llm.prompts.activity_tagging import (
-    ACTIVITY_TAGGING_SYSTEM_PROMPT, build_activity_tagging_prompt)
+    ACTIVITY_TAGGING_SYSTEM_PROMPT,
+    build_activity_tagging_prompt,
+)
 from svc.app.llm.schemas.tagging_schemas import TaggedActivity
 from svc.app.llm.utils.parsers import parse_response_to_json
 from svc.app.utils.exceptions import LLMProcessingError
@@ -69,42 +71,34 @@ class ActivityTaggingService:
     def _validate_tagged_activities(
         self, activities: List[Dict], enums: Dict[str, Any]
     ):
-        """Validate the structure and enum values of tagged activities"""
-        required_fields = [
-            "activity",
-            "themes",
-            "activity_types",
-            "costs",
-            "durations",
-            "participants",
-            "locations",
-            "seasons",
-            "age_groups",
-        ]
+        """Validate and clean the structure of tagged activities against enum definitions"""
+        valid_keys = set(enums.keys())
 
         for activity in activities:
-            # Check required fields
-            for field in required_fields:
-                if field not in activity:
-                    raise LLMProcessingError(f"Missing required field: {field}")
+            # --- Remove keys that are not part of the enums ---
+            keys_to_remove = [k for k in activity.keys() if k not in valid_keys]
+            for k in keys_to_remove:
+                logger.error(f"Removing invalid key: {k}")
+                activity.pop(k, None)
 
-            # Validate enum constraints
-            for enum_field in [
-                "costs",
-                "durations",
-                "participants",
-                "locations",
-                "seasons",
-                "age_groups",
-                "themes",
-                "activity_types",
-            ]:
-                if enum_field in enums:
-                    invalid_values = set(activity[enum_field]) - set(enums[enum_field])
+            # --- Clean values for each enum key ---
+            for enum_field, allowed_values in enums.items():
+                if enum_field in activity:
+                    current_values = activity[enum_field]
+
+                    # enforce list type for enum fields
+                    if not isinstance(current_values, list):
+                        current_values = [current_values]
+
+                    valid_values = [v for v in current_values if v in allowed_values]
+                    invalid_values = set(current_values) - set(valid_values)
+
                     if invalid_values:
-                        raise LLMProcessingError(
-                            f"Invalid {enum_field} values: {invalid_values}"
+                        logger.error(
+                            f"Removed invalid {enum_field} values: {invalid_values}"
                         )
+
+                    activity[enum_field] = valid_values
 
 
 # Singleton instance

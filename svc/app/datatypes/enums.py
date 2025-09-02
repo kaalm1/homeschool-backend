@@ -2,11 +2,18 @@ from enum import Enum
 from typing import Any, Dict, List, Optional
 
 
-class FilterEnum(Enum):
-    def __init__(self, db_value: str, label: str, ai_value: str):
-        self.db_value = db_value  # stable for DB
-        self.label = label  # frontend label
-        self.ai_value = ai_value  # AI-friendly phrase
+class FilterEnum(str, Enum):
+    db_value: str
+    label: str
+    ai_value: str
+
+    def __new__(cls, db_value: str, label: str, ai_value: str) -> Any:
+        obj = str.__new__(cls, db_value)
+        obj._value_ = db_value
+        obj.db_value = db_value
+        obj.label = label
+        obj.ai_value = ai_value
+        return obj
 
     @classmethod
     def to_frontend(cls):

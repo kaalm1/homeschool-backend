@@ -46,9 +46,9 @@ class ActivityBase(BaseModel):
     age_groups: Optional[List[AgeGroup]] = Field(
         None, description="Activity age groups"
     )
-    frequency: Optional[Frequency] = Field(None, description="Activity frequency")
-    themes: Optional[Theme] = Field(None, description="Activity theme")
-    types: Optional[ActivityType] = Field(None, description="Activity type")
+    frequency: Optional[List[Frequency]] = Field(None, description="Activity frequency")
+    themes: Optional[List[Theme]] = Field(None, description="Activity theme")
+    types: Optional[List[ActivityType]] = Field(None, description="Activity type")
 
 
 class ActivityCreate(ActivityBase):
@@ -72,7 +72,7 @@ class ActivityUpdate(BaseModel):
     age_groups: Optional[List[AgeGroup]] = Field(
         None, description="Activity age groups"
     )
-    frequency: Optional[Frequency] = Field(None, description="Activity frequency")
+    frequency: Optional[List[Frequency]] = Field(None, description="Activity frequency")
     themes: Optional[List[Theme]] = Field(None, description="Theme IDs")
     types: Optional[List[ActivityType]] = Field(None, description="ActivityType IDs")
 

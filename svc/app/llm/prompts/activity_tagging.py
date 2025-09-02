@@ -16,6 +16,12 @@ def build_activity_tagging_prompt(
     for key, values in enums.items():
         enum_lines.append(f"- {key} (list): Must be subset of {values}")
 
+    # add primary_type rule if activity_types exists
+    if "activity_types" in enums:
+        enum_lines.append(
+            f"- primary_type (string): Must be a single value from {enums['activity_types']}"
+        )
+
     enum_text = "\n".join(enum_lines)
 
     return f"""
@@ -24,7 +30,11 @@ You are a JSON tagging engine for a family activity planner. Your tasks:
 2. Tag each activity according to the allowed filters below.
 
 Return JSON list where each object has:
-- title (string): The activity (as concise and clear as possible, preferably no longer than a sentence)
+- title (string): Clear activity name, **must be 8 words or less**
+- description (string): Up to two sentences, clear but concise
+- price (float, optional): Estimated or verified price in numeric format. Only include if a reasonable estimate or verified value is available.
+- price_verified (boolean, optional): true if the price is verified, false if it is a guesstimate. Only include if price is provided.
+- website (string, optional): Include if a known or plausible website exists
 {enum_text}
 
 Activities:

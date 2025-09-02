@@ -1,3 +1,4 @@
+import traceback
 from typing import Any, Dict, Optional
 
 from fastapi import FastAPI, Request, status
@@ -101,8 +102,41 @@ async def general_exception_handler(request: Request, exc: Exception):
     )
 
 
+async def global_exception_handler(request: Request, exc: Exception):
+    """
+    Catch all unexpected exceptions and log full traceback.
+    """
+    tb_str = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+    print("🔥 Full traceback:\n", tb_str)
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": str(exc),
+            "traceback": tb_str,  # optional, remove in production
+        },
+    )
+
+
+async def validation_exception_handler_global(request: Request, exc: ValidationError):
+    """
+    Catch Pydantic validation errors and log full traceback.
+    """
+    tb_str = "".join(traceback.format_exception(type(exc), exc, exc.__traceback__))
+    print("🔥 Pydantic Validation Error:\n", tb_str)
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": exc.errors(),
+            "body": exc.json(),
+            "traceback": tb_str,  # optional, remove in production
+        },
+    )
+
+
 def add_exception_handlers(app: FastAPI):
     """Add exception handlers to FastAPI app."""
     app.add_exception_handler(HomeschoolException, homeschool_exception_handler)
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(Exception, general_exception_handler)
+    app.add_exception_handler(Exception, global_exception_handler)
+    app.add_exception_handler(ValidationError, validation_exception_handler_global)

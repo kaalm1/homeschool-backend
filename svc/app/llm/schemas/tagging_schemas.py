@@ -58,22 +58,26 @@ class TaggedActivity(BaseModel):
         """Convert a list of TaggedActivity objects to database-ready dictionaries."""
         return [activity.to_db_dict() for activity in tagged_activities]
 
-    def convert_ai_to_db(self) -> dict:
-        """Get a summary of how AI values were converted to DB values."""
+    def convert_ai_to_db(self) -> "TaggedActivity":
+        """Convert AI values to DB values."""
         activity_data = self.model_dump()
         converted_data = FilterEnum.bulk_convert_from_ai(activity_data)
 
-        self.themes = converted_data["themes"]
-        self.activity_types = converted_data["activity_types"]
-        self.costs = converted_data["costs"]
-        self.durations = converted_data["durations"]
-        self.participants = converted_data["participants"]
-        self.locations = converted_data["locations"]
-        self.seasons = converted_data["seasons"]
-        self.age_groups = converted_data["age_groups"]
-        self.frequency = converted_data["frequency"]
+        for key in [
+            "themes",
+            "activity_types",
+            "costs",
+            "durations",
+            "participants",
+            "locations",
+            "seasons",
+            "age_groups",
+            "frequency",
+        ]:
+            if key in converted_data:
+                setattr(self, key, converted_data[key])
 
-        return converted_data
+        return self
 
 
 class ActivityTaggingResponse(BaseModel):

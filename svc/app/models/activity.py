@@ -82,7 +82,7 @@ class Activity(BaseModel):
     themes: Mapped[Optional[List[Theme]]] = mapped_column(
         ARRAY(theme_enum), nullable=True
     )
-    types: Mapped[Optional[List[ActivityType]]] = mapped_column(
+    activity_types: Mapped[Optional[List[ActivityType]]] = mapped_column(
         ARRAY(activity_type_enum), nullable=True
     )
 
@@ -105,4 +105,4 @@ class Activity(BaseModel):
         return self.assigned_to_kid.name if self.assigned_to_kid else "Unknown Kid"
 
     def __repr__(self) -> str:
-        return f"<Activity(id={self.id}, title='{self.title}', kid_id={self.kid_id})>"
+        return f"<Activity(id={self.id}, title='{self.title}', assigned_to_kid_id={self.assigned_to_kid_id})>"

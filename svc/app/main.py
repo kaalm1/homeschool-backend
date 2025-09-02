@@ -4,12 +4,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from scripts.seed_data import seed_demo_data
-
-from .config import get_settings
-from .controllers import (activity_controller, auth_controller, kid_controller,
-                          llm_controller, reward_controller)
-from .database import create_tables
-from .utils.exceptions import add_exception_handlers
+from svc.app.config import get_settings
+from svc.app.controllers import (activity_controller, auth_controller,
+                                 kid_controller, llm_controller,
+                                 reward_controller)
+from svc.app.database import create_tables
+from svc.app.utils.exceptions import add_exception_handlers
 
 
 @asynccontextmanager

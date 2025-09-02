@@ -52,7 +52,7 @@ class Settings(BaseSettings):
         le=2.0,
     )
     llm_max_retries: int = Field(
-        default=2,
+        default=1,
         description="Maximum number of retries for failed LLM requests",
         ge=0,
         le=5,

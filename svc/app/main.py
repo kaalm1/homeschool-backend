@@ -4,11 +4,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from scripts.seed_data import seed_demo_data
-from svc.app.database import get_raw_db_session
 
 from .config import get_settings
 from .controllers import (activity_controller, auth_controller, kid_controller,
-                          reward_controller)
+                          reward_controller, llm_controller)
 from .database import create_tables
 from .utils.exceptions import add_exception_handlers
 
@@ -55,6 +54,9 @@ def create_app() -> FastAPI:
     app.include_router(kid_controller.router, prefix="/api/v1/kids", tags=["Kids"])
     app.include_router(
         activity_controller.router, prefix="/api/v1/activities", tags=["Activities"]
+    )
+    app.include_router(
+        llm_controller.router, prefix="/api/v1/llm", tags=["LLM"]
     )
     app.include_router(
         reward_controller.router, prefix="/api/v1/rewards", tags=["Rewards"]

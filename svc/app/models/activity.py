@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import ARRAY, Boolean, ForeignKey, String
+from sqlalchemy import ARRAY, Boolean, ForeignKey, String, Float
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -44,6 +44,13 @@ class Activity(BaseModel):
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     done: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
+    price: Mapped[float] = mapped_column(Float, default=None, nullable=True)
+    price_verified: Mapped[bool] = mapped_column(Boolean, default=None, nullable=True)
+    primary_type: Mapped[Optional[ActivityType]] = mapped_column(
+        activity_type_enum, nullable=True
+    )
+    website: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+
     # Foreign key to User (family) - every activity belongs to a family
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
@@ -80,10 +87,10 @@ class Activity(BaseModel):
     frequency: Mapped[Optional[List[Frequency]]] = mapped_column(
         ARRAY(frequency_enum), nullable=True
     )
-    themes: Mapped[Optional[List[AgeGroup]]] = mapped_column(
+    themes: Mapped[Optional[List[Theme]]] = mapped_column(
         ARRAY(theme_enum), nullable=True
     )
-    types: Mapped[Optional[List[AgeGroup]]] = mapped_column(
+    types: Mapped[Optional[List[ActivityType]]] = mapped_column(
         ARRAY(activity_type_enum), nullable=True
     )
 

@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: c2a4dba621a6
+Revision ID: 7f9db991801a
 Revises: 
-Create Date: 2025-09-01 08:12:07.427676
+Create Date: 2025-09-01 22:47:42.458753
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'c2a4dba621a6'
+revision: str = '7f9db991801a'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -48,6 +48,10 @@ def upgrade() -> None:
     sa.Column('title', sa.String(length=200), nullable=False),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('done', sa.Boolean(), nullable=False),
+    sa.Column('price', sa.Float(), nullable=True),
+    sa.Column('price_verified', sa.Boolean(), nullable=True),
+    sa.Column('primary_type', postgresql.ENUM('AMUSEMENT_PARK', 'ARTS_CRAFTS', 'BOARD_GAMES', 'CLASSES', 'DANCE', 'FESTIVAL', 'GAMES', 'GARDENING', 'HIKING', 'INDOOR', 'MUSIC', 'OUTDOOR', 'PARK', 'PUZZLES', 'SCIENCE_TECH', 'STORYTELLING', 'TRAVEL', 'VIDEO_GAMES', 'VOLUNTEERING', 'SPORTS', 'ZOO_AQUARIUM', name='activity_type_enum'), nullable=True),
+    sa.Column('website', sa.String(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('assigned_to_kid_id', sa.Integer(), nullable=True),
     sa.Column('costs', sa.ARRAY(postgresql.ENUM('FREE', 'LOW', 'MEDIUM', 'HIGH', name='cost_enum')), nullable=True),

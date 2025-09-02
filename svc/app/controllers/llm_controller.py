@@ -1,9 +1,10 @@
 import logging
-from typing import List
+from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from svc.app.dependencies import CurrentUser
+from svc.app.dependencies import (CurrentUser, get_activity_service,
+                                  get_current_user)
 from svc.app.llm.schemas.tagging_schemas import (ActivityTaggingRequest,
                                                  ActivityTaggingResponse,
                                                  TaggedActivity)
@@ -17,9 +18,9 @@ router = APIRouter(prefix="/llm", tags=["LLM"])
 
 @router.post("/tag-activities", response_model=ActivityTaggingResponse)
 async def tag_activities(
-    current_user: CurrentUser,
+    current_user: Annotated[CurrentUser, Depends(get_current_user)],
     request: ActivityTaggingRequest,
-    activity_service: ActivityService = Depends(),
+    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
 ):
     """Tag activities using LLM"""
     try:
@@ -49,7 +50,7 @@ async def tag_activities(
         )
 
         return ActivityTaggingResponse(
-            tagged_activities=tagged_activities, total_count=len(tagged_activities)
+            tagged_activities=saved_activities, total_count=len(tagged_activities)
         )
 
     except LLMProcessingError as e:

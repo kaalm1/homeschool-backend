@@ -4,6 +4,7 @@ from typing import List
 from pydantic import BaseModel, Field
 
 from svc.app.datatypes.enums import FilterEnum
+from svc.app.datatypes.activity import ActivityResponse
 
 
 class ActivityTaggingRequest(BaseModel):
@@ -67,5 +68,5 @@ class TaggedActivity(BaseModel):
 
 
 class ActivityTaggingResponse(BaseModel):
-    tagged_activities: List[TaggedActivity]
+    tagged_activities: List[ActivityResponse]
     total_count: int

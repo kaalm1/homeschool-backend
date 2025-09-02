@@ -128,14 +128,15 @@ class ActivityService:
 
     def create_tagged_activities(
         self, activities_data: List[TaggedActivity], user_id: int
-    ) -> List[Activity]:
+    ) -> List[ActivityResponse]:
         """Create multiple tagged activities from LLM response."""
         try:
             # Use the repository method to create activities
             activities_data = self.filter_missing_titles(activities_data)
-            return self.activity_repo.create_tagged_activities(
+            activities_created: List[Activity] = self.activity_repo.create_tagged_activities(
                 TaggedActivity.to_db_dict_list(activities_data), user_id
             )
+            return [ActivityResponse.model_validate(activity) for activity in activities_created]
         except Exception as e:
             logger.error(f"Error creating tagged activities for user {user_id}: {e}")
             raise

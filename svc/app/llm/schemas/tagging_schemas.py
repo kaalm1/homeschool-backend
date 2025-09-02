@@ -3,8 +3,8 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
-from svc.app.datatypes.enums import FilterEnum
 from svc.app.datatypes.activity import ActivityResponse
+from svc.app.datatypes.enums import FilterEnum
 
 
 class ActivityTaggingRequest(BaseModel):

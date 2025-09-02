@@ -4,13 +4,12 @@ from fastapi import APIRouter, Depends, Query, status
 
 from svc.app.datatypes.activity import (ActivityCreate, ActivityResponse,
                                         ActivityUpdate)
+from svc.app.datatypes.enums import (ActivityType, AgeGroup, Cost, Duration,
+                                     Frequency, Location, Participants, Season,
+                                     Theme)
 from svc.app.dependencies import (CurrentUser, get_activity_service,
                                   get_current_user)
 from svc.app.services.activity_service import ActivityService
-from svc.app.datatypes.enums import (
-    Cost, Duration, Participants, Location, Season,
-    AgeGroup, Frequency, Theme, ActivityType
-)
 
 router = APIRouter(tags=["activities"])
 
@@ -27,8 +26,9 @@ async def get_activity_filters():
         "age_groups": AgeGroup.to_frontend(),
         "frequency": Frequency.to_frontend(),
         "themes": Theme.to_frontend(),
-        "activity_types": ActivityType.to_frontend()
+        "activity_types": ActivityType.to_frontend(),
     }
+
 
 @router.get("", response_model=List[ActivityResponse], status_code=status.HTTP_200_OK)
 async def get_activities(

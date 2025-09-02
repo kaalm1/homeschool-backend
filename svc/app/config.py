@@ -88,6 +88,8 @@ class Settings(BaseSettings):
             "gpt-4",
             "gpt-3.5-turbo",
             "deepseek/deepseek-chat-v3.1:free",
+            "tngtech/deepseek-r1t-chimera:free",
+            "qwen/qwen3-coder:free",
         ]
         if v not in allowed_models:
             raise ValueError(f"LLM model must be one of: {allowed_models}")

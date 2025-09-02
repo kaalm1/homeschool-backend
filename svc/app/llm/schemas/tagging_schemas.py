@@ -42,6 +42,7 @@ class TaggedActivity(BaseModel):
         """Convert TaggedActivity to a dictionary suitable for database insertion."""
         return {
             "title": self.title,
+            "description": self.description,
             "themes": self.themes,
             "activity_types": self.activity_types,
             "costs": self.costs,

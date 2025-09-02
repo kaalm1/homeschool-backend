@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     )
     openai_base_url: Optional[str] = Field(
         default="https://openrouter.ai/api/v1",
-        description="OpenAI Base URL for LLM services",
+        description="OpenAI Base URL for LLM services. Use https://openrouter.ai/models to find models.",
     )
     llm_model: str = Field(
         default="gpt-4o-mini",

@@ -142,13 +142,13 @@ class Location(FilterEnum):
 
 
 class Season(FilterEnum):
-    ALL = ("all", "All Seasons", "year-round")
-    SPRING = ("spring", "Spring", "springtime activity")
-    SUMMER = ("summer", "Summer", "summer activity")
-    FALL = ("fall", "Fall", "autumn activity")
-    WINTER = ("winter", "Winter", "winter activity")
-    RAINY_DAY = ("rainy_day", "Rainy Day", "rainy day activity")
-    SNOWY_DAY = ("snowy_day", "Snowy Day", "snow day activity")
+    ALL = ("all", "Year-round", "year-round")
+    SPRING = ("spring", "🌸", "springtime activity")
+    SUMMER = ("summer", "☀️", "summer activity")
+    FALL = ("fall", "🍂", "autumn activity")
+    WINTER = ("winter", "❄️", "winter activity")
+    RAINY_DAY = ("rainy_day", "🌧️", "rainy day activity")
+    SNOWY_DAY = ("snowy_day", "☃️", "snow day activity")
 
 
 class Frequency(FilterEnum):

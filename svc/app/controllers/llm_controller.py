@@ -39,6 +39,7 @@ async def tag_activities(
         # TODO: Can decide whether to auto save or require user to see it first then save
         #   for now we'll do auto save only
         # TODO: For now kids will be manual, llm auto tagging only works only on a family level
+        # TODO: Check for duplicates, if activity already exists, don't create a new one
         # Save tagged activities to database
         saved_activities = activity_service.create_tagged_activities(
             tagged_activities, current_user.id

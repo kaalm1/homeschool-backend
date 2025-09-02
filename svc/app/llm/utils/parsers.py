@@ -18,5 +18,5 @@ def parse_response_to_json(content: str) -> List[Dict[str, List[str]]]:
         return json.loads(cleaned)
     except json.JSONDecodeError as e:
         raise ValueError(
-            f"Failed to parse response as JSON: {e}\nContent was:\n{cleaned}"
+            f"Failed to parse response as JSON: {e}\nContent was:\n{content}"
         )

@@ -2,9 +2,9 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, status
 
-from ..datatypes.activity import RewardSummary
-from ..dependencies import CurrentUser, get_activity_service
-from ..services.activity_service import ActivityService
+from svc.app.datatypes.activity import RewardSummary
+from svc.app.dependencies import CurrentUser, get_activity_service
+from svc.app.services.activity_service import ActivityService
 
 router = APIRouter(tags=["rewards"])
 

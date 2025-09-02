@@ -22,13 +22,9 @@ def seed_demo():
             db.flush()
             db.add_all(
                 [
-                    Activity(
-                        title="Read 10 minutes", subject="Reading", kid_id=kid1.id
-                    ),
-                    Activity(title="Count to 50", subject="Math", kid_id=kid1.id),
-                    Activity(
-                        title="Leaf hunt outside", subject="Science", kid_id=kid2.id
-                    ),
+                    Activity(title="Read 10 minutes", kid_id=kid1.id),
+                    Activity(title="Count to 50", kid_id=kid1.id),
+                    Activity(title="Leaf hunt outside", kid_id=kid2.id),
                 ]
             )
             db.commit()

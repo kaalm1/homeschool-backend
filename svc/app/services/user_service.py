@@ -1,9 +1,9 @@
-from typing import List, Optional
+from typing import Optional
 
-from ..dal.user_repository import UserRepository
-from ..datatypes.user import UserResponse, UserUpdate, UserWithKidsResponse
-from ..models.user import User
-from ..utils.exceptions import NotFoundError
+from svc.app.dal.user_repository import UserRepository
+from svc.app.datatypes.user import UserResponse, UserUpdate
+from svc.app.models.user import User
+from svc.app.utils.exceptions import NotFoundError
 
 
 class UserService:

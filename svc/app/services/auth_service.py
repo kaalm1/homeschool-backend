@@ -1,16 +1,15 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
-from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from passlib.hash import bcrypt
 
-from ..config import get_settings
-from ..dal.user_repository import UserRepository
-from ..datatypes.auth import LoginRequest, RegisterRequest, TokenResponse
-from ..models.user import User
-from ..utils.exceptions import AuthenticationError, ValidationError
+from svc.app.config import get_settings
+from svc.app.dal.user_repository import UserRepository
+from svc.app.datatypes.auth import LoginRequest, RegisterRequest, TokenResponse
+from svc.app.models.user import User
+from svc.app.utils.exceptions import AuthenticationError, ValidationError
 
 security = HTTPBearer(auto_error=False)
 

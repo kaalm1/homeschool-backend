@@ -3,7 +3,7 @@ from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
 from sqlalchemy import delete, func, select, update
 from sqlalchemy.orm import Session
 
-from ..database import Base
+from svc.app.database import Base
 
 ModelType = TypeVar("ModelType", bound=Base)
 

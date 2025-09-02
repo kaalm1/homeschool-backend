@@ -2,10 +2,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from ..datatypes.auth import LoginRequest, RegisterRequest, TokenResponse
-from ..datatypes.user import UserResponse
-from ..dependencies import CurrentUser, get_auth_service
-from ..services.auth_service import AuthService
+from svc.app.datatypes.auth import LoginRequest, RegisterRequest, TokenResponse
+from svc.app.datatypes.user import UserResponse
+from svc.app.dependencies import CurrentUser, get_auth_service
+from svc.app.services.auth_service import AuthService
 
 router = APIRouter(tags=["authentication"])
 

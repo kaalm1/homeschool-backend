@@ -56,7 +56,9 @@ def create_app() -> FastAPI:
         activity_controller.router, prefix="/api/v1/activities", tags=["Activities"]
     )
     app.include_router(
-        week_activity_controller.router, prefix="/api/v1/week-activities", tags=["WeekActivities"]
+        week_activity_controller.router,
+        prefix="/api/v1/week-activities",
+        tags=["WeekActivities"],
     )
     app.include_router(llm_controller.router, prefix="/api/v1/llm", tags=["LLM"])
     app.include_router(

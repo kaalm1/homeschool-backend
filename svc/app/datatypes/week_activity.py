@@ -7,10 +7,15 @@ from pydantic import BaseModel, Field, validator
 class WeekActivityCreate(BaseModel):
     """Create a new week activity assignment."""
 
-    user_id: int = Field(..., description="ID of the user (kid)")
     activity_id: int = Field(..., description="ID of the activity")
     activity_date: Optional[date] = Field(
         default=None, description="Date for the week (defaults to current date)"
+    )
+    activity_week: Optional[int] = Field(
+        default=None, description="Week of the activity"
+    )
+    activity_year: Optional[int] = Field(
+        default=None, description="Year of the activity"
     )
 
 

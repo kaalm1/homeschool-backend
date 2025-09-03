@@ -6,13 +6,10 @@ from fastapi import HTTPException, status
 from svc.app.dal.activity_repository import ActivityRepository
 from svc.app.dal.user_repository import UserRepository
 from svc.app.dal.week_activity_repository import WeekActivityRepository
-from svc.app.datatypes.week_activity import (
-    BulkWeekActivityCreate,
-    WeekActivityCreate,
-    WeekActivityResponse,
-    WeekActivityUpdate,
-    WeekSummary,
-)
+from svc.app.datatypes.week_activity import (BulkWeekActivityCreate,
+                                             WeekActivityCreate,
+                                             WeekActivityResponse,
+                                             WeekActivityUpdate, WeekSummary)
 
 
 class WeekActivityService:
@@ -27,17 +24,9 @@ class WeekActivityService:
         self.activity_repo = activity_repo
 
     def create_week_activity(
-        self, week_activity_data: WeekActivityCreate
+        self, user_id: int, week_activity_data: WeekActivityCreate
     ) -> WeekActivityResponse:
         """Create a new week activity assignment with validation."""
-        # Validate that user exists
-        user = self.user_repo.get(week_activity_data.user_id)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"User with id {week_activity_data.user_id} not found",
-            )
-
         # Validate that activity exists
         activity = self.activity_repo.get(week_activity_data.activity_id)
         if not activity:
@@ -48,7 +37,7 @@ class WeekActivityService:
 
         try:
             week_activity = self.week_activity_repo.create_week_activity(
-                week_activity_data
+                user_id, week_activity_data
             )
             return self._convert_to_response(week_activity)
         except Exception as e:
@@ -230,11 +219,6 @@ class WeekActivityService:
             activity_description=(
                 week_activity.activity.description
                 if hasattr(week_activity, "activity") and week_activity.activity
-                else None
-            ),
-            user_name=(
-                week_activity.user.name
-                if hasattr(week_activity, "user") and week_activity.user
                 else None
             ),
         )

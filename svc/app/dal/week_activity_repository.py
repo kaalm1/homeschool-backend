@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import List, Optional, Sequence
 
 from sqlalchemy import and_, func, select
@@ -20,13 +20,24 @@ class WeekActivityRepository(BaseRepository[WeekActivity]):
         super().__init__(db, WeekActivity)
 
     def create_week_activity(
-        self, week_activity_data: WeekActivityCreate
+        self, user_id: int, week_activity_data: WeekActivityCreate
     ) -> WeekActivity:
         """Create a new week activity assignment."""
-        target_date = week_activity_data.date or date.today()
+        if week_activity_data.activity_date:
+            target_date = week_activity_data.date
+
+        elif week_activity_data.activity_year and week_activity_data.activity_week:
+            # ISO weeks start on Monday; this gets the Monday of the given ISO week
+            target_date = datetime.strptime(
+                f"{week_activity_data.activity_year}-W{week_activity_data.activity_week:02d}-1",
+                "%G-W%V-%u",
+            ).date()
+
+        else:
+            target_date = date.today()
 
         week_activity = WeekActivity.assign(
-            user_id=week_activity_data.user_id,
+            user_id=user_id,
             activity_id=week_activity_data.activity_id,
             date_obj=target_date,
         )
@@ -139,7 +150,6 @@ class WeekActivityRepository(BaseRepository[WeekActivity]):
                 notes=wa.notes,
                 activity_title=wa.activity.title if wa.activity else None,
                 activity_description=wa.activity.description if wa.activity else None,
-                user_name=wa.user.name if wa.user else None,
             )
             for wa in activities
         ]

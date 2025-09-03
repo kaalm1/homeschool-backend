@@ -7,7 +7,7 @@ from scripts.seed_data import seed_demo_data
 from svc.app.config import get_settings
 from svc.app.controllers import (activity_controller, auth_controller,
                                  kid_controller, llm_controller,
-                                 reward_controller)
+                                 reward_controller, week_activity_controller)
 from svc.app.database import create_tables
 from svc.app.utils.exceptions import add_exception_handlers
 
@@ -54,6 +54,9 @@ def create_app() -> FastAPI:
     app.include_router(kid_controller.router, prefix="/api/v1/kids", tags=["Kids"])
     app.include_router(
         activity_controller.router, prefix="/api/v1/activities", tags=["Activities"]
+    )
+    app.include_router(
+        week_activity_controller.router, prefix="/api/v1/week-activities", tags=["WeekActivities"]
     )
     app.include_router(llm_controller.router, prefix="/api/v1/llm", tags=["LLM"])
     app.include_router(

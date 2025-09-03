@@ -1,0 +1,89 @@
+from datetime import date, datetime
+from typing import Optional
+
+from pydantic import BaseModel, Field, validator
+
+
+class WeekActivityCreate(BaseModel):
+    """Create a new week activity assignment."""
+
+    user_id: int = Field(..., description="ID of the user (kid)")
+    activity_id: int = Field(..., description="ID of the activity")
+    activity_date: Optional[date] = Field(
+        default=None, description="Date for the week (defaults to current date)"
+    )
+
+
+class WeekActivityUpdate(BaseModel):
+    """Update completion status and rating for a week activity."""
+
+    completed: Optional[bool] = Field(
+        default=None, description="Whether the activity was completed"
+    )
+    rating: Optional[int] = Field(
+        default=None, ge=1, le=5, description="Rating from 1-5 stars"
+    )
+    notes: Optional[str] = Field(
+        default=None, max_length=500, description="Optional notes about the experience"
+    )
+
+    @validator("rating")
+    def validate_rating(cls, v):
+        if v is not None and not (1 <= v <= 5):
+            raise ValueError("Rating must be between 1 and 5")
+        return v
+
+
+class WeekActivityResponse(BaseModel):
+    """Response model for week activity."""
+
+    id: int
+    user_id: int
+    activity_id: int
+    year: int
+    week: int
+    completed: bool
+    completed_at: Optional[datetime]
+    rating: Optional[int]
+    notes: Optional[str]
+
+    # Include related activity and user info
+    activity_title: Optional[str] = None
+    activity_description: Optional[str] = None
+    user_name: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class WeekSummary(BaseModel):
+    """Summary of activities for a specific week."""
+
+    year: int
+    week: int
+    start_date: date
+    end_date: date
+    activities: list[WeekActivityResponse]
+
+    # Summary stats
+    total_activities: int
+    completed_activities: int
+    completion_rate: float
+    average_rating: Optional[float]
+
+
+class WeekRange(BaseModel):
+    """Query parameters for week range."""
+
+    year: Optional[int] = Field(
+        default=None, description="Year (defaults to current year)"
+    )
+    week: Optional[int] = Field(
+        default=None, description="Week number (defaults to current week)"
+    )
+
+
+class BulkWeekActivityCreate(BaseModel):
+    """Create multiple week activities at once."""
+
+    assignments: list[WeekActivityCreate]

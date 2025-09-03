@@ -48,7 +48,9 @@ class ActivityBase(BaseModel):
     )
     frequency: Optional[List[Frequency]] = Field(None, description="Activity frequency")
     themes: Optional[List[Theme]] = Field(None, description="Activity theme")
-    activity_types: Optional[List[ActivityType]] = Field(None, description="Activity type")
+    activity_types: Optional[List[ActivityType]] = Field(
+        None, description="Activity type"
+    )
 
 
 class ActivityCreate(ActivityBase):

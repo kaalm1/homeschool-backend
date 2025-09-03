@@ -8,6 +8,7 @@ from .base import BaseModel
 if TYPE_CHECKING:
     from .activity import Activity
     from .kid import Kid
+    from .week_activity import WeekActivity
 
 
 class User(BaseModel):

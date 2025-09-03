@@ -43,6 +43,8 @@ class Activity(BaseModel):
     )
     website: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
+    # TODO: Add location and possibly coordinates
+
     # Foreign key to User (family) - every activity belongs to a family
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
@@ -105,4 +107,4 @@ class Activity(BaseModel):
         return self.assigned_to_kid.name if self.assigned_to_kid else "Unknown Kid"
 
     def __repr__(self) -> str:
-        return f"<Activity(id={self.id}, title='{self.title}', assigned_to_kid_id={self.assigned_to_kid_id})>"
+        return f"<Activity(id={self.id}, title='{self.title}')>"

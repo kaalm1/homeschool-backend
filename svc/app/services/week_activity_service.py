@@ -222,3 +222,6 @@ class WeekActivityService:
                 else None
             ),
         )
+
+    def create_weekly_activities_llm(self):
+        pass

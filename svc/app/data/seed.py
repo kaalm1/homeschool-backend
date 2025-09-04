@@ -21,6 +21,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.WEEKLY],
         themes=[Theme.NATURE, Theme.FITNESS, Theme.SOCIAL],
         activity_types=[ActivityType.PARK, ActivityType.OUTDOOR, ActivityType.SPORTS],
+        primary_type=ActivityType.PARK,
+        primary_theme=Theme.NATURE,
     ),
     Activity(
         title="Family board game night",
@@ -37,6 +39,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.WEEKLY],
         themes=[Theme.CREATIVE, Theme.SOCIAL],
         activity_types=[ActivityType.BOARD_GAMES, ActivityType.INDOOR, ActivityType.GAMES],
+        primary_type=ActivityType.BOARD_GAMES,
+        primary_theme=Theme.SOCIAL,
     ),
     Activity(
         title="Nature walk",
@@ -53,6 +57,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.MULTIPLE_TIMES_WEEK],
         themes=[Theme.NATURE, Theme.FITNESS],
         activity_types=[ActivityType.HIKING, ActivityType.OUTDOOR],
+        primary_type=ActivityType.HIKING,
+        primary_theme=Theme.NATURE,
     ),
     Activity(
         title="Home art & crafts",
@@ -69,6 +75,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.MULTIPLE_TIMES_WEEK],
         themes=[Theme.CREATIVE],
         activity_types=[ActivityType.ARTS_CRAFTS, ActivityType.INDOOR],
+        primary_type=ActivityType.ARTS_CRAFTS,
+        primary_theme=Theme.CREATIVE,
     ),
     Activity(
         title="Family cooking",
@@ -85,6 +93,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.WEEKLY],
         themes=[Theme.FOOD_DRINK, Theme.CREATIVE],
         activity_types=[ActivityType.CLASSES],
+        primary_type=ActivityType.CLASSES,
+        primary_theme=Theme.FOOD_DRINK,
     ),
     Activity(
         title="Story time",
@@ -101,6 +111,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.MULTIPLE_TIMES_WEEK],
         themes=[Theme.EDUCATIONAL],
         activity_types=[ActivityType.STORYTELLING, ActivityType.INDOOR],
+        primary_type=ActivityType.STORYTELLING,
+        primary_theme=Theme.EDUCATIONAL,
     ),
     Activity(
         title="Puzzle challenge",
@@ -117,6 +129,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.MULTIPLE_TIMES_WEEK],
         themes=[Theme.MINDFULNESS, Theme.CREATIVE],
         activity_types=[ActivityType.PUZZLES, ActivityType.INDOOR],
+        primary_type=ActivityType.PUZZLES,
+        primary_theme=Theme.CREATIVE,
     ),
     Activity(
         title="Backyard sports",
@@ -133,6 +147,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.MULTIPLE_TIMES_WEEK],
         themes=[Theme.FITNESS, Theme.NATURE],
         activity_types=[ActivityType.SPORTS, ActivityType.OUTDOOR],
+        primary_type=ActivityType.OUTDOOR,
+        primary_theme=Theme.FITNESS,
     ),
     Activity(
         title="Visit a local library",
@@ -149,6 +165,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.MONTHLY],
         themes=[Theme.EDUCATIONAL, Theme.CREATIVE],
         activity_types=[ActivityType.CLASSES, ActivityType.INDOOR],
+        primary_type=ActivityType.INDOOR,
+        primary_theme=Theme.EDUCATIONAL,
     ),
     Activity(
         title="Nature scavenger hunt",
@@ -165,6 +183,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.WEEKLY],
         themes=[Theme.NATURE, Theme.ADVENTURE],
         activity_types=[ActivityType.HIKING, ActivityType.OUTDOOR],
+        primary_type=ActivityType.OUTDOOR,
+        primary_theme=Theme.NATURE,
     ),
     Activity(
         title="Dance party",
@@ -181,6 +201,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.MULTIPLE_TIMES_WEEK],
         themes=[Theme.FITNESS, Theme.CREATIVE],
         activity_types=[ActivityType.DANCE, ActivityType.INDOOR],
+        primary_type=ActivityType.DANCE,
+        primary_theme=Theme.FITNESS,
     ),
     Activity(
         title="Garden planting",
@@ -197,6 +219,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.SEASONAL],
         themes=[Theme.NATURE, Theme.FITNESS],
         activity_types=[ActivityType.GARDENING, ActivityType.OUTDOOR],
+        primary_type=ActivityType.GARDENING,
+        primary_theme=Theme.NATURE,
     ),
     Activity(
         title="Volunteer together",
@@ -213,6 +237,8 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.SEVERAL_TIMES_YEAR],
         themes=[Theme.SOCIAL],
         activity_types=[ActivityType.VOLUNTEERING],
+        primary_type=ActivityType.VOLUNTEERING,
+        primary_theme=Theme.SOCIAL,
     ),
     Activity(
         title="Stargazing night",
@@ -229,5 +255,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         frequency=[Frequency.SEASONAL],
         themes=[Theme.NATURE, Theme.MINDFULNESS],
         activity_types=[ActivityType.OUTDOOR, ActivityType.SCIENCE_TECH],
+        primary_type=ActivityType.OUTDOOR,
+        primary_theme=Theme.MINDFULNESS,
     ),
 ]

@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: eed7bdb102cf
+Revision ID: eb6d15dd6e63
 Revises: 
-Create Date: 2025-09-03 21:02:32.380804
+Create Date: 2025-09-04 12:42:05.076521
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'eed7bdb102cf'
+revision: str = 'eb6d15dd6e63'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -23,14 +23,29 @@ def upgrade() -> None:
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(length=255), nullable=False),
-    sa.Column('password_hash', sa.String(length=255), nullable=False),
+    sa.Column('password_hash', sa.String(length=255), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=False),
+    sa.Column('google_id', sa.String(length=100), nullable=True),
+    sa.Column('google_avatar_url', sa.String(length=500), nullable=True),
+    sa.Column('address', sa.Text(), nullable=True),
+    sa.Column('city', sa.String(length=100), nullable=True),
+    sa.Column('state', sa.String(length=50), nullable=True),
+    sa.Column('zip_code', sa.String(length=20), nullable=True),
+    sa.Column('country', sa.String(length=50), nullable=False),
+    sa.Column('latitude', sa.Float(), nullable=True),
+    sa.Column('longitude', sa.Float(), nullable=True),
+    sa.Column('location_updated_at', sa.DateTime(), nullable=True),
+    sa.Column('location_accuracy', sa.Float(), nullable=True),
+    sa.Column('last_login', sa.DateTime(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_users_city'), 'users', ['city'], unique=False)
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
+    op.create_index(op.f('ix_users_google_id'), 'users', ['google_id'], unique=True)
     op.create_index(op.f('ix_users_id'), 'users', ['id'], unique=False)
+    op.create_index(op.f('ix_users_zip_code'), 'users', ['zip_code'], unique=False)
     op.create_table('kids',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
@@ -50,6 +65,8 @@ def upgrade() -> None:
     sa.Column('done', sa.Boolean(), nullable=False),
     sa.Column('price', sa.Float(), nullable=True),
     sa.Column('price_verified', sa.Boolean(), nullable=True),
+    sa.Column('location', sa.String(), nullable=True),
+    sa.Column('location_verified', sa.Boolean(), nullable=True),
     sa.Column('primary_type', postgresql.ENUM('AMUSEMENT_PARK', 'ARTS_CRAFTS', 'BOARD_GAMES', 'CLASSES', 'DANCE', 'FESTIVAL', 'GAMES', 'GARDENING', 'HIKING', 'INDOOR', 'MUSIC', 'OUTDOOR', 'PARK', 'PUZZLES', 'SCIENCE_TECH', 'STORYTELLING', 'TRAVEL', 'VIDEO_GAMES', 'VOLUNTEERING', 'SPORTS', 'ZOO_AQUARIUM', name='activity_type_enum'), nullable=True),
     sa.Column('primary_theme', postgresql.ENUM('ADVENTURE', 'CREATIVE', 'EDUCATIONAL', 'FITNESS', 'FOOD_DRINK', 'FESTIVE', 'MINDFULNESS', 'NATURE', 'RELAXATION', 'SOCIAL', name='theme_enum'), nullable=True),
     sa.Column('website', sa.String(), nullable=True),
@@ -61,7 +78,7 @@ def upgrade() -> None:
     sa.Column('locations', sa.ARRAY(postgresql.ENUM('HOME_INDOOR', 'HOME_OUTDOOR', 'LOCAL', 'REGIONAL', 'TRAVEL', name='location_enum')), nullable=True),
     sa.Column('seasons', sa.ARRAY(postgresql.ENUM('ALL', 'SPRING', 'SUMMER', 'FALL', 'WINTER', 'RAINY_DAY', 'SNOWY_DAY', name='season_enum')), nullable=True),
     sa.Column('age_groups', sa.ARRAY(postgresql.ENUM('TODDLER', 'CHILD', 'TWEEN', 'TEEN', 'ADULT', 'FAMILY', name='age_group_enum')), nullable=True),
-    sa.Column('frequency', sa.ARRAY(postgresql.ENUM('DAILY', 'WEEKLY', 'MONTHLY', 'ANNUALLY', 'SEASONAL', name='frequency_enum')), nullable=True),
+    sa.Column('frequency', sa.ARRAY(postgresql.ENUM('DAILY', 'MULTIPLE_TIMES_WEEK', 'WEEKLY', 'BIWEEKLY', 'MONTHLY', 'SEVERAL_TIMES_YEAR', 'SEASONAL', 'ANNUALLY', name='frequency_enum')), nullable=True),
     sa.Column('themes', sa.ARRAY(postgresql.ENUM('ADVENTURE', 'CREATIVE', 'EDUCATIONAL', 'FITNESS', 'FOOD_DRINK', 'FESTIVE', 'MINDFULNESS', 'NATURE', 'RELAXATION', 'SOCIAL', name='theme_enum')), nullable=True),
     sa.Column('activity_types', sa.ARRAY(postgresql.ENUM('AMUSEMENT_PARK', 'ARTS_CRAFTS', 'BOARD_GAMES', 'CLASSES', 'DANCE', 'FESTIVAL', 'GAMES', 'GARDENING', 'HIKING', 'INDOOR', 'MUSIC', 'OUTDOOR', 'PARK', 'PUZZLES', 'SCIENCE_TECH', 'STORYTELLING', 'TRAVEL', 'VIDEO_GAMES', 'VOLUNTEERING', 'SPORTS', 'ZOO_AQUARIUM', name='activity_type_enum')), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
@@ -107,7 +124,10 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_kids_parent_id'), table_name='kids')
     op.drop_index(op.f('ix_kids_id'), table_name='kids')
     op.drop_table('kids')
+    op.drop_index(op.f('ix_users_zip_code'), table_name='users')
     op.drop_index(op.f('ix_users_id'), table_name='users')
+    op.drop_index(op.f('ix_users_google_id'), table_name='users')
     op.drop_index(op.f('ix_users_email'), table_name='users')
+    op.drop_index(op.f('ix_users_city'), table_name='users')
     op.drop_table('users')
     # ### end Alembic commands ###

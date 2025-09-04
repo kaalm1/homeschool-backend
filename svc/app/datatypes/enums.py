@@ -69,7 +69,7 @@ class FilterEnum(str, Enum):
         converted_data = {}
 
         # Map of field names to their corresponding enum classes
-        field_enum_map = {
+        field_enum_map_list = {
             "themes": Theme,
             "activity_types": ActivityType,
             "costs": Cost,
@@ -81,7 +81,7 @@ class FilterEnum(str, Enum):
             "frequency": Frequency,
         }
 
-        for field_name, enum_class in field_enum_map.items():
+        for field_name, enum_class in field_enum_map_list.items():
             if field_name in tagged_data:
                 converted_data[field_name] = enum_class.from_ai_safe(
                     tagged_data[field_name]
@@ -89,9 +89,23 @@ class FilterEnum(str, Enum):
             else:
                 converted_data[field_name] = []
 
+        field_enum_map_str = {
+            "primary_type": ActivityType,
+            "primary_theme": Theme,
+        }
+
+        for field_name, enum_class in field_enum_map_str.items():
+            if field_name in tagged_data:
+                 db_safe_value = enum_class.from_ai_safe(
+                    [tagged_data[field_name]]
+                )
+                 converted_data[field_name] = db_safe_value[0] if db_safe_value else None
+            else:
+                converted_data[field_name] = None
+
         # Copy non-enum fields as-is
         for key, value in tagged_data.items():
-            if key not in field_enum_map:
+            if key not in field_enum_map_list and key not in field_enum_map_str:
                 converted_data[key] = value
 
         return converted_data

@@ -22,6 +22,11 @@ def build_activity_tagging_prompt(
             f"- primary_type (string): Must be a single value from {enums['activity_types']}"
         )
 
+    if "themes" in enums:
+        enum_lines.append(
+            f"- primary_theme (string): Must be a single value from {enums['themes']}"
+        )
+
     enum_text = "\n".join(enum_lines)
 
     return f"""

@@ -41,6 +41,9 @@ class Activity(BaseModel):
     primary_type: Mapped[Optional[ActivityType]] = mapped_column(
         activity_type_enum, nullable=True
     )
+    primary_theme: Mapped[Optional[Theme]] = mapped_column(
+        theme_enum, nullable=True
+    )
     website: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
     # TODO: Add location and possibly coordinates

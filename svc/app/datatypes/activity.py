@@ -34,6 +34,8 @@ class ActivityTypeResponse(BaseModel):
 class ActivityBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=200, description="Activity title")
     description: Optional[str] = Field(None, description="Activity description")
+    primary_type: Optional[ActivityType] = Field(None, description="Primary activity type")
+    primary_theme: Optional[Theme] = Field(None, description="Primary theme response")
 
     # Enum arrays
     costs: Optional[List[Cost]] = Field(None, description="Activity costs")

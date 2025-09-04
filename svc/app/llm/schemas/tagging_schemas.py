@@ -16,6 +16,8 @@ class TaggedActivity(BaseModel):
     description: Optional[str] = None
     price: Optional[float] = None
     price_verified: Optional[bool] = None
+    primary_type: Optional[str] = None
+    primary_theme: Optional[str] = None
     website: Optional[str] = None
     themes: List[str] = []
     activity_types: List[str] = []
@@ -43,6 +45,10 @@ class TaggedActivity(BaseModel):
         return {
             "title": self.title,
             "description": self.description,
+            "price": self.price,
+            "price_verified": self.price_verified,
+            "primary_type": self.primary_type,
+            "primary_theme": self.primary_theme,
             "themes": self.themes,
             "activity_types": self.activity_types,
             "costs": self.costs,
@@ -74,6 +80,8 @@ class TaggedActivity(BaseModel):
             "seasons",
             "age_groups",
             "frequency",
+            "primary_type",
+            "primary_theme",
         ]:
             if key in converted_data:
                 setattr(self, key, converted_data[key])

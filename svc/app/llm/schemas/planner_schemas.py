@@ -1,6 +1,6 @@
 import json
-from typing import List, Optional
 from datetime import date
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -11,6 +11,7 @@ class ActivityPlannerRequest(BaseModel):
     current_date: Optional[date] = Field(
         default=None, description="Date for the week (defaults to current date)"
     )
+
 
 class PlannedActivity(BaseModel):
     activity_id: int
@@ -25,4 +26,3 @@ class PlannedActivity(BaseModel):
     def from_json(cls, content: list) -> List["TaggedActivity"]:
         """Parse a JSON string into a list of TaggedActivity objects."""
         return [cls(**item) for item in content]
-

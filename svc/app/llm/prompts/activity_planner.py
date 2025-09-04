@@ -1,6 +1,5 @@
 from typing import List
 
-
 ACTIVITY_PLANNER_SYSTEM_PROMPT = """You are a Family Weekly Activity Planner AI.
 
 Your role: create a general weekly set of activities (not day-by-day) for a family using ONLY the provided activity database.
@@ -48,6 +47,7 @@ Output JSON schema (conceptual):
 }
 Return ONLY JSON, no extra commentary.
 """
+
 
 def build_activity_planner_prompt(
     family: dict,

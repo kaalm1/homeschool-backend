@@ -4,17 +4,9 @@ from sqlalchemy import ARRAY, Boolean, Float, ForeignKey, String
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from svc.app.datatypes.enums import (
-    ActivityType,
-    AgeGroup,
-    Cost,
-    Duration,
-    Frequency,
-    Location,
-    Participants,
-    Season,
-    Theme,
-)
+from svc.app.datatypes.enums import (ActivityType, AgeGroup, Cost, Duration,
+                                     Frequency, Location, Participants, Season,
+                                     Theme)
 
 from .base import BaseModel
 

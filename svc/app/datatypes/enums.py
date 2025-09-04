@@ -96,10 +96,8 @@ class FilterEnum(str, Enum):
 
         for field_name, enum_class in field_enum_map_str.items():
             if field_name in tagged_data:
-                 db_safe_value = enum_class.from_ai_safe(
-                    [tagged_data[field_name]]
-                )
-                 converted_data[field_name] = db_safe_value[0] if db_safe_value else None
+                db_safe_value = enum_class.from_ai_safe([tagged_data[field_name]])
+                converted_data[field_name] = db_safe_value[0] if db_safe_value else None
             else:
                 converted_data[field_name] = None
 

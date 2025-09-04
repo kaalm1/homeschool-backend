@@ -1,7 +1,7 @@
-from typing import TYPE_CHECKING, List, Optional
 from datetime import datetime
+from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import String, Float, DateTime, Text
+from sqlalchemy import DateTime, Float, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseModel

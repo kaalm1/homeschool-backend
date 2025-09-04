@@ -1,8 +1,8 @@
 from typing import List
-from svc.app.datatypes.enums import (
-    ActivityType, Theme, Cost, Duration, Participants,
-    Location, Season, AgeGroup, Frequency
-)
+
+from svc.app.datatypes.enums import (ActivityType, AgeGroup, Cost, Duration,
+                                     Frequency, Location, Participants, Season,
+                                     Theme)
 from svc.app.models.activity import Activity
 
 GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
@@ -38,7 +38,11 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         age_groups=[AgeGroup.FAMILY],
         frequency=[Frequency.WEEKLY],
         themes=[Theme.CREATIVE, Theme.SOCIAL],
-        activity_types=[ActivityType.BOARD_GAMES, ActivityType.INDOOR, ActivityType.GAMES],
+        activity_types=[
+            ActivityType.BOARD_GAMES,
+            ActivityType.INDOOR,
+            ActivityType.GAMES,
+        ],
         primary_type=ActivityType.BOARD_GAMES,
         primary_theme=Theme.SOCIAL,
     ),

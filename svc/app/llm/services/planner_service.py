@@ -4,10 +4,11 @@ from typing import Any, Dict, List
 
 from svc.app.config import settings
 from svc.app.llm.client import llm_client
-from svc.app.llm.prompts.activity_planner import build_activity_planner_prompt, ACTIVITY_PLANNER_SYSTEM_PROMPT
+from svc.app.llm.prompts.activity_planner import (
+    ACTIVITY_PLANNER_SYSTEM_PROMPT, build_activity_planner_prompt)
+from svc.app.llm.schemas.planner_schemas import PlannedActivity
 from svc.app.llm.utils.parsers import parse_response_to_json
 from svc.app.utils.exceptions import LLMProcessingError
-from svc.app.llm.schemas.planner_schemas import PlannedActivity
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +51,9 @@ class ActivityPlannerService:
                 if not isinstance(planned_activities, list):
                     raise LLMProcessingError("LLM response is not a JSON array")
 
-                logger.info(f"Successfully planned {len(planned_activities)} activities")
+                logger.info(
+                    f"Successfully planned {len(planned_activities)} activities"
+                )
                 return planned_activities
 
             except json.JSONDecodeError as e:
@@ -65,9 +68,7 @@ class ActivityPlannerService:
                 if attempt == self.max_retries:
                     raise LLMProcessingError(f"LLM tagging failed: {str(e)}")
 
-    def _validate_planned_activities(
-            self, activities: List[Dict]
-    ):
+    def _validate_planned_activities(self, activities: List[Dict]):
         """Validate and clean the structure of tagged activities against enum definitions"""
         validated = []
 
@@ -75,10 +76,11 @@ class ActivityPlannerService:
             if isinstance(item, int):
                 validated.append(item)
             else:
-                logger.warning(f"Removed non-integer value '{item}' (type: {type(item).__name__}) at index {i}")
+                logger.warning(
+                    f"Removed non-integer value '{item}' (type: {type(item).__name__}) at index {i}"
+                )
 
         return validated
-
 
 
 activity_planner_service = ActivityPlannerService()

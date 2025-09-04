@@ -1,28 +1,24 @@
 import logging
-from typing import Annotated, List
 from datetime import date
+from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from svc.app.dependencies import (
-    CurrentUser,
-    get_activity_service,
-    get_week_activity_service,
-    get_current_user,
-)
-from svc.app.llm.schemas.tagging_schemas import (
-    ActivityTaggingRequest,
-    ActivityTaggingResponse,
-    TaggedActivity,
-)
-from svc.app.datatypes.week_activity import WeekActivityResponse
-from svc.app.llm.services.tagging_service import activity_tagging_service
+from svc.app.datatypes.week_activity import (BulkWeekActivityCreate,
+                                             WeekActivityCreate,
+                                             WeekActivityResponse)
+from svc.app.dependencies import (CurrentUser, get_activity_service,
+                                  get_current_user, get_week_activity_service)
+from svc.app.llm.schemas.planner_schemas import (ActivityPlannerRequest,
+                                                 PlannedActivity)
+from svc.app.llm.schemas.tagging_schemas import (ActivityTaggingRequest,
+                                                 ActivityTaggingResponse,
+                                                 TaggedActivity)
 from svc.app.llm.services.planner_service import activity_planner_service
-from svc.app.llm.schemas.planner_schemas import PlannedActivity, ActivityPlannerRequest
+from svc.app.llm.services.tagging_service import activity_tagging_service
 from svc.app.services.activity_service import ActivityService
-from svc.app.utils.exceptions import LLMProcessingError
 from svc.app.services.week_activity_service import WeekActivityService
-from svc.app.datatypes.week_activity import BulkWeekActivityCreate, WeekActivityCreate
+from svc.app.utils.exceptions import LLMProcessingError
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/llm", tags=["LLM"])

@@ -166,11 +166,14 @@ class Season(FilterEnum):
 
 
 class Frequency(FilterEnum):
-    DAILY = ("daily", "Daily", "daily activity")
-    WEEKLY = ("weekly", "Weekly", "weekly activity")
-    MONTHLY = ("monthly", "Monthly", "monthly activity")
-    ANNUALLY = ("annually", "Annually", "annually activity")
-    SEASONAL = ("seasonal", "Seasonal", "seasonal activity")
+    DAILY = ("daily", "Daily", "every day")
+    MULTIPLE_TIMES_WEEK = ("multi_week", "Often", "multiple per week")
+    WEEKLY = ("weekly", "Weekly", "once a week")
+    BIWEEKLY = ("biweekly", "Bi-weekly", "once every two weeks")
+    MONTHLY = ("monthly", "Monthly", "once a month")
+    SEVERAL_TIMES_YEAR = ("few_year", "Occasional", "several times a year")
+    SEASONAL = ("seasonal", "Seasonal", "season-based")
+    ANNUALLY = ("annually", "Yearly", "once a year")
 
 
 class Theme(FilterEnum):

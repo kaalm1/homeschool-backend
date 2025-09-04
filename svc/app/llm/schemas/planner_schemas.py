@@ -1,7 +1,16 @@
 import json
 from typing import List, Optional
+from datetime import date
 
 from pydantic import BaseModel, Field
+
+
+# TODO: Update this
+class ActivityPlannerRequest(BaseModel):
+    data: str
+    current_date: Optional[date] = Field(
+        default=None, description="Date for the week (defaults to current date)"
+    )
 
 class PlannedActivity(BaseModel):
     activity_id: int

@@ -164,18 +164,18 @@ class WeekActivityService:
         return result
 
     def bulk_create_week_activities(
-        self, bulk_data: BulkWeekActivityCreate
+        self, user_id: int, bulk_data: BulkWeekActivityCreate
     ) -> List[WeekActivityResponse]:
         """Create multiple week activities at once."""
         # Validate all assignments first
-        for assignment in bulk_data.assignments:
-            user = self.user_repo.get(assignment.user_id)
-            if not user:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"User with id {assignment.user_id} not found",
-                )
+        user = self.user_repo.get(user_id)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User with id {user_id} not found",
+            )
 
+        for assignment in bulk_data.assignments:
             activity = self.activity_repo.get(assignment.activity_id)
             if not activity:
                 raise HTTPException(
@@ -185,7 +185,7 @@ class WeekActivityService:
 
         try:
             week_activities = self.week_activity_repo.bulk_create_week_activities(
-                bulk_data.assignments
+                user_id, bulk_data.assignments
             )
             return [self._convert_to_response(wa) for wa in week_activities]
         except Exception as e:

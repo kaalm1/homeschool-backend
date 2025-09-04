@@ -19,10 +19,10 @@ class ActivityPlannerService:
         self.max_retries = settings.llm_max_retries
 
     async def plan_weekly_activities(
-        self, activities: str, enums: Dict[str, Any]
+        self, family: dict, context: dict, activities: List[dict]
     ) -> List[PlannedActivity]:
         """Tag activities using LLM"""
-        prompt = build_activity_planner_prompt(activities, enums)
+        prompt = build_activity_planner_prompt(family, context, activities)
         logger.info(prompt)
 
         for attempt in range(self.max_retries + 1):

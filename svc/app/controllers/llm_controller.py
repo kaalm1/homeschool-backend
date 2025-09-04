@@ -1,16 +1,28 @@
 import logging
 from typing import Annotated, List
+from datetime import date
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from svc.app.dependencies import (CurrentUser, get_activity_service,
-                                  get_current_user)
-from svc.app.llm.schemas.tagging_schemas import (ActivityTaggingRequest,
-                                                 ActivityTaggingResponse,
-                                                 TaggedActivity)
+from svc.app.dependencies import (
+    CurrentUser,
+    get_activity_service,
+    get_week_activity_service,
+    get_current_user,
+)
+from svc.app.llm.schemas.tagging_schemas import (
+    ActivityTaggingRequest,
+    ActivityTaggingResponse,
+    TaggedActivity,
+)
+from svc.app.datatypes.week_activity import WeekActivityResponse
 from svc.app.llm.services.tagging_service import activity_tagging_service
+from svc.app.llm.services.planner_service import activity_planner_service
+from svc.app.llm.schemas.planner_schemas import PlannedActivity, ActivityPlannerRequest
 from svc.app.services.activity_service import ActivityService
 from svc.app.utils.exceptions import LLMProcessingError
+from svc.app.services.week_activity_service import WeekActivityService
+from svc.app.datatypes.week_activity import BulkWeekActivityCreate, WeekActivityCreate
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/llm", tags=["LLM"])
@@ -52,6 +64,45 @@ async def tag_activities(
 
         return ActivityTaggingResponse(
             tagged_activities=saved_activities, total_count=len(tagged_activities)
+        )
+
+    except LLMProcessingError as e:
+        logger.error(f"LLM processing error: {e}")
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception as e:
+        logger.error(f"Unexpected error in tag_activities: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.post("/create-weekly-activities", response_model=List[WeekActivityResponse])
+async def create_weekly_activities(
+    current_user: Annotated[CurrentUser, Depends(get_current_user)],
+    request: ActivityPlannerRequest,
+    week_activity_service: WeekActivityService = Depends(get_week_activity_service),
+):
+    """Tag activities using LLM"""
+    try:
+        # TODO: Retrieve data from both backend and frontend that will be provided for llm
+        planned_activities: List[PlannedActivity] = (
+            await activity_planner_service.plan_weekly_activities(
+                {}, {}, request.activities
+            )
+        )
+
+        # TODO: Get date from frontend because of timezone differences
+        current_date: date = (
+            request.current_date if request.current_date else date.today()
+        )
+        bulk_data: BulkWeekActivityCreate = BulkWeekActivityCreate(
+            assignments=[
+                WeekActivityCreate(
+                    activity_id=pa.activity_id, activity_date=current_date
+                )
+                for pa in planned_activities
+            ]
+        )
+        return week_activity_service.bulk_create_week_activities(
+            current_user.id, bulk_data
         )
 
     except LLMProcessingError as e:

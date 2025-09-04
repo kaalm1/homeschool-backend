@@ -223,15 +223,27 @@ class WeekActivityRepository(BaseRepository[WeekActivity]):
         return [(year, week) for year, week in result]
 
     def bulk_create_week_activities(
-        self, week_activities_data: List[WeekActivityCreate]
+        self, user_id: int, week_activities_data: List[WeekActivityCreate]
     ) -> List[WeekActivity]:
         """Create multiple week activities at once."""
         week_activities = []
 
         for wa_data in week_activities_data:
-            target_date = wa_data.date or date.today()
+            if wa_data.activity_date:
+                target_date = wa_data.date
+
+            elif wa_data.activity_year and wa_data.activity_week:
+                # ISO weeks start on Monday; this gets the Monday of the given ISO week
+                target_date = datetime.strptime(
+                    f"{wa_data.activity_year}-W{wa_data.activity_week:02d}-1",
+                    "%G-W%V-%u",
+                ).date()
+
+            else:
+                target_date = date.today()
+
             week_activity = WeekActivity.assign(
-                user_id=wa_data.user_id,
+                user_id=user_id,
                 activity_id=wa_data.activity_id,
                 date_obj=target_date,
             )

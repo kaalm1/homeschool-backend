@@ -10,7 +10,8 @@ from svc.app.datatypes.week_activity import (BulkWeekActivityCreate,
 from svc.app.dependencies import (CurrentUser, get_activity_service,
                                   get_current_user, get_week_activity_service)
 from svc.app.llm.schemas.planner_schemas import (ActivityPlannerRequest,
-                                                 PlannedActivity)
+                                                 PlannedActivity,
+                                                 PlannedActivityLlmData)
 from svc.app.llm.schemas.tagging_schemas import (ActivityTaggingRequest,
                                                  ActivityTaggingResponse,
                                                  TaggedActivity)
@@ -79,10 +80,11 @@ async def create_weekly_activities(
     """Tag activities using LLM"""
     try:
         # TODO: Retrieve data from both backend and frontend that will be provided for llm
+        llm_data: PlannedActivityLlmData = (
+            activity_planner_service.retrieve_plan_weekly_activities_data()
+        )
         planned_activities: List[PlannedActivity] = (
-            await activity_planner_service.plan_weekly_activities(
-                {}, {}, request.activities
-            )
+            await activity_planner_service.plan_weekly_activities(llm_data)
         )
 
         # TODO: Get date from frontend because of timezone differences

@@ -6,7 +6,7 @@ from svc.app.config import settings
 from svc.app.llm.client import llm_client
 from svc.app.llm.prompts.activity_planner import (
     ACTIVITY_PLANNER_SYSTEM_PROMPT, build_activity_planner_prompt)
-from svc.app.llm.schemas.planner_schemas import PlannedActivity
+from svc.app.llm.schemas.planner_schemas import PlannedActivity, PlannedActivityLlmData
 from svc.app.llm.utils.parsers import parse_response_to_json
 from svc.app.utils.exceptions import LLMProcessingError
 
@@ -19,11 +19,14 @@ class ActivityPlannerService:
         self.temperature = settings.llm_temperature
         self.max_retries = settings.llm_max_retries
 
+    def retrieve_plan_weekly_activities_data(self) -> PlannedActivityLlmData:
+        return PlannedActivityLlmData(family={}, context={}, activities=[])
+
     async def plan_weekly_activities(
-        self, family: dict, context: dict, activities: List[dict]
+        self, llm_data: PlannedActivityLlmData
     ) -> List[PlannedActivity]:
         """Tag activities using LLM"""
-        prompt = build_activity_planner_prompt(family, context, activities)
+        prompt = build_activity_planner_prompt(llm_data.family, llm_data.context, llm_data.activities)
         logger.info(prompt)
 
         for attempt in range(self.max_retries + 1):

@@ -26,3 +26,9 @@ class PlannedActivity(BaseModel):
     def from_json(cls, content: list) -> List["TaggedActivity"]:
         """Parse a JSON string into a list of TaggedActivity objects."""
         return [cls(**item) for item in content]
+
+
+class PlannedActivityLlmData(BaseModel):
+    family: dict
+    context: dict
+    activities: List[dict]

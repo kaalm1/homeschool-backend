@@ -4,9 +4,17 @@ from sqlalchemy import ARRAY, Boolean, Float, ForeignKey, String
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from svc.app.datatypes.enums import (ActivityType, AgeGroup, Cost, Duration,
-                                     Frequency, Location, Participants, Season,
-                                     Theme)
+from svc.app.datatypes.enums import (
+    ActivityType,
+    AgeGroup,
+    Cost,
+    Duration,
+    Frequency,
+    Location,
+    Participants,
+    Season,
+    Theme,
+)
 
 from .base import BaseModel
 
@@ -36,14 +44,19 @@ class Activity(BaseModel):
     description: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     done: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
-    price: Mapped[float] = mapped_column(Float, default=None, nullable=True)
-    price_verified: Mapped[bool] = mapped_column(Boolean, default=None, nullable=True)
+    price: Mapped[Optional[float]] = mapped_column(Float, default=None, nullable=True)
+    price_verified: Mapped[Optional[bool]] = mapped_column(
+        Boolean, default=None, nullable=True
+    )
+    location: Mapped[Optional[str]] = mapped_column(String, default=None, nullable=True)
+    location_verified: Mapped[Optional[bool]] = mapped_column(
+        Boolean, default=None, nullable=True
+    )
+
     primary_type: Mapped[Optional[ActivityType]] = mapped_column(
         activity_type_enum, nullable=True
     )
-    primary_theme: Mapped[Optional[Theme]] = mapped_column(
-        theme_enum, nullable=True
-    )
+    primary_theme: Mapped[Optional[Theme]] = mapped_column(theme_enum, nullable=True)
     website: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
     # TODO: Add location and possibly coordinates

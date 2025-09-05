@@ -84,11 +84,11 @@ class ActivityPlannerService:
         validated = []
 
         for i, item in enumerate(activities):
-            if isinstance(item, int):
-                validated.append(item)
-            else:
-                logger.warning(
-                    f"Removed non-integer value '{item}' (type: {type(item).__name__}) at index {i}"
-                )
+            if isinstance(item, dict):
+                activity_id = item.get('id')
+                if not isinstance(activity_id, int):
+                    logger.warning(
+                        f"Removed non-integer value '{activity_id}' (type: {type(activity_id).__name__}) at index {i}"
+                    )
 
         return validated

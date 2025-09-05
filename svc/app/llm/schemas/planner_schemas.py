@@ -4,6 +4,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
+from svc.app.datatypes.enums import ActivityType, Theme, Cost, Location
+
 
 # TODO: Update this
 class ActivityPlannerRequest(BaseModel):
@@ -14,7 +16,9 @@ class ActivityPlannerRequest(BaseModel):
 
 
 class PlannedActivity(BaseModel):
-    activity_id: int
+    id: int
+    title: Optional[str] = None
+    why_it_fits: Optional[str] = None
 
     @classmethod
     def from_llm(cls, content: str) -> List["PlannedActivity"]:
@@ -23,9 +27,23 @@ class PlannedActivity(BaseModel):
         return [cls(**item) for item in raw_data]
 
     @classmethod
-    def from_json(cls, content: list) -> List["TaggedActivity"]:
+    def from_json(cls, content: list) -> List["PlannedActivity"]:
         """Parse a JSON string into a list of TaggedActivity objects."""
         return [cls(**item) for item in content]
+
+
+class PlannedActivityFamilyInfo(BaseModel):
+    family_size: int
+    kids_amount: int
+    theme_preference: List[Theme]
+    activity_type_preference: List[ActivityType]
+    budget_limit: List[Cost]
+    location: List[Location]
+    hours_unavailable: int
+
+
+class PlannedActivityContextInfo(BaseModel):
+    weather: List[dict]
 
 
 class PlannedActivityLlmData(BaseModel):

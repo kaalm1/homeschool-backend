@@ -5,7 +5,9 @@ from typing import Any, Dict, List
 from svc.app.config import settings
 from svc.app.llm.client import llm_client
 from svc.app.llm.prompts.activity_tagging import (
-    ACTIVITY_TAGGING_SYSTEM_PROMPT, build_activity_tagging_prompt)
+    ACTIVITY_TAGGING_SYSTEM_PROMPT,
+    build_activity_tagging_prompt,
+)
 from svc.app.llm.schemas.tagging_schemas import TaggedActivity
 from svc.app.llm.utils.parsers import parse_response_to_json
 from svc.app.utils.exceptions import LLMProcessingError

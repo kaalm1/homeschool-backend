@@ -5,9 +5,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from scripts.seed_data import seed_demo_data
 from svc.app.config import get_settings
-from svc.app.controllers import (activity_controller, auth_controller,
-                                 kid_controller, llm_controller,
-                                 reward_controller, week_activity_controller)
+from svc.app.controllers import (
+    activity_controller,
+    auth_controller,
+    kid_controller,
+    llm_controller,
+    reward_controller,
+    week_activity_controller,
+)
 from svc.app.database import create_tables
 from svc.app.utils.exceptions import add_exception_handlers
 

@@ -15,6 +15,7 @@ from .services.auth_service import AuthService
 from .services.kid_service import KidService
 from .services.user_service import UserService
 from .services.week_activity_service import WeekActivityService
+from svc.app.llm.services.planner_service import ActivityPlannerService
 
 security = HTTPBearer(auto_error=True)
 
@@ -73,6 +74,13 @@ def get_week_activity_service(
     activity_repo: Annotated[ActivityRepository, Depends(get_activity_repository)],
 ) -> WeekActivityService:
     return WeekActivityService(week_activity_repo, user_repo, activity_repo)
+
+
+def get_activity_planner_service(
+    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
+    kid_service: Annotated[KidService, Depends(get_kid_service)],
+) -> ActivityPlannerService:
+    return ActivityPlannerService(activity_service, kid_service)
 
 
 # Authentication dependency

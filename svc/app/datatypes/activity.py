@@ -4,9 +4,17 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 from svc.app.datatypes.common import TimestampMixin
-from svc.app.datatypes.enums import (ActivityType, AgeGroup, Cost, Duration,
-                                     Frequency, Location, Participants, Season,
-                                     Theme)
+from svc.app.datatypes.enums import (
+    ActivityType,
+    AgeGroup,
+    Cost,
+    Duration,
+    Frequency,
+    Location,
+    Participants,
+    Season,
+    Theme,
+)
 
 
 # ---------------------------

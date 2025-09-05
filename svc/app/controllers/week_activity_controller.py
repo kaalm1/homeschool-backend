@@ -2,12 +2,18 @@ from typing import Annotated, List, Optional
 
 from fastapi import APIRouter, Depends, Query
 
-from svc.app.datatypes.week_activity import (BulkWeekActivityCreate,
-                                             WeekActivityCreate,
-                                             WeekActivityResponse,
-                                             WeekActivityUpdate, WeekSummary)
-from svc.app.dependencies import (CurrentUser, get_current_user,
-                                  get_week_activity_service)
+from svc.app.datatypes.week_activity import (
+    BulkWeekActivityCreate,
+    WeekActivityCreate,
+    WeekActivityResponse,
+    WeekActivityUpdate,
+    WeekSummary,
+)
+from svc.app.dependencies import (
+    CurrentUser,
+    get_current_user,
+    get_week_activity_service,
+)
 from svc.app.services.week_activity_service import WeekActivityService
 
 router = APIRouter()

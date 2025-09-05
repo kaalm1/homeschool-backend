@@ -5,9 +5,12 @@ from sqlalchemy import and_, func, select
 from sqlalchemy.orm import Session, joinedload
 
 from svc.app.dal.base_repository import BaseRepository
-from svc.app.datatypes.week_activity import (WeekActivityCreate,
-                                             WeekActivityResponse,
-                                             WeekActivityUpdate, WeekSummary)
+from svc.app.datatypes.week_activity import (
+    WeekActivityCreate,
+    WeekActivityResponse,
+    WeekActivityUpdate,
+    WeekSummary,
+)
 from svc.app.models.activity import Activity
 from svc.app.models.user import User
 from svc.app.models.week_activity import WeekActivity

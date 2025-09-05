@@ -6,10 +6,13 @@ from fastapi import HTTPException, status
 from svc.app.dal.activity_repository import ActivityRepository
 from svc.app.dal.user_repository import UserRepository
 from svc.app.dal.week_activity_repository import WeekActivityRepository
-from svc.app.datatypes.week_activity import (BulkWeekActivityCreate,
-                                             WeekActivityCreate,
-                                             WeekActivityResponse,
-                                             WeekActivityUpdate, WeekSummary)
+from svc.app.datatypes.week_activity import (
+    BulkWeekActivityCreate,
+    WeekActivityCreate,
+    WeekActivityResponse,
+    WeekActivityUpdate,
+    WeekSummary,
+)
 
 
 class WeekActivityService:

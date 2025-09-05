@@ -4,8 +4,14 @@ from sqlalchemy import and_, select
 from sqlalchemy.orm import Session, joinedload
 
 from svc.app.dal.base_repository import BaseRepository
-from svc.app.datatypes.enums import (AgeGroup, Cost, Duration, Location,
-                                     Participants, Season)
+from svc.app.datatypes.enums import (
+    AgeGroup,
+    Cost,
+    Duration,
+    Location,
+    Participants,
+    Season,
+)
 from svc.app.models.activity import Activity
 
 

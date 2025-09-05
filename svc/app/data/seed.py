@@ -1,8 +1,16 @@
 from typing import List
 
-from svc.app.datatypes.enums import (ActivityType, AgeGroup, Cost, Duration,
-                                     Frequency, Location, Participants, Season,
-                                     Theme)
+from svc.app.datatypes.enums import (
+    ActivityType,
+    AgeGroup,
+    Cost,
+    Duration,
+    Frequency,
+    Location,
+    Participants,
+    Season,
+    Theme,
+)
 from svc.app.models.activity import Activity
 
 GENERIC_FAMILY_ACTIVITIES: List[Activity] = [

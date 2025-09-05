@@ -54,3 +54,4 @@ class PlannedActivityLlmData(BaseModel):
     family: dict
     context: dict
     activities: List[dict]
+    past_activities: List[dict]

@@ -34,7 +34,10 @@ class PlannedActivity(BaseModel):
 
 class PlannedActivityFamilyInfo(BaseModel):
     family_size: int
-    kids_amount: int
+    kids_ages: List[int]
+    home_location: str
+    home_latitude: float
+    home_longitude: float
     theme_preference: List[Theme]
     activity_type_preference: List[ActivityType]
     budget_limit: List[Cost]
@@ -44,6 +47,7 @@ class PlannedActivityFamilyInfo(BaseModel):
 
 class PlannedActivityContextInfo(BaseModel):
     weather: List[dict]
+    additional_notes: Optional[str]
 
 
 class PlannedActivityLlmData(BaseModel):

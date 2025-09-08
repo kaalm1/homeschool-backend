@@ -92,6 +92,7 @@ class FilterEnum(str, Enum):
         field_enum_map_str = {
             "primary_type": ActivityType,
             "primary_theme": Theme,
+            "activity_scale": ActivityScale,
         }
 
         for field_name, enum_class in field_enum_map_str.items():
@@ -292,6 +293,7 @@ DEFAULT_ENUMS_LLM: Dict[str, Any] = {
     "seasons": [e.ai_value for e in Season],
     "age_groups": [e.ai_value for e in AgeGroup],
     "frequency": [e.ai_value for e in Frequency],
+    "activity_scale": [e.ai_value for e in ActivityScale],
 }
 
 

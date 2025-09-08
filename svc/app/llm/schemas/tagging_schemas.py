@@ -28,6 +28,7 @@ class TaggedActivity(BaseModel):
     seasons: List[str] = []
     age_groups: List[str] = []
     frequency: List[str] = []
+    activity_scale: str = ''
 
     @classmethod
     def from_llm(cls, content: str) -> List["TaggedActivity"]:
@@ -58,6 +59,7 @@ class TaggedActivity(BaseModel):
             "seasons": self.seasons,
             "age_groups": self.age_groups,
             "frequency": self.frequency,
+            "activity_scale": self.activity_scale,
         }
 
     @classmethod
@@ -82,6 +84,7 @@ class TaggedActivity(BaseModel):
             "frequency",
             "primary_type",
             "primary_theme",
+            "activity_scale",
         ]:
             if key in converted_data:
                 setattr(self, key, converted_data[key])

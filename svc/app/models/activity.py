@@ -105,7 +105,7 @@ class Activity(BaseModel):
     activity_types: Mapped[Optional[List[ActivityType]]] = mapped_column(
         ARRAY(activity_type_enum), nullable=True
     )
-    scale: Mapped[Optional[ActivityScale]] = mapped_column(activity_scale_enum, nullable=True)
+    activity_scale: Mapped[Optional[ActivityScale]] = mapped_column(activity_scale_enum, nullable=True)
 
     # Properties for easier checking
     @property

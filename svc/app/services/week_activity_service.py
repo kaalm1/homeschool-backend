@@ -4,6 +4,7 @@ from typing import List, Optional
 from fastapi import HTTPException, status
 
 from svc.app.dal.activity_repository import ActivityRepository
+from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
 from svc.app.dal.user_repository import UserRepository
 from svc.app.dal.week_activity_repository import WeekActivityRepository
 from svc.app.datatypes.week_activity import (
@@ -21,10 +22,12 @@ class WeekActivityService:
         week_activity_repo: WeekActivityRepository,
         user_repo: UserRepository,
         activity_repo: ActivityRepository,
+        suggestion_repo: Optional[ActivitySuggestionRepository] = None,
     ):
         self.week_activity_repo = week_activity_repo
         self.user_repo = user_repo
         self.activity_repo = activity_repo
+        self.suggestion_repo = suggestion_repo
 
     def create_week_activity(
         self, user_id: int, week_activity_data: WeekActivityCreate
@@ -122,7 +125,18 @@ class WeekActivityService:
         )
 
     def delete_week_activity(self, week_activity_id: int) -> bool:
-        """Delete a week activity assignment."""
+        """Delete a week activity assignment and update AI suggestions if applicable."""
+        # Get the activity before deletion to check if it was AI-suggested
+        week_activity = self.week_activity_repo.get(week_activity_id)
+        if not week_activity:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Week activity not found"
+            )
+
+        # Check if this was an AI suggestion and mark it as removed
+        if self.suggestion_repo:
+            self._mark_suggestion_as_removed(week_activity)
+
         success = self.week_activity_repo.delete_week_activity(week_activity_id)
         if not success:
             raise HTTPException(
@@ -225,6 +239,62 @@ class WeekActivityService:
                 else None
             ),
         )
+
+    def _mark_suggestion_as_removed(self, week_activity) -> None:
+        """Mark an AI suggestion as explicitly removed by the user."""
+        if not self.suggestion_repo:
+            return
+
+        # Calculate the start date of the week
+        target_week_start = date.fromisocalendar(
+            week_activity.year, week_activity.week, 1
+        )
+
+        # Find matching suggestion
+        suggestion = self.suggestion_repo.get_suggestion_by_params(
+            user_id=week_activity.user_id,
+            activity_id=week_activity.activity_id,
+            target_week_start=target_week_start,
+        )
+
+        if suggestion:
+            # Update the suggestion to mark it as explicitly removed
+            self.suggestion_repo.update_suggestion_status(
+                suggestion.id,
+                completion_status="explicitly_removed",
+                completion_date=date.today(),
+                user_feedback="User removed this activity from their week plan",
+            )
+
+    def _update_suggestion_completion(
+        self, week_activity, update_data: WeekActivityUpdate
+    ) -> None:
+        """Update AI suggestion when activity is completed."""
+        if not self.suggestion_repo:
+            return
+
+        # Calculate the start date of the week
+        target_week_start = date.fromisocalendar(
+            week_activity.year, week_activity.week, 1
+        )
+
+        # Find matching suggestion
+        suggestion = self.suggestion_repo.get_suggestion_by_params(
+            user_id=week_activity.user_id,
+            activity_id=week_activity.activity_id,
+            target_week_start=target_week_start,
+        )
+
+        if suggestion:
+            # Update the suggestion with completion info
+            completion_status = "completed" if update_data.completed else "pending"
+            self.suggestion_repo.update_suggestion_status(
+                suggestion.id,
+                completion_status=completion_status,
+                completion_date=date.today() if update_data.completed else None,
+                user_rating=update_data.rating,
+                user_feedback=update_data.notes,
+            )
 
     def create_weekly_activities_llm(self):
         pass

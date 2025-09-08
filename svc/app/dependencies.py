@@ -1,26 +1,40 @@
+import os
 from typing import Annotated
 
 from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from openai import OpenAI
 from sqlalchemy.orm import Session
 
-from .dal.activity_repository import ActivityRepository
-from .dal.kid_repository import KidRepository
-from .dal.user_repository import UserRepository
-from .dal.week_activity_repository import WeekActivityRepository
-from .database import get_db_session
-from .models.user import User
-from .services.activity_service import ActivityService
-from .services.auth_service import AuthService
-from .services.kid_service import KidService
-from .services.user_service import UserService
-from .services.week_activity_service import WeekActivityService
+from svc.app.dal.activity_repository import ActivityRepository
+from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
+from svc.app.dal.kid_repository import KidRepository
+from svc.app.dal.user_repository import UserRepository
+from svc.app.dal.week_activity_repository import WeekActivityRepository
+from svc.app.database import get_db_session
 from svc.app.llm.services.planner_service import ActivityPlannerService
+from svc.app.models.user import User
+from svc.app.services.activity_service import ActivityService
+from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
+from svc.app.services.auth_service import AuthService
+from svc.app.services.enhanced_activity_planner_service import (
+    EnhancedActivityPlannerService,
+)
+from svc.app.services.family_profile_service import FamilyProfileService
+from svc.app.services.kid_service import KidService
+from svc.app.services.user_service import UserService
+from svc.app.services.weather_service import WeatherService
+from svc.app.services.week_activity_service import WeekActivityService
 
 security = HTTPBearer(auto_error=True)
 
 # Database dependency
 DatabaseSession = Annotated[Session, Depends(get_db_session)]
+
+
+def get_openai_client():
+    """Get configured OpenAI client."""
+    return OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 # Repository dependencies
@@ -38,6 +52,12 @@ def get_activity_repository(db: DatabaseSession) -> ActivityRepository:
 
 def get_week_activity_repository(db: DatabaseSession) -> WeekActivityRepository:
     return WeekActivityRepository(db)
+
+
+def get_activity_suggestion_repository(
+    db: DatabaseSession,
+) -> ActivitySuggestionRepository:
+    return ActivitySuggestionRepository(db)
 
 
 # Service dependencies
@@ -81,6 +101,50 @@ def get_activity_planner_service(
     kid_service: Annotated[KidService, Depends(get_kid_service)],
 ) -> ActivityPlannerService:
     return ActivityPlannerService(activity_service, kid_service)
+
+
+def get_family_profile_service(
+    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+    kid_repo: Annotated[KidRepository, Depends(get_kid_repository)],
+) -> FamilyProfileService:
+    return FamilyProfileService(user_repo, kid_repo)
+
+
+def get_historical_activity_analyzer(
+    week_activity_repo: Annotated[
+        WeekActivityRepository, Depends(get_week_activity_repository)
+    ],
+    activity_repo: Annotated[ActivityRepository, Depends(get_activity_repository)],
+) -> HistoricalActivityAnalyzer:
+    return HistoricalActivityAnalyzer(week_activity_repo, activity_repo)
+
+
+def get_weather_service() -> WeatherService:
+    return WeatherService()
+
+
+def get_enhanced_activity_planner_service(
+    family_profile_service: Annotated[
+        FamilyProfileService, Depends(get_family_profile_service)
+    ],
+    activity_repo: Annotated[ActivityRepository, Depends(get_activity_repository)],
+    suggestion_repo: Annotated[
+        ActivitySuggestionRepository, Depends(get_activity_suggestion_repository)
+    ],
+    historical_analyzer: Annotated[
+        HistoricalActivityAnalyzer, Depends(get_historical_activity_analyzer)
+    ],
+    weather_service: Annotated[WeatherService, Depends(get_weather_service)],
+    openai_client: Annotated[OpenAI, Depends(get_openai_client)],
+) -> EnhancedActivityPlannerService:
+    return EnhancedActivityPlannerService(
+        family_profile_service=family_profile_service,
+        activity_repo=activity_repo,
+        suggestion_repo=suggestion_repo,
+        historical_analyzer=historical_analyzer,
+        weather_service=weather_service,
+        llm_client=openai_client,
+    )
 
 
 # Authentication dependency

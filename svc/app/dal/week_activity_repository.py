@@ -289,3 +289,18 @@ class WeekActivityRepository(BaseRepository[WeekActivity]):
             .scalars()
             .all()
         )
+
+    def get_by_params(
+        self, user_id: int, activity_id: int, year: int, week: int
+    ) -> Optional[WeekActivity]:
+        """Get a week activity by user, activity, year, and week parameters."""
+        return (
+            self.db.query(WeekActivity)
+            .filter(
+                WeekActivity.user_id == user_id,
+                WeekActivity.activity_id == activity_id,
+                WeekActivity.year == year,
+                WeekActivity.week == week,
+            )
+            .first()
+        )

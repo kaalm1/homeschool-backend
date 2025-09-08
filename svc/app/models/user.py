@@ -9,7 +9,6 @@ from .base import BaseModel
 if TYPE_CHECKING:
     from .activity import Activity
     from .kid import Kid
-    from .week_activity import WeekActivity
 
 
 class User(BaseModel):
@@ -58,6 +57,29 @@ class User(BaseModel):
         Float, nullable=True
     )  # GPS accuracy in meters
 
+    # Core Family Demographics (stable, essential)
+    family_size: Mapped[Optional[int]] = mapped_column(nullable=True, default=1)
+    adults_count: Mapped[Optional[int]] = mapped_column(nullable=True, default=1)
+
+    # Transportation & Mobility (fairly stable)
+    has_car: Mapped[bool] = mapped_column(default=True, nullable=False)
+    max_travel_distance: Mapped[Optional[int]] = mapped_column(
+        nullable=True, default=30
+    )  # miles
+
+    # Basic Budget Info (changes occasionally)
+    weekly_activity_budget: Mapped[Optional[float]] = mapped_column(
+        Float, nullable=True
+    )
+
+    # Activity Scheduling (changes seasonally)
+    max_activities_per_week: Mapped[int] = mapped_column(default=5, nullable=False)
+
+    # Timestamps for cache invalidation
+    family_profile_updated_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime, nullable=True
+    )
+
     # Timestamps
     last_login: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 
@@ -70,6 +92,24 @@ class User(BaseModel):
         "Activity", back_populates="user", cascade="all, delete-orphan"
     )
 
+    family_preferences: Mapped[Optional["FamilyPreferences"]] = relationship(
+        "FamilyPreferences",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+
+    behavior_analytics: Mapped[Optional["UserBehaviorAnalytics"]] = relationship(
+        "UserBehaviorAnalytics",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+
+    activity_suggestions: Mapped[List["ActivitySuggestion"]] = relationship(
+        "ActivitySuggestion", back_populates="user", cascade="all, delete-orphan"
+    )
+
     @property
     def display_name(self) -> str:
         """Get user's display name (email username for now)."""
@@ -79,6 +119,20 @@ class User(BaseModel):
     def has_location(self) -> bool:
         """Check if user has location data."""
         return bool(self.latitude and self.longitude)
+
+    @property
+    def needs_kids_info(self) -> bool:
+        """Check if family has kids but no Kid records."""
+        return self.family_size > self.adults_count and len(self.kids) == 0
+
+    @property
+    def has_complete_profile(self) -> bool:
+        """Check if user has minimum required info for recommendations."""
+        return bool(
+            self.has_location
+            and self.family_size
+            and (len(self.kids) > 0 or self.family_size == self.adults_count)
+        )
 
     @property
     def location_for_llm(self) -> Optional[str]:

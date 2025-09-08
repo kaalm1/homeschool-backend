@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from typing import Annotated, List, Optional
 
 from fastapi import APIRouter, Depends, Query
@@ -14,9 +15,94 @@ from svc.app.dependencies import (
     get_current_user,
     get_week_activity_service,
 )
+from svc.app.services.enhanced_activity_planner_service import (
+    EnhancedActivityPlannerService,
+)
 from svc.app.services.week_activity_service import WeekActivityService
 
 router = APIRouter()
+
+
+@router.post(
+    "/week-activities/plan-week",
+    response_model=List[WeekActivityResponse],
+    status_code=201,
+)
+async def plan_week_activities(
+    current_user: Annotated[CurrentUser, Depends(get_current_user)],
+    target_week_start: Optional[date] = Query(
+        None, description="Start date of the week to plan (defaults to current week)"
+    ),
+    planner_service: EnhancedActivityPlannerService = Depends(
+        get_enhanced_activity_planner_service
+    ),
+    week_service: WeekActivityService = Depends(get_week_activity_service),
+):
+    """Plan activities for a week using AI recommendations and create week activity assignments."""
+
+    # Get AI-generated activity recommendations
+    planned_activities = await planner_service.plan_weekly_activities(
+        user_id=current_user.id, target_week=target_week_start
+    )
+
+    if not planned_activities:
+        return []
+
+    # Convert planned activities to week activity assignments
+    # Determine the target week if not provided
+    if target_week_start is None:
+        target_week_start = date.today()
+        # Adjust to start of week (Monday)
+        days_since_monday = target_week_start.weekday()
+        target_week_start = target_week_start - timedelta(days=days_since_monday)
+
+    year, week, _ = target_week_start.isocalendar()
+
+    # Create WeekActivityCreate objects from the planned activities
+    week_activity_assignments = []
+    for activity in planned_activities:
+        assignment = WeekActivityCreate(
+            activity_id=activity["id"], activity_year=year, activity_week=week
+        )
+        week_activity_assignments.append(assignment)
+
+    # Bulk create the week activities
+    bulk_data = BulkWeekActivityCreate(assignments=week_activity_assignments)
+
+    try:
+        created_activities = week_service.bulk_create_week_activities(
+            current_user.id, bulk_data
+        )
+
+        # Enhance the response with the AI planning reasoning
+        for i, created_activity in enumerate(created_activities):
+            if i < len(planned_activities):
+                # Add the AI reasoning to the notes if no notes exist
+                if not created_activity.notes and planned_activities[i].get(
+                    "why_it_fits"
+                ):
+                    # Update with the planning reason
+                    update_data = WeekActivityUpdate(
+                        notes=f"AI Recommended: {planned_activities[i]['why_it_fits']}"
+                    )
+                    created_activities[i] = week_service.update_week_activity(
+                        created_activity.id, update_data
+                    )
+
+        return created_activities
+
+    except Exception as e:
+        # If bulk creation fails, try individual creation to handle conflicts gracefully
+        successfully_created = []
+        for assignment in week_activity_assignments:
+            try:
+                created = week_service.create_week_activity(current_user.id, assignment)
+                successfully_created.append(created)
+            except Exception:
+                # Skip activities that couldn't be created (e.g., already exist)
+                continue
+
+        return successfully_created
 
 
 @router.post("/week-activities", response_model=WeekActivityResponse, status_code=201)

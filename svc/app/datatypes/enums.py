@@ -258,6 +258,29 @@ class ActivityType(FilterEnum):
         "visiting zoo, aquarium, or wildlife park",
     )
 
+class ActivityScale(FilterEnum):
+    SMALL = (
+        "small",
+        "Small",
+        "Activities families can do weekly or multiple times per week. Free or very low cost. Very close (≤30 minutes). Minimal effort or preparation. Highly repeatable without boredom."
+    )
+    MEDIUM = (
+        "medium",
+        "Medium",
+        "Activities families might do once or twice a month. Balance of factors: may be free but farther (30–60 minutes), or nearby but with more effort, planning, or moderate cost. Not weekly, but repeatable several times per year."
+    )
+    LARGE = (
+        "large",
+        "Large",
+        "Activities families typically do a few times per year (seasonal or quarterly). Require more planning, higher effort, longer distance (1–2 hours), or higher cost. Not easily repeatable without losing novelty."
+    )
+    EXTRA_LARGE = (
+        "extra_large",
+        "Extra Large",
+        "Activities families usually do only once or twice a year. Expensive, high effort, and far (2–3 hours drive). Full-day commitment and special occasion outings."
+    )
+
+
 
 DEFAULT_ENUMS_LLM: Dict[str, Any] = {
     "activity_types": [e.ai_value for e in ActivityType],
@@ -270,3 +293,22 @@ DEFAULT_ENUMS_LLM: Dict[str, Any] = {
     "age_groups": [e.ai_value for e in AgeGroup],
     "frequency": [e.ai_value for e in Frequency],
 }
+
+
+class RepetitionTolerance(Enum):
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+    VERY_LOW = "very_low"
+
+
+class CompletionStatus(Enum):
+    COMPLETED = "completed"
+    LIKELY_COMPLETED = "likely_completed"
+    POSSIBLY_COMPLETED = "possibly_completed"
+    PENDING = "pending"
+    UNKNOWN = "unknown"
+    LIKELY_SKIPPED = "likely_skipped"
+    ASSUMED_SKIPPED = "assumed_skipped"
+    WEATHER_PREVENTED = "weather_prevented"
+    EXPLICITLY_SKIPPED = "explicitly_skipped"

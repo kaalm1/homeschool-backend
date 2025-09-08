@@ -14,6 +14,7 @@ from svc.app.datatypes.enums import (
     Participants,
     Season,
     Theme,
+    ActivityScale,
 )
 
 from .base import BaseModel
@@ -32,6 +33,7 @@ age_group_enum = ENUM(AgeGroup, name="age_group_enum", create_type=True)
 frequency_enum = ENUM(Frequency, name="frequency_enum", create_type=True)
 theme_enum = ENUM(Theme, name="theme_enum", create_type=True)
 activity_type_enum = ENUM(ActivityType, name="activity_type_enum", create_type=True)
+activity_scale_enum = ENUM(ActivityScale, name="activity_scale_enum", create_type=True)
 
 
 class Activity(BaseModel):
@@ -103,6 +105,7 @@ class Activity(BaseModel):
     activity_types: Mapped[Optional[List[ActivityType]]] = mapped_column(
         ARRAY(activity_type_enum), nullable=True
     )
+    scale: Mapped[Optional[ActivityScale]] = mapped_column(activity_scale_enum, nullable=True)
 
     # Properties for easier checking
     @property

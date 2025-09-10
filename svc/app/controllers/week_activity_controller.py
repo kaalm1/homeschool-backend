@@ -14,6 +14,7 @@ from svc.app.dependencies import (
     CurrentUser,
     get_current_user,
     get_week_activity_service,
+    get_enhanced_activity_planner_service,
 )
 from svc.app.services.enhanced_activity_planner_service import (
     EnhancedActivityPlannerService,

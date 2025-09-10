@@ -8,6 +8,9 @@ from svc.app.dal.user_behavior_analytic_repository import (
 from svc.app.dal.user_repository import UserRepository
 from svc.app.datatypes.family_preference import FamilyProfile
 from svc.app.services.kid_service import KidService
+from svc.app.models.user import User
+from svc.app.models.family_preference import FamilyPreferences
+from svc.app.models.kid import Kid
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +40,6 @@ class FamilyProfileService:
         return FamilyProfile(
             # Core demographics from User model
             family_size=user.family_size or 1,
-            adults_count=user.adults_count or 1,
             kids=[self._kid_to_dict(kid) for kid in kids],
             # Location
             home_location=user.location_for_llm or f"{user.city}, {user.state}",
@@ -85,7 +87,7 @@ class FamilyProfileService:
         """Update family preferences."""
         return self.preferences_repo.create_or_update(user_id, preferences)
 
-    def _kid_to_dict(self, kid) -> dict:
+    def _kid_to_dict(self, kid: Kid) -> dict:
         return {
             "id": kid.id,
             "age": kid.age,

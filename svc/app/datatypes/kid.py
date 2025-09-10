@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
@@ -13,6 +13,9 @@ class KidBase(BaseModel):
     color: str = Field(
         default="#a7f3d0", pattern=r"^#[0-9A-Fa-f]{6}$", description="Kid's color (hex)"
     )
+    dob: Optional[date] = Field(default=None)
+    interests: List[str] = Field(default=[])
+    special_needs: List[str] = Field(default=[])
 
 
 class KidCreate(KidBase):

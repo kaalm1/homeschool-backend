@@ -59,7 +59,6 @@ class User(BaseModel):
 
     # Core Family Demographics (stable, essential)
     family_size: Mapped[Optional[int]] = mapped_column(nullable=True, default=1)
-    adults_count: Mapped[Optional[int]] = mapped_column(nullable=True, default=1)
 
     # Transportation & Mobility (fairly stable)
     has_car: Mapped[bool] = mapped_column(default=True, nullable=False)

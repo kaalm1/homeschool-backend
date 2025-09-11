@@ -32,22 +32,29 @@ async def get_preference_options():
     }
 
 
+@router.get("/filters", status_code=status.HTTP_200_OK)
+async def get_filters_options():
+    """Get all available filter options for activities."""
+    return {
+        "costs": Cost.to_frontend(),
+        "durations": Duration.to_frontend(),
+        "participants": Participants.to_frontend(),
+        "locations": Location.to_frontend(),
+        "seasons": Season.to_frontend(),
+        "age_groups": AgeGroup.to_frontend(),
+        "frequency": Frequency.to_frontend(),
+        "themes": Theme.to_frontend(),
+        "activity_types": ActivityType.to_frontend(),
+    }
+
+
 @router.get("/all", status_code=status.HTTP_200_OK)
 async def get_all_settings():
     """Get all settings options - both activity filters and user preferences."""
+    filters = await get_filters_options()
     preferences = await get_preference_options()
 
     return {
-        "filters": {
-            "costs": Cost.to_frontend(),
-            "durations": Duration.to_frontend(),
-            "participants": Participants.to_frontend(),
-            "locations": Location.to_frontend(),
-            "seasons": Season.to_frontend(),
-            "age_groups": AgeGroup.to_frontend(),
-            "frequency": Frequency.to_frontend(),
-            "themes": Theme.to_frontend(),
-            "activity_types": ActivityType.to_frontend(),
-        },
+        "filters": filters,
         "preferences": preferences,
     }

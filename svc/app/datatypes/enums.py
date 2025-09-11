@@ -447,32 +447,35 @@ class DaysOfWeek(FilterEnum):
         "weekend, Saturday activities, family time, leisurely pace, weekend adventures, flexible scheduling, fun day",
     )
 
-    DEFAULT_ENUMS_LLM: Dict[str, Any] = {
-        "activity_types": [e.ai_value for e in ActivityType],
-        "themes": [e.ai_value for e in Theme],
-        "costs": [e.ai_value for e in Cost],
-        "durations": [e.ai_value for e in Duration],
-        "participants": [e.ai_value for e in Participants],
-        "locations": [e.ai_value for e in Location],
-        "seasons": [e.ai_value for e in Season],
-        "age_groups": [e.ai_value for e in AgeGroup],
-        "frequency": [e.ai_value for e in Frequency],
-        "activity_scale": [e.ai_value for e in ActivityScale],
-    }
 
-    class RepetitionTolerance(Enum):
-        HIGH = "high"
-        MEDIUM = "medium"
-        LOW = "low"
-        VERY_LOW = "very_low"
+DEFAULT_ENUMS_LLM: Dict[str, Any] = {
+    "activity_types": [e.ai_value for e in ActivityType],
+    "themes": [e.ai_value for e in Theme],
+    "costs": [e.ai_value for e in Cost],
+    "durations": [e.ai_value for e in Duration],
+    "participants": [e.ai_value for e in Participants],
+    "locations": [e.ai_value for e in Location],
+    "seasons": [e.ai_value for e in Season],
+    "age_groups": [e.ai_value for e in AgeGroup],
+    "frequency": [e.ai_value for e in Frequency],
+    "activity_scale": [e.ai_value for e in ActivityScale],
+}
 
-    class CompletionStatus(Enum):
-        COMPLETED = "completed"
-        LIKELY_COMPLETED = "likely_completed"
-        POSSIBLY_COMPLETED = "possibly_completed"
-        PENDING = "pending"
-        UNKNOWN = "unknown"
-        LIKELY_SKIPPED = "likely_skipped"
-        ASSUMED_SKIPPED = "assumed_skipped"
-        WEATHER_PREVENTED = "weather_prevented"
-        EXPLICITLY_SKIPPED = "explicitly_skipped"
+
+class RepetitionTolerance(Enum):
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+    VERY_LOW = "very_low"
+
+
+class CompletionStatus(Enum):
+    COMPLETED = "completed"
+    LIKELY_COMPLETED = "likely_completed"
+    POSSIBLY_COMPLETED = "possibly_completed"
+    PENDING = "pending"
+    UNKNOWN = "unknown"
+    LIKELY_SKIPPED = "likely_skipped"
+    ASSUMED_SKIPPED = "assumed_skipped"
+    WEATHER_PREVENTED = "weather_prevented"
+    EXPLICITLY_SKIPPED = "explicitly_skipped"

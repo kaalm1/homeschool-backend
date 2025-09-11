@@ -5,13 +5,13 @@ from typing import Any, Dict, List, Optional
 
 from svc.app.dal.activity_repository import ActivityRepository
 from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
-from svc.app.datatypes.enums import WeatherDay
 from svc.app.datatypes.family_preference import FamilyProfile
 from svc.app.datatypes.user_behavior_analytic import (
     ActivityCooldownInfo,
     ActivityRepetitionInfo,
     PastActivityContext,
     WeeklyContext,
+    WeatherDay,
 )
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
 from svc.app.services.family_profile_service import FamilyProfileService

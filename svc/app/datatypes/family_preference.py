@@ -128,7 +128,9 @@ class FamilyPreferenceResponse(BaseModel):
     special_requirements: Optional[str] = Field(
         default=None, description="Special requirements"
     )
-    updated_at: Optional[datetime] = Field(default=None, description="Last update timestamp")
+    updated_at: Optional[datetime] = Field(
+        default=None, description="Last update timestamp"
+    )
 
     class Config:
         from_attributes = True

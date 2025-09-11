@@ -2,7 +2,7 @@ from datetime import date, datetime
 from typing import List, Optional
 
 from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
-from svc.app.datatypes.enums import CompletionStatus, RepetitionTolerance, Cost
+from svc.app.datatypes.enums import CompletionStatus, Cost, RepetitionTolerance
 from svc.app.datatypes.user_behavior_analytic import (
     ActivityCooldownInfo,
     ActivityRepetitionInfo,

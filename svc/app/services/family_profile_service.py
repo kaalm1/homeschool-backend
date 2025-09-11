@@ -7,12 +7,12 @@ from svc.app.dal.user_behavior_analytic_repository import (
     UserBehaviorAnalyticsRepository,
 )
 from svc.app.dal.user_repository import UserRepository
+from svc.app.datatypes.enums import Cost, NewExperienceOpenness
 from svc.app.datatypes.family_preference import FamilyProfile
 from svc.app.models.kid import Kid
 from svc.app.models.user import User
 from svc.app.services.family_preference_service import FamilyPreferenceService
 from svc.app.services.kid_service import KidService
-from svc.app.datatypes.enums import Cost, NewExperienceOpenness
 
 logger = logging.getLogger(__name__)
 
@@ -64,12 +64,8 @@ class FamilyProfileService:
                 "preferred_cost_ranges", [Cost.FREE, Cost.LOW]
             ),
             # Time & Preferences
-            available_days=preferences_data.get(
-                "available_days", []
-            ),
-            preferred_time_slots=preferences_data.get(
-                "preferred_time_slots", []
-            ),
+            available_days=preferences_data.get("available_days", []),
+            preferred_time_slots=preferences_data.get("preferred_time_slots", []),
             max_activities_per_week=user.max_activities_per_week,
             preferred_themes=preferences_data.get("preferred_themes", []),
             preferred_activity_types=preferences_data.get(

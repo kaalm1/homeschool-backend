@@ -73,6 +73,11 @@ def create_app() -> FastAPI:
     app.include_router(
         settings_controller.router, prefix="/api/v1/settings", tags=["Settings"]
     )
+    app.include_router(
+        settings_controller.router,
+        prefix="/api/v1/family-preferences",
+        tags=["FamilyPreferences"],
+    )
 
     @app.get("/health")
     async def health_check():

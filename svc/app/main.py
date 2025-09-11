@@ -11,6 +11,7 @@ from svc.app.controllers import (
     kid_controller,
     llm_controller,
     reward_controller,
+    settings_controller,
     week_activity_controller,
 )
 from svc.app.database import create_tables
@@ -68,6 +69,9 @@ def create_app() -> FastAPI:
     app.include_router(llm_controller.router, prefix="/api/v1/llm", tags=["LLM"])
     app.include_router(
         reward_controller.router, prefix="/api/v1/rewards", tags=["Rewards"]
+    )
+    app.include_router(
+        settings_controller.router, prefix="/api/v1/settings", tags=["Settings"]
     )
 
     @app.get("/health")

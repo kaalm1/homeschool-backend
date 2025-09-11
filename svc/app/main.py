@@ -13,6 +13,7 @@ from svc.app.controllers import (
     reward_controller,
     settings_controller,
     week_activity_controller,
+    family_preferences_controller,
 )
 from svc.app.database import create_tables
 from svc.app.utils.exceptions import add_exception_handlers
@@ -74,7 +75,7 @@ def create_app() -> FastAPI:
         settings_controller.router, prefix="/api/v1/settings", tags=["Settings"]
     )
     app.include_router(
-        settings_controller.router,
+        family_preferences_controller.router,
         prefix="/api/v1/family-preferences",
         tags=["FamilyPreferences"],
     )

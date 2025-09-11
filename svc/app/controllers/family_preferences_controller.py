@@ -1,9 +1,7 @@
 from typing import Any, Dict
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 
-from svc.app.database import get_db
 from svc.app.datatypes.family_preference import (
     FamilyPreferenceResponse,
     FamilyPreferenceUpdateRequest,

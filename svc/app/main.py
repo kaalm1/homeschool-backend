@@ -8,13 +8,13 @@ from svc.app.config import get_settings
 from svc.app.controllers import (
     activity_controller,
     auth_controller,
+    family_preferences_controller,
     kid_controller,
     llm_controller,
     reward_controller,
     settings_controller,
-    week_activity_controller,
-    family_preferences_controller,
     user_controller,
+    week_activity_controller,
 )
 from svc.app.database import create_tables
 from svc.app.utils.exceptions import add_exception_handlers
@@ -59,9 +59,7 @@ def create_app() -> FastAPI:
     app.include_router(
         auth_controller.router, prefix="/api/v1/auth", tags=["Authentication"]
     )
-    app.include_router(
-        user_controller.router, prefix="/api/v1/user", tags=["Users"]
-    )
+    app.include_router(user_controller.router, prefix="/api/v1/user", tags=["Users"])
     app.include_router(kid_controller.router, prefix="/api/v1/kids", tags=["Kids"])
     app.include_router(
         activity_controller.router, prefix="/api/v1/activities", tags=["Activities"]

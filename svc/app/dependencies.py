@@ -160,12 +160,13 @@ def get_settings_service() -> SettingsService:
 
 
 def get_family_preference_service(
+    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
     family_preference_repo: Annotated[
         FamilyPreferenceRepository, Depends(get_family_preference_repository)
     ]
 ) -> FamilyPreferenceService:
     """Dependency to get family preference service."""
-    return FamilyPreferenceService(family_preference_repo)
+    return FamilyPreferenceService(family_preference_repo, user_repo)
 
 
 # Authentication dependency

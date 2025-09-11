@@ -19,8 +19,8 @@ class Kid(BaseModel):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     dob: Mapped[date] = mapped_column(DATE, nullable=True)
-    interests: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=True)
-    special_needs: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=True)
+    interests: Mapped[List[str]] = mapped_column(ARRAY(String), default=list, nullable=False)
+    special_needs: Mapped[List[str]] = mapped_column(ARRAY(String), default=list, nullable=False)
     color: Mapped[str] = mapped_column(String(7), default="#a7f3d0", nullable=False)
     parent_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True

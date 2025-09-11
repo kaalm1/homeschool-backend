@@ -24,6 +24,8 @@ class UserUpdate(BaseModel):
 
     email: Optional[EmailStr] = Field(None, description="User email address")
     is_active: Optional[bool] = Field(None, description="User active status")
+    address: Optional[str] = Field(None, description="User location address")
+    family_size: Optional[int] = Field(None, description="User family size")
 
 
 class UserResponse(UserBase, TimestampMixin):
@@ -31,6 +33,8 @@ class UserResponse(UserBase, TimestampMixin):
 
     id: int = Field(..., description="User ID")
     is_active: bool = Field(..., description="User active status")
+    address: Optional[str] = Field(None, description="User location address")
+    family_size: Optional[int] = Field(None, description="User family size")
 
     class Config:
         from_attributes = True

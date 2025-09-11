@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 
 from svc.app.datatypes.user import UserResponse, UserUpdate
-from svc.app.dependencies import CurrentUser, get_user_service
+from svc.app.dependencies import CurrentUser, get_user_service, get_current_user
 from svc.app.services.user_service import UserService
 
 router = APIRouter(tags=["users"])
@@ -28,6 +28,16 @@ async def get_user(
     return user_service.get_user_profile(user_id)
 
 
+@router.patch("/profile", response_model=UserResponse, status_code=status.HTTP_200_OK)
+async def update_current_user_profile(
+    user_data: UserUpdate,
+    current_user: Annotated[CurrentUser, Depends(get_current_user)],
+    user_service: Annotated[UserService, Depends(get_user_service)],
+):
+    """Update current user's profile information."""
+    return user_service.update_user(current_user.id, user_data)
+
+
 @router.patch("/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
 async def update_user(
     user_id: int,
@@ -37,16 +47,6 @@ async def update_user(
 ):
     """Update user information."""
     return user_service.update_user(user_id, user_data)
-
-
-@router.patch("/profile", response_model=UserResponse, status_code=status.HTTP_200_OK)
-async def update_current_user_profile(
-    user_data: UserUpdate,
-    current_user: CurrentUser,
-    user_service: Annotated[UserService, Depends(get_user_service)],
-):
-    """Update current user's profile information."""
-    return user_service.update_user(current_user.id, user_data)
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)

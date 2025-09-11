@@ -24,15 +24,10 @@ class KidCreate(KidBase):
     pass
 
 
-class KidUpdate(BaseModel):
+class KidUpdate(KidBase):
     """Kid update model."""
 
-    name: Optional[str] = Field(
-        None, min_length=1, max_length=100, description="Kid's name"
-    )
-    color: Optional[str] = Field(
-        None, pattern=r"^#[0-9A-Fa-f]{6}$", description="Kid's color (hex)"
-    )
+    pass
 
 
 class KidResponse(KidBase, TimestampMixin):

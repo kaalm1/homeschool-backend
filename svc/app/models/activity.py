@@ -5,6 +5,7 @@ from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from svc.app.datatypes.enums import (
+    ActivityScale,
     ActivityType,
     AgeGroup,
     Cost,
@@ -14,7 +15,6 @@ from svc.app.datatypes.enums import (
     Participants,
     Season,
     Theme,
-    ActivityScale,
 )
 
 from .base import BaseModel
@@ -105,7 +105,9 @@ class Activity(BaseModel):
     activity_types: Mapped[Optional[List[ActivityType]]] = mapped_column(
         ARRAY(activity_type_enum), nullable=True
     )
-    activity_scale: Mapped[Optional[ActivityScale]] = mapped_column(activity_scale_enum, nullable=True)
+    activity_scale: Mapped[Optional[ActivityScale]] = mapped_column(
+        activity_scale_enum, nullable=True
+    )
 
     # Properties for easier checking
     @property

@@ -5,11 +5,22 @@ from sqlalchemy import ARRAY, DateTime, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from svc.app.datatypes.enums import (ActivityScale, ActivityType, AgeGroup,
-                                     Cost, DaysOfWeek, Duration, Frequency,
-                                     GroupActivityComfort, Location,
-                                     NewExperienceOpenness, Participants,
-                                     PreferredTimeSlot, Season, Theme)
+from svc.app.datatypes.enums import (
+    ActivityScale,
+    ActivityType,
+    AgeGroup,
+    Cost,
+    DaysOfWeek,
+    Duration,
+    Frequency,
+    GroupActivityComfort,
+    Location,
+    NewExperienceOpenness,
+    Participants,
+    PreferredTimeSlot,
+    Season,
+    Theme,
+)
 
 from .base import BaseModel
 

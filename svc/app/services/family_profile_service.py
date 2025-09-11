@@ -7,10 +7,10 @@ from svc.app.dal.user_behavior_analytic_repository import (
 )
 from svc.app.dal.user_repository import UserRepository
 from svc.app.datatypes.family_preference import FamilyProfile
-from svc.app.services.kid_service import KidService
-from svc.app.models.user import User
 from svc.app.models.family_preference import FamilyPreferences
 from svc.app.models.kid import Kid
+from svc.app.models.user import User
+from svc.app.services.kid_service import KidService
 
 logger = logging.getLogger(__name__)
 

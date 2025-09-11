@@ -314,3 +314,28 @@ class CompletionStatus(Enum):
     ASSUMED_SKIPPED = "assumed_skipped"
     WEATHER_PREVENTED = "weather_prevented"
     EXPLICITLY_SKIPPED = "explicitly_skipped"
+
+
+class DaysOfWeek(Enum):
+    WEEKDAYS = "weekdays"
+    WEEKENDS = "weekends"
+    EVERYDAY = "everyday"
+
+
+class PreferredTimeSlot(Enum):
+    MORNING = "morning"
+    AFTERNOON = "afternoon"
+    EVENING = "evening"
+
+
+class GroupActivityComfort(Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+
+class NewExperienceOpenness(Enum):
+    CONSERVATIVE = "conservative"
+    MEDIUM = "medium"
+    ADVENTUROUS = "adventurous"
+

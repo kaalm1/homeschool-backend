@@ -5,7 +5,7 @@ from svc.app.dal.user_behavior_analytic_repository import (
     UserBehaviorAnalyticsRepository,
 )
 from svc.app.models.activity_suggestion import ActivitySuggestion
-from svc.app.models.user_behavior_analytic import UserBehaviorAnalytics
+from svc.app.models.user_behavior_analytic import UserBehaviorAnalytic
 
 
 class BehaviorAnalyticsService:
@@ -17,7 +17,7 @@ class BehaviorAnalyticsService:
         self.analytics_repo = analytics_repo
         self.suggestion_repo = suggestion_repo
 
-    def calculate_user_behavior_patterns(self, user_id: int) -> UserBehaviorAnalytics:
+    def calculate_user_behavior_patterns(self, user_id: int) -> UserBehaviorAnalytic:
         """Calculate behavioral patterns for a user."""
         suggestions = self.suggestion_repo.get_user_suggestions(
             user_id, lookback_weeks=16

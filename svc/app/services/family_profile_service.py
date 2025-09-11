@@ -7,7 +7,7 @@ from svc.app.dal.user_behavior_analytic_repository import (
 )
 from svc.app.dal.user_repository import UserRepository
 from svc.app.datatypes.family_preference import FamilyProfile
-from svc.app.models.family_preference import FamilyPreferences
+from svc.app.models.family_preference import FamilyPreference
 from svc.app.models.kid import Kid
 from svc.app.models.user import User
 from svc.app.services.kid_service import KidService
@@ -83,7 +83,7 @@ class FamilyProfileService:
 
     def update_family_preferences(
         self, user_id: int, preferences: dict
-    ) -> FamilyPreferences:
+    ) -> FamilyPreference:
         """Update family preferences."""
         return self.preferences_repo.create_or_update(user_id, preferences)
 

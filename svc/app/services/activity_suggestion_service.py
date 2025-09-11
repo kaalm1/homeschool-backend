@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import List, Optional
 
 from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository

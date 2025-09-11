@@ -338,3 +338,13 @@ class NewExperienceOpenness(Enum):
     CONSERVATIVE = "conservative"
     MEDIUM = "medium"
     ADVENTUROUS = "adventurous"
+
+
+class WeatherDay(Enum):
+    SUNDAY = "sunday"
+    MONDAY = "monday"
+    TUESDAY = "tuesday"
+    WEDNESDAY = "wednesday"
+    THURSDAY = "thursday"
+    FRIDAY = "friday"
+    SATURDAY = "saturday"

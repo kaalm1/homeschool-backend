@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from .user import User
 
 
-class UserBehaviorAnalytics(BaseModel):
+class UserBehaviorAnalytic(BaseModel):
     """Analytics and behavioral patterns - updated automatically."""
 
     __tablename__ = "user_behavior_analytics"

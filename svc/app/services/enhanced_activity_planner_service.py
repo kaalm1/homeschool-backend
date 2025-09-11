@@ -1,11 +1,14 @@
+import json
 import logging
 from datetime import date, datetime, timedelta
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from svc.app.dal.activity_repository import ActivityRepository
 from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
+from svc.app.datatypes.enums import WeatherDay
 from svc.app.datatypes.family_preference import FamilyProfile
 from svc.app.datatypes.user_behavior_analytic import (
+    ActivityCooldownInfo,
     ActivityRepetitionInfo,
     PastActivityContext,
     WeeklyContext,

@@ -6,19 +6,13 @@ from sqlalchemy.dialects.postgresql import ENUM
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from svc.app.datatypes.enums import (
-    ActivityScale,
     ActivityType,
-    AgeGroup,
     Cost,
     DaysOfWeek,
-    Duration,
-    Frequency,
     GroupActivityComfort,
     Location,
     NewExperienceOpenness,
-    Participants,
     PreferredTimeSlot,
-    Season,
     Theme,
 )
 
@@ -44,7 +38,7 @@ new_experience_openness_enum = ENUM(
 )
 
 
-class FamilyPreferences(BaseModel):
+class FamilyPreference(BaseModel):
     """Complex family preferences that change frequently."""
 
     __tablename__ = "family_preferences"

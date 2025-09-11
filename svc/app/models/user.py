@@ -7,8 +7,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import BaseModel
 
 if TYPE_CHECKING:
-    from .activity import Activity
-    from .kid import Kid
+    from svc.app.models.activity import Activity
+    from svc.app.models.activity_suggestion import ActivitySuggestion
+    from svc.app.models.family_preference import FamilyPreference
+    from svc.app.models.kid import Kid
+    from svc.app.models.user_behavior_analytic import UserBehaviorAnalytic
 
 
 class User(BaseModel):
@@ -59,6 +62,7 @@ class User(BaseModel):
 
     # Core Family Demographics (stable, essential)
     family_size: Mapped[Optional[int]] = mapped_column(nullable=True, default=1)
+    adults_count: Mapped[Optional[int]] = mapped_column(nullable=True, default=1)
 
     # Transportation & Mobility (fairly stable)
     has_car: Mapped[bool] = mapped_column(default=True, nullable=False)
@@ -91,15 +95,15 @@ class User(BaseModel):
         "Activity", back_populates="user", cascade="all, delete-orphan"
     )
 
-    family_preferences: Mapped[Optional["FamilyPreferences"]] = relationship(
-        "FamilyPreferences",
+    family_preferences: Mapped[Optional["FamilyPreference"]] = relationship(
+        "FamilyPreference",
         back_populates="user",
         uselist=False,
         cascade="all, delete-orphan",
     )
 
-    behavior_analytics: Mapped[Optional["UserBehaviorAnalytics"]] = relationship(
-        "UserBehaviorAnalytics",
+    behavior_analytics: Mapped[Optional["UserBehaviorAnalytic"]] = relationship(
+        "UserBehaviorAnalytic",
         back_populates="user",
         uselist=False,
         cascade="all, delete-orphan",

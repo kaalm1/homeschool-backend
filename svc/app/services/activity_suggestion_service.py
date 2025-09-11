@@ -2,7 +2,7 @@ from datetime import date, datetime
 from typing import List, Optional
 
 from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
-from svc.app.datatypes.enums import CompletionStatus, RepetitionTolerance
+from svc.app.datatypes.enums import CompletionStatus, RepetitionTolerance, Cost
 from svc.app.datatypes.user_behavior_analytic import (
     ActivityCooldownInfo,
     ActivityRepetitionInfo,
@@ -358,7 +358,7 @@ class HistoricalActivityAnalyzer:
 
         # Free/low cost activities
         if activity.get("costs") and any(
-            cost in ["FREE", "LOW"] for cost in activity.get("costs", [])
+            cost in [Cost.FREE, Cost.LOW] for cost in activity.get("costs", [])
         ):
             completion_likelihood += 0.2
 

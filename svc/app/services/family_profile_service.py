@@ -12,6 +12,7 @@ from svc.app.models.kid import Kid
 from svc.app.models.user import User
 from svc.app.services.family_preference_service import FamilyPreferenceService
 from svc.app.services.kid_service import KidService
+from svc.app.datatypes.enums import Cost, NewExperienceOpenness
 
 logger = logging.getLogger(__name__)
 
@@ -60,14 +61,14 @@ class FamilyProfileService:
             # Financial
             weekly_activity_budget=user.weekly_activity_budget,
             preferred_cost_ranges=preferences_data.get(
-                "preferred_cost_ranges", ["FREE", "LOW"]
+                "preferred_cost_ranges", [Cost.FREE, Cost.LOW]
             ),
             # Time & Preferences
             available_days=preferences_data.get(
-                "available_days", ["saturday", "sunday"]
+                "available_days", []
             ),
             preferred_time_slots=preferences_data.get(
-                "preferred_time_slots", ["morning", "afternoon"]
+                "preferred_time_slots", []
             ),
             max_activities_per_week=user.max_activities_per_week,
             preferred_themes=preferences_data.get("preferred_themes", []),
@@ -75,10 +76,10 @@ class FamilyProfileService:
                 "preferred_activity_types", []
             ),
             group_activity_comfort=preferences_data.get(
-                "group_activity_comfort", "medium"
+                "group_activity_comfort",
             ),
             new_experience_openness=preferences_data.get(
-                "new_experience_openness", "medium"
+                "new_experience_openness", NewExperienceOpenness.MODERATE
             ),
         )
 

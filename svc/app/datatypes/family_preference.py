@@ -32,15 +32,15 @@ class FamilyProfile(BaseModel):
     preferred_cost_ranges: List[str] = Field(default=[])
 
     # Time Availability
-    available_days: List[str] = Field(default=[])
-    preferred_time_slots: List[str] = Field(default=[])
+    available_days: List[DaysOfWeek] = Field(default=[])
+    preferred_time_slots: List[PreferredTimeSlot] = Field(default=[])
     max_activities_per_week: int = Field(default=5, ge=1, le=10)
 
     # Preferences
-    preferred_themes: List[str] = Field(default=[])
-    preferred_activity_types: List[str] = Field(default=[])
-    group_activity_comfort: str = Field(default=None)
-    new_experience_openness: str = Field(default=None)
+    preferred_themes: List[Theme] = Field(default=[])
+    preferred_activity_types: List[ActivityType] = Field(default=[])
+    group_activity_comfort: Optional[GroupActivityComfort] = Field(default=None)
+    new_experience_openness: Optional[NewExperienceOpenness] = Field(default=None)
 
 
 class FamilyPreferenceUpdateRequest(BaseModel):
@@ -110,11 +110,11 @@ class FamilyPreferenceResponse(BaseModel):
     preferred_time_slots: List[PreferredTimeSlot] = Field(
         default=[], description="Preferred time slots"
     )
-    group_activity_comfort: GroupActivityComfort = Field(
-        default="medium", description="Group activity comfort level"
+    group_activity_comfort: Optional[GroupActivityComfort] = Field(
+        default=None, description="Group activity comfort level"
     )
-    new_experience_openness: NewExperienceOpenness = Field(
-        default="medium", description="Openness to new experiences"
+    new_experience_openness: Optional[NewExperienceOpenness] = Field(
+        default=None, description="Openness to new experiences"
     )
     educational_priorities: List[str] = Field(
         default=[], description="Educational priorities"
@@ -126,9 +126,9 @@ class FamilyPreferenceResponse(BaseModel):
         default=[], description="Accessibility needs"
     )
     special_requirements: Optional[str] = Field(
-        None, description="Special requirements"
+        default=None, description="Special requirements"
     )
-    updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
+    updated_at: Optional[datetime] = Field(default=None, description="Last update timestamp")
 
     class Config:
         from_attributes = True

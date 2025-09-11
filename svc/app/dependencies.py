@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from svc.app.dal.activity_repository import ActivityRepository
 from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
+from svc.app.dal.family_preference_repository import FamilyPreferenceRepository
 from svc.app.dal.kid_repository import KidRepository
 from svc.app.dal.user_repository import UserRepository
 from svc.app.dal.week_activity_repository import WeekActivityRepository
@@ -20,6 +21,7 @@ from svc.app.services.auth_service import AuthService
 from svc.app.services.enhanced_activity_planner_service import (
     EnhancedActivityPlannerService,
 )
+from svc.app.services.family_preference_service import FamilyPreferenceService
 from svc.app.services.family_profile_service import FamilyProfileService
 from svc.app.services.kid_service import KidService
 from svc.app.services.settings_service import SettingsService
@@ -53,6 +55,10 @@ def get_activity_repository(db: DatabaseSession) -> ActivityRepository:
 
 def get_week_activity_repository(db: DatabaseSession) -> WeekActivityRepository:
     return WeekActivityRepository(db)
+
+
+def get_family_preference_repository(db: DatabaseSession) -> FamilyPreferenceRepository:
+    return FamilyPreferenceRepository(db)
 
 
 def get_activity_suggestion_repository(
@@ -151,6 +157,15 @@ def get_enhanced_activity_planner_service(
 def get_settings_service() -> SettingsService:
     """Get settings service dependency."""
     return SettingsService()
+
+
+def get_family_preference_service(
+    family_preference_repo: Annotated[
+        FamilyPreferenceRepository, Depends(get_family_preference_repository)
+    ]
+) -> FamilyPreferenceService:
+    """Dependency to get family preference service."""
+    return FamilyPreferenceService(family_preference_repo)
 
 
 # Authentication dependency

@@ -1,9 +1,18 @@
-from datetime import date
-from typing import Any, Dict, List, Optional
+from datetime import datetime
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
-from svc.app.datatypes.enums import RepetitionTolerance
+from svc.app.datatypes.enums import (
+    ActivityType,
+    Cost,
+    DaysOfWeek,
+    GroupActivityComfort,
+    Location,
+    NewExperienceOpenness,
+    PreferredTimeSlot,
+    Theme,
+)
 
 
 class FamilyProfile(BaseModel):
@@ -32,3 +41,94 @@ class FamilyProfile(BaseModel):
     preferred_activity_types: List[str] = Field(default=[])
     group_activity_comfort: str = Field(default="medium")
     new_experience_openness: str = Field(default="medium")
+
+
+class FamilyPreferenceUpdateRequest(BaseModel):
+    """Request model for updating family preferences."""
+
+    preferred_themes: Optional[List[Theme]] = Field(
+        None, description="Preferred activity themes"
+    )
+    preferred_activity_types: Optional[List[ActivityType]] = Field(
+        None, description="Preferred activity types"
+    )
+    preferred_cost_ranges: Optional[List[Cost]] = Field(
+        None, description="Preferred cost ranges"
+    )
+    preferred_locations: Optional[List[Location]] = Field(
+        None, description="Preferred locations"
+    )
+    available_days: Optional[List[DaysOfWeek]] = Field(
+        None, description="Available days of the week"
+    )
+    preferred_time_slots: Optional[List[PreferredTimeSlot]] = Field(
+        None, description="Preferred time slots"
+    )
+    group_activity_comfort: Optional[GroupActivityComfort] = Field(
+        None, description="Group activity comfort level"
+    )
+    new_experience_openness: Optional[NewExperienceOpenness] = Field(
+        None, description="Openness to new experiences"
+    )
+    educational_priorities: Optional[List[str]] = Field(
+        None, description="Educational priorities"
+    )
+    equipment_owned: Optional[List[str]] = Field(
+        None, description="Equipment owned by family"
+    )
+    accessibility_needs: Optional[List[str]] = Field(
+        None, description="Accessibility needs"
+    )
+    special_requirements: Optional[str] = Field(
+        None, description="Special requirements"
+    )
+
+    class Config:
+        use_enum_values = True
+
+
+class FamilyPreferenceResponse(BaseModel):
+    """Response model for family preferences."""
+
+    id: Optional[int] = Field(None, description="Preference ID")
+    user_id: Optional[int] = Field(None, description="User ID")
+    preferred_themes: List[str] = Field(
+        default=[], description="Preferred activity themes"
+    )
+    preferred_activity_types: List[str] = Field(
+        default=[], description="Preferred activity types"
+    )
+    preferred_cost_ranges: List[str] = Field(
+        default=[], description="Preferred cost ranges"
+    )
+    preferred_locations: List[str] = Field(
+        default=[], description="Preferred locations"
+    )
+    available_days: List[str] = Field(
+        default=[], description="Available days of the week"
+    )
+    preferred_time_slots: List[str] = Field(
+        default=[], description="Preferred time slots"
+    )
+    group_activity_comfort: str = Field(
+        default="medium", description="Group activity comfort level"
+    )
+    new_experience_openness: str = Field(
+        default="medium", description="Openness to new experiences"
+    )
+    educational_priorities: List[str] = Field(
+        default=[], description="Educational priorities"
+    )
+    equipment_owned: List[str] = Field(
+        default=[], description="Equipment owned by family"
+    )
+    accessibility_needs: List[str] = Field(
+        default=[], description="Accessibility needs"
+    )
+    special_requirements: Optional[str] = Field(
+        None, description="Special requirements"
+    )
+    updated_at: Optional[datetime] = Field(None, description="Last update timestamp")
+
+    class Config:
+        from_attributes = True

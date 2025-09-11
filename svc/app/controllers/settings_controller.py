@@ -1,60 +1,46 @@
-from fastapi import APIRouter, status
+from typing import Annotated
 
-from svc.app.datatypes.enums import (
-    ActivityType,
-    AgeGroup,
-    Cost,
-    DaysOfWeek,
-    Duration,
-    Frequency,
-    GroupActivityComfort,
-    LearningPriority,
-    Location,
-    NewExperienceOpenness,
-    Participants,
-    PreferredTimeSlot,
-    Season,
-    Theme,
+from fastapi import APIRouter, Depends, status
+
+from svc.app.datatypes.settings import (
+    AllSettingsResponse,
+    FilterOptionsResponse,
+    PreferenceOptionsResponse,
 )
+from svc.app.dependencies import CurrentUser, get_current_user, get_settings_service
+from svc.app.services.settings_service import SettingsService
 
 router = APIRouter(prefix="/settings", tags=["settings"])
 
 
-@router.get("/preferences", status_code=status.HTTP_200_OK)
-async def get_preference_options():
+@router.get(
+    "/preferences",
+    response_model=PreferenceOptionsResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def get_preference_options(
+    current_user: Annotated[CurrentUser, Depends(get_current_user)],
+    settings_service: Annotated[SettingsService, Depends(get_settings_service)],
+):
     """Get all available preference options for family settings."""
-    return {
-        "learning_priorities": LearningPriority.to_frontend(),
-        "preferred_time_slots": PreferredTimeSlot.to_frontend(),
-        "group_activity_comfort": GroupActivityComfort.to_frontend(),
-        "new_experience_openness": NewExperienceOpenness.to_frontend(),
-        "available_days": DaysOfWeek.to_frontend(),
-    }
+    return settings_service.get_preference_options()
 
 
-@router.get("/filters", status_code=status.HTTP_200_OK)
-async def get_filters_options():
+@router.get(
+    "/filters", response_model=FilterOptionsResponse, status_code=status.HTTP_200_OK
+)
+async def get_filters_options(
+    current_user: Annotated[CurrentUser, Depends(get_current_user)],
+    settings_service: Annotated[SettingsService, Depends(get_settings_service)],
+):
     """Get all available filter options for activities."""
-    return {
-        "costs": Cost.to_frontend(),
-        "durations": Duration.to_frontend(),
-        "participants": Participants.to_frontend(),
-        "locations": Location.to_frontend(),
-        "seasons": Season.to_frontend(),
-        "age_groups": AgeGroup.to_frontend(),
-        "frequency": Frequency.to_frontend(),
-        "themes": Theme.to_frontend(),
-        "activity_types": ActivityType.to_frontend(),
-    }
+    return settings_service.get_filter_options()
 
 
-@router.get("/all", status_code=status.HTTP_200_OK)
-async def get_all_settings():
+@router.get("/all", response_model=AllSettingsResponse, status_code=status.HTTP_200_OK)
+async def get_all_settings(
+    current_user: Annotated[CurrentUser, Depends(get_current_user)],
+    settings_service: Annotated[SettingsService, Depends(get_settings_service)],
+):
     """Get all settings options - both activity filters and user preferences."""
-    filters = await get_filters_options()
-    preferences = await get_preference_options()
-
-    return {
-        "filters": filters,
-        "preferences": preferences,
-    }
+    return settings_service.get_all_settings()

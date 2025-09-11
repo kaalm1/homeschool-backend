@@ -10,8 +10,8 @@ from svc.app.datatypes.user_behavior_analytic import (
     ActivityCooldownInfo,
     ActivityRepetitionInfo,
     PastActivityContext,
-    WeeklyContext,
     WeatherDay,
+    WeeklyContext,
 )
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
 from svc.app.services.family_profile_service import FamilyProfileService

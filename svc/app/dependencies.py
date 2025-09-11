@@ -22,6 +22,7 @@ from svc.app.services.enhanced_activity_planner_service import (
 )
 from svc.app.services.family_profile_service import FamilyProfileService
 from svc.app.services.kid_service import KidService
+from svc.app.services.settings_service import SettingsService
 from svc.app.services.user_service import UserService
 from svc.app.services.weather_service import WeatherService
 from svc.app.services.week_activity_service import WeekActivityService
@@ -145,6 +146,11 @@ def get_enhanced_activity_planner_service(
         weather_service=weather_service,
         llm_client=openai_client,
     )
+
+
+def get_settings_service() -> SettingsService:
+    """Get settings service dependency."""
+    return SettingsService()
 
 
 # Authentication dependency

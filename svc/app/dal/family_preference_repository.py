@@ -44,7 +44,6 @@ class FamilyPreferenceRepository:
             preference = FamilyPreference(
                 user_id=user_id, updated_at=datetime.utcnow(), **preference_data
             )
-
             self.db.add(preference)
             self.db.commit()
             self.db.refresh(preference)
@@ -84,7 +83,6 @@ class FamilyPreferenceRepository:
                     setattr(preference, field, value)
 
             preference.updated_at = datetime.utcnow()
-
             self.db.commit()
             self.db.refresh(preference)
 

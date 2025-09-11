@@ -48,7 +48,7 @@ def update_family_preferences(
     """
     try:
         updated_preferences = service.update_family_preferences(
-            current_user.id, request.dict(exclude_unset=True)
+            current_user.id, request.model_dump(exclude_unset=True)
         )
         return FamilyPreferenceResponse(**updated_preferences)
     except ValueError as e:

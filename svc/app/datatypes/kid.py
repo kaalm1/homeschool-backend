@@ -14,8 +14,8 @@ class KidBase(BaseModel):
         default="#a7f3d0", pattern=r"^#[0-9A-Fa-f]{6}$", description="Kid's color (hex)"
     )
     dob: Optional[date] = Field(default=None)
-    interests: List[str] = Field(default=[])
-    special_needs: List[str] = Field(default=[])
+    interests: List[str] = Field(default=list)
+    special_needs: List[str] = Field(default=list)
 
 
 class KidCreate(KidBase):

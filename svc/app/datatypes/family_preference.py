@@ -29,18 +29,18 @@ class FamilyProfile(BaseModel):
 
     # Financial Constraints
     weekly_activity_budget: Optional[float] = None
-    preferred_cost_ranges: List[str] = Field(default=["FREE", "LOW"])
+    preferred_cost_ranges: List[str] = Field(default=[])
 
     # Time Availability
-    available_days: List[str] = Field(default=["saturday", "sunday"])
-    preferred_time_slots: List[str] = Field(default=["morning", "afternoon"])
+    available_days: List[str] = Field(default=[])
+    preferred_time_slots: List[str] = Field(default=[])
     max_activities_per_week: int = Field(default=5, ge=1, le=10)
 
     # Preferences
     preferred_themes: List[str] = Field(default=[])
     preferred_activity_types: List[str] = Field(default=[])
-    group_activity_comfort: str = Field(default="medium")
-    new_experience_openness: str = Field(default="medium")
+    group_activity_comfort: str = Field(default=None)
+    new_experience_openness: str = Field(default=None)
 
 
 class FamilyPreferenceUpdateRequest(BaseModel):
@@ -92,28 +92,28 @@ class FamilyPreferenceResponse(BaseModel):
 
     id: Optional[int] = Field(None, description="Preference ID")
     user_id: Optional[int] = Field(None, description="User ID")
-    preferred_themes: List[str] = Field(
+    preferred_themes: List[Theme] = Field(
         default=[], description="Preferred activity themes"
     )
-    preferred_activity_types: List[str] = Field(
+    preferred_activity_types: List[ActivityType] = Field(
         default=[], description="Preferred activity types"
     )
-    preferred_cost_ranges: List[str] = Field(
+    preferred_cost_ranges: List[Cost] = Field(
         default=[], description="Preferred cost ranges"
     )
-    preferred_locations: List[str] = Field(
+    preferred_locations: List[Location] = Field(
         default=[], description="Preferred locations"
     )
-    available_days: List[str] = Field(
+    available_days: List[DaysOfWeek] = Field(
         default=[], description="Available days of the week"
     )
-    preferred_time_slots: List[str] = Field(
+    preferred_time_slots: List[PreferredTimeSlot] = Field(
         default=[], description="Preferred time slots"
     )
-    group_activity_comfort: str = Field(
+    group_activity_comfort: GroupActivityComfort = Field(
         default="medium", description="Group activity comfort level"
     )
-    new_experience_openness: str = Field(
+    new_experience_openness: NewExperienceOpenness = Field(
         default="medium", description="Openness to new experiences"
     )
     educational_priorities: List[str] = Field(

@@ -28,6 +28,7 @@ from svc.app.services.settings_service import SettingsService
 from svc.app.services.user_service import UserService
 from svc.app.services.weather_service import WeatherService
 from svc.app.services.week_activity_service import WeekActivityService
+from svc.app.llm.client import llm_client
 
 security = HTTPBearer(auto_error=True)
 
@@ -37,7 +38,7 @@ DatabaseSession = Annotated[Session, Depends(get_db_session)]
 
 def get_openai_client():
     """Get configured OpenAI client."""
-    return OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    return llm_client
 
 
 # Repository dependencies

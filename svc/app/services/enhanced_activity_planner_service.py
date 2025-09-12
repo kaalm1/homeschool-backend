@@ -16,6 +16,7 @@ from svc.app.datatypes.user_behavior_analytic import (
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
 from svc.app.services.family_profile_service import FamilyProfileService
 from svc.app.services.weather_service import WeatherService
+from svc.app.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -36,9 +37,9 @@ class EnhancedActivityPlannerService:
         self.historical_analyzer = historical_analyzer
         self.weather_service = weather_service
         self.llm_client = llm_client
-        self.model = "claude-sonnet-4-20250514"
-        self.temperature = 0.7
-        self.max_retries = 3
+        self.model = settings.llm_model
+        self.temperature = settings.llm_temperature
+        self.max_retries = settings.llm_max_retries
 
     async def plan_weekly_activities(
         self,

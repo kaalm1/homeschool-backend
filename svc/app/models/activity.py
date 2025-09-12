@@ -54,6 +54,8 @@ class Activity(BaseModel):
     location_verified: Mapped[Optional[bool]] = mapped_column(
         Boolean, default=None, nullable=True
     )
+    latitude: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    longitude: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
 
     primary_type: Mapped[Optional[ActivityType]] = mapped_column(
         activity_type_enum, nullable=True
@@ -61,7 +63,7 @@ class Activity(BaseModel):
     primary_theme: Mapped[Optional[Theme]] = mapped_column(theme_enum, nullable=True)
     website: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
-    # TODO: Add location and possibly coordinates
+    llm_generated: Mapped[Optional[bool]] = mapped_column(Boolean, default=False, nullable=True)
 
     # Foreign key to User (family) - every activity belongs to a family
     user_id: Mapped[int] = mapped_column(

@@ -40,6 +40,13 @@ async def plan_week_activities(
 ):
     """Plan activities for a week using AI recommendations and create week activity assignments."""
     target_week_start = request.target_week_start
+    # Determine the target week if not provided
+    if target_week_start is None:
+        target_week_start = date.today()
+        # Adjust to start of week (Monday)
+        days_since_monday = target_week_start.weekday()
+        target_week_start = target_week_start - timedelta(days=days_since_monday)
+
     # Get AI-generated activity recommendations
     planned_activities = await planner_service.plan_weekly_activities(
         user_id=current_user.id,
@@ -51,13 +58,6 @@ async def plan_week_activities(
         return []
 
     # Convert planned activities to week activity assignments
-    # Determine the target week if not provided
-    if target_week_start is None:
-        target_week_start = date.today()
-        # Adjust to start of week (Monday)
-        days_since_monday = target_week_start.weekday()
-        target_week_start = target_week_start - timedelta(days=days_since_monday)
-
     year, week, _ = target_week_start.isocalendar()
 
     # Create WeekActivityCreate objects from the planned activities

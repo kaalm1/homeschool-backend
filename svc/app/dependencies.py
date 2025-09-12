@@ -183,6 +183,9 @@ def get_enhanced_activity_planner_service(
     suggestion_repo: Annotated[
         ActivitySuggestionRepository, Depends(get_activity_suggestion_repository)
     ],
+    week_activity_repo: Annotated[
+        WeekActivityRepository, Depends(get_week_activity_repository)
+    ],
     historical_analyzer: Annotated[
         HistoricalActivityAnalyzer, Depends(get_historical_activity_analyzer)
     ],
@@ -193,6 +196,7 @@ def get_enhanced_activity_planner_service(
         family_profile_service=family_profile_service,
         activity_repo=activity_repo,
         suggestion_repo=suggestion_repo,
+        week_activity_repo=week_activity_repo,
         historical_analyzer=historical_analyzer,
         weather_service=weather_service,
         llm_client=openai_client,

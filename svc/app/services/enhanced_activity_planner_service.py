@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional
 
 from svc.app.dal.activity_repository import ActivityRepository
 from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
+from svc.app.dal.week_activity_repository import WeekActivityRepository
 from svc.app.datatypes.family_preference import FamilyProfile
 from svc.app.datatypes.user_behavior_analytic import (
     ActivityCooldownInfo,
@@ -28,6 +29,7 @@ class EnhancedActivityPlannerService:
         family_profile_service: FamilyProfileService,
         activity_repo: ActivityRepository,
         suggestion_repo: ActivitySuggestionRepository,
+        week_activity_repo: WeekActivityRepository,
         historical_analyzer: HistoricalActivityAnalyzer,
         weather_service: WeatherService,
         llm_client,
@@ -35,6 +37,7 @@ class EnhancedActivityPlannerService:
         self.family_profile_service = family_profile_service
         self.activity_repo = activity_repo
         self.suggestion_repo = suggestion_repo
+        self.week_activity_repo = week_activity_repo
         self.historical_analyzer = historical_analyzer
         self.weather_service = weather_service
         self.llm_client = llm_client
@@ -56,7 +59,7 @@ class EnhancedActivityPlannerService:
                 family_profile, target_week, additional_notes
             )
             available_activities = await self._get_filtered_activities(
-                family_profile, weekly_context
+                family_profile, weekly_context, user_id
             )
             past_context = self.historical_analyzer.get_relevant_past_activities(
                 user_id
@@ -86,16 +89,10 @@ class EnhancedActivityPlannerService:
     async def _build_weekly_context(
         self,
         family_profile: FamilyProfile,
-        target_week: Optional[date],
+        target_week: date,
         additional_notes: Optional[str] = None,
     ) -> WeeklyContext:
         """Build weekly context with weather and other factors."""
-        if not target_week:
-            target_week = datetime.now().date()
-            # Adjust to start of week (Monday)
-            days_since_monday = target_week.weekday()
-            target_week = target_week - timedelta(days=days_since_monday)
-
         # Get weather forecast
         weather_forecast = []
         if family_profile.home_coordinates:
@@ -121,7 +118,7 @@ class EnhancedActivityPlannerService:
         )
 
     async def _get_filtered_activities(
-        self, family_profile: FamilyProfile, weekly_context: WeeklyContext
+        self, family_profile: FamilyProfile, weekly_context: WeeklyContext, user_id: int
     ) -> List[dict]:
         """Get activities filtered by family profile and context."""
         # Get age ranges from kids
@@ -153,6 +150,11 @@ class EnhancedActivityPlannerService:
             #     if family_profile.preferred_cost_ranges
             #     else None
             # ),
+        )
+
+        year, week, _ = weekly_context.target_week_start.isocalendar()
+        activities_already_chosen = self.week_activity_repo.get_week_activities(
+            year, week, user_id
         )
 
         # Convert to dicts for LLM processing

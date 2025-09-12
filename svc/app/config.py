@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     google_client_id: str = Field(default="unused")
     google_client_secret: str = Field(default="unused")
     google_redirect_uri: str = Field(
-        default="http://localhost:5137/auth/google/callback"
+        default="http://localhost:5173/auth/google/callback"
     )
 
     # Database

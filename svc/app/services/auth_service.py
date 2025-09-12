@@ -170,7 +170,9 @@ class AuthService:
                         "redirect_uris": [self.settings.google_redirect_uri],
                     }
                 },
-                scopes=["openid", "email", "profile"],
+                scopes=['https://www.googleapis.com/auth/userinfo.email',
+                        'https://www.googleapis.com/auth/userinfo.profile',
+                        'openid'],
             )
             flow.redirect_uri = self.settings.google_redirect_uri
 

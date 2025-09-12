@@ -10,6 +10,7 @@ def get_current_week_monday() -> date:
 
 
 class PlanWeekActivityRequest(BaseModel):
+    location: str = Field()
     additional_notes: Optional[str] = Field(default=None)
     target_week_start: Optional[date] = Field(
         default_factory=get_current_week_monday,

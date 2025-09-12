@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
@@ -18,7 +19,11 @@ from svc.app.datatypes.auth import (
     TokenResponse,
 )
 from svc.app.models.user import User
+from svc.app.services.user_seeding_service import UserSeedingService
 from svc.app.utils.exceptions import AuthenticationError, ValidationError
+
+logger = logging.getLogger(__name__)
+
 
 security = HTTPBearer(auto_error=False)
 
@@ -26,8 +31,11 @@ security = HTTPBearer(auto_error=False)
 class AuthService:
     """Authentication service for handling user auth operations."""
 
-    def __init__(self, user_repository: UserRepository):
+    def __init__(
+        self, user_repository: UserRepository, user_seeding_service: UserSeedingService
+    ):
         self.user_repo = user_repository
+        self.user_seeding_service = user_seeding_service
         self.settings = get_settings()
 
     def authenticate_user(self, email: str, password: str) -> Optional[User]:
@@ -79,6 +87,8 @@ class AuthService:
         user = self.user_repo.create_user(
             email=register_data.email, password_hash=password_hash
         )
+
+        self._seed_new_user_data(user)
 
         return self.create_access_token(user)
 
@@ -187,6 +197,7 @@ class AuthService:
 
             # Check if user exists
             user = self.user_repo.get_by_google_id(google_user.id)
+            is_new_user = False
 
             if not user:
                 # Check if user exists by email (for account linking)
@@ -206,11 +217,34 @@ class AuthService:
                         google_id=google_user.id,
                         avatar_url=google_user.picture,
                     )
+                    is_new_user = True
 
             if not user.is_active:
                 raise AuthenticationError("Account is deactivated")
+
+            if is_new_user:
+                self._seed_new_user_data(user)
 
             return self.create_access_token(user)
 
         except Exception as e:
             raise AuthenticationError(f"Google authentication failed: {str(e)}")
+
+    def _seed_new_user_data(self, user: User) -> None:
+        """Seed initial data for a new user using the dedicated seeding service."""
+        try:
+            seeding_summary = self.user_seeding_service.seed_new_user(user)
+
+            # Log the seeding results
+            if seeding_summary.get("errors"):
+                logger.warning(
+                    f"Seeding completed with errors for user {user.id}: {seeding_summary}"
+                )
+            else:
+                logger.info(f"Successfully seeded user {user.id}: {seeding_summary}")
+
+        except Exception as e:
+            # Log the error but don't fail the user creation
+            logger.error(f"Failed to seed data for user {user.id}: {str(e)}")
+            # Optionally, you could raise this error if seeding is critical
+            # raise ValidationError(f"User created but seeding failed: {str(e)}")

@@ -1,6 +1,7 @@
 from typing import List
 
 from svc.app.datatypes.enums import (
+    ActivityScale,
     ActivityType,
     AgeGroup,
     Cost,
@@ -10,7 +11,6 @@ from svc.app.datatypes.enums import (
     Participants,
     Season,
     Theme,
-    ActivityScale,
 )
 from svc.app.models.activity import Activity
 

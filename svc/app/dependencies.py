@@ -79,23 +79,26 @@ def get_user_behaviour_anlaytics_repository(
     return UserBehaviorAnalyticsRepository(db)
 
 
+def get_user_seeding_service(
+    activity_repo: Annotated[ActivityRepository, Depends(get_activity_repository)],
+) -> UserSeedingService:
+    return UserSeedingService(activity_repo)
+
+
 # Service dependencies
 def get_auth_service(
-    user_repo: Annotated[UserRepository, Depends(get_user_repository)]
+    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+    user_seeding_service: Annotated[
+        UserSeedingService, Depends(get_user_seeding_service)
+    ],
 ) -> AuthService:
-    return AuthService(user_repo)
+    return AuthService(user_repo, user_seeding_service)
 
 
 def get_user_service(
     user_repo: Annotated[UserRepository, Depends(get_user_repository)]
 ) -> UserService:
     return UserService(user_repo)
-
-
-def get_user_seeding_service(
-    activity_repo: Annotated[ActivityRepository, Depends(get_activity_repository)],
-) -> UserSeedingService:
-    return UserSeedingService(activity_repo)
 
 
 def get_kid_service(

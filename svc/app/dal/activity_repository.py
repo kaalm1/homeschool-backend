@@ -153,7 +153,7 @@ class ActivityRepository(BaseRepository[Activity]):
         exclude_ids: Optional[List[int]] = None,
     ) -> List[Activity]:
         """Get activities filtered by family profile criteria."""
-        query = self.session.query(Activity)
+        query = self.db.query(Activity)
 
         # Location filtering (if activity has location)
         if user_location:
@@ -167,15 +167,15 @@ class ActivityRepository(BaseRepository[Activity]):
 
         # Theme filtering
         if themes:
-            query = query.filter(Activity.themes.overlap(themes))
+            query = query.filter(Activity.themes.op('&&')(themes))
 
         # Activity type filtering
         if activity_types:
-            query = query.filter(Activity.activity_types.overlap(activity_types))
+            query = query.filter(Activity.activity_types.op('&&')(activity_types))
 
         # Cost filtering
         if cost_ranges:
-            query = query.filter(Activity.costs.overlap(cost_ranges))
+            query = query.filter(Activity.costs.op('&&')(cost_ranges))
 
         # Exclude specific activities
         if exclude_ids:

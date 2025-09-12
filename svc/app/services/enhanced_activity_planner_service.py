@@ -124,7 +124,7 @@ class EnhancedActivityPlannerService:
     ) -> List[dict]:
         """Get activities filtered by family profile and context."""
         # Get age ranges from kids
-        age_ranges = [(kid["age"] - 1, kid["age"] + 1) for kid in family_profile.kids]
+        age_ranges = [(kid["age"] - 1, kid["age"] + 1) for kid in family_profile.kids if kid["age"]]
 
         # Get activities from repository
         activities = self.activity_repo.get_filtered_activities(

@@ -144,9 +144,9 @@ class ActivityRepository(BaseRepository[Activity]):
 
     def get_filtered_activities(
         self,
-        user_location: tuple[float, float],
-        max_distance: int,
-        age_ranges: List[tuple[int, int]],
+        user_location: Optional[tuple[float, float]] = None,
+        max_distance: Optional[int] = None,
+        age_ranges: Optional[List[tuple[int, int]]] = None,
         themes: Optional[List[str]] = None,
         activity_types: Optional[List[str]] = None,
         cost_ranges: Optional[List[str]] = None,
@@ -158,6 +158,8 @@ class ActivityRepository(BaseRepository[Activity]):
         # Location filtering (if activity has location)
         if user_location:
             lat, lng = user_location
+            if max_distance:
+                pass
             # Add distance calculation here - depends on your location schema
 
         # Age filtering

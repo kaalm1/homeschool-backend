@@ -125,32 +125,34 @@ class EnhancedActivityPlannerService:
     ) -> List[dict]:
         """Get activities filtered by family profile and context."""
         # Get age ranges from kids
-        age_ranges = [
-            (kid["age"] - 1, kid["age"] + 1)
-            for kid in family_profile.kids
-            if kid["age"]
-        ]
+        # age_ranges = [
+        #     (kid["age"] - 1, kid["age"] + 1)
+        #     for kid in family_profile.kids
+        #     if kid["age"]
+        # ]
 
         # Get activities from repository
+        # TODO: Figure out if we want to filter out actual activities or just
+        #   let the llm decide by feeding it "preferences"
         activities = self.activity_repo.get_filtered_activities(
-            user_location=family_profile.home_coordinates,
-            max_distance=family_profile.max_travel_distance,
-            age_ranges=age_ranges,
-            themes=(
-                family_profile.preferred_themes
-                if family_profile.preferred_themes
-                else None
-            ),
-            activity_types=(
-                family_profile.preferred_activity_types
-                if family_profile.preferred_activity_types
-                else None
-            ),
-            cost_ranges=(
-                family_profile.preferred_cost_ranges
-                if family_profile.preferred_cost_ranges
-                else None
-            ),
+            # user_location=family_profile.home_coordinates,
+            # max_distance=family_profile.max_travel_distance,
+            # age_ranges=age_ranges,
+            # themes=(
+            #     family_profile.preferred_themes
+            #     if family_profile.preferred_themes
+            #     else None
+            # ),
+            # activity_types=(
+            #     family_profile.preferred_activity_types
+            #     if family_profile.preferred_activity_types
+            #     else None
+            # ),
+            # cost_ranges=(
+            #     family_profile.preferred_cost_ranges
+            #     if family_profile.preferred_cost_ranges
+            #     else None
+            # ),
         )
 
         # Convert to dicts for LLM processing

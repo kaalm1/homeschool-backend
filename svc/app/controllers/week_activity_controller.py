@@ -9,6 +9,7 @@ from svc.app.datatypes.week_activity import (
     WeekActivityResponse,
     WeekActivityUpdate,
     WeekSummary,
+    PlanWeekActivityRequest,
 )
 from svc.app.dependencies import (
     CurrentUser,
@@ -31,6 +32,7 @@ router = APIRouter()
 )
 async def plan_week_activities(
     current_user: Annotated[CurrentUser, Depends(get_current_user)],
+    request: PlanWeekActivityRequest,
     target_week_start: Optional[date] = Query(
         None, description="Start date of the week to plan (defaults to current week)"
     ),
@@ -43,7 +45,9 @@ async def plan_week_activities(
 
     # Get AI-generated activity recommendations
     planned_activities = await planner_service.plan_weekly_activities(
-        user_id=current_user.id, target_week=target_week_start
+        user_id=current_user.id,
+        target_week=target_week_start,
+        additional_notes=request.additional_notes,
     )
 
     if not planned_activities:

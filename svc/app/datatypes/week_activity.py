@@ -4,6 +4,10 @@ from typing import Optional
 from pydantic import BaseModel, Field, validator
 
 
+class PlanWeekActivityRequest(BaseModel):
+    additional_notes: Optional[str] = Field(default=None)
+
+
 class WeekActivityCreate(BaseModel):
     """Create a new week activity assignment."""
 

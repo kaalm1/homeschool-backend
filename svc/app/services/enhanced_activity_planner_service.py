@@ -41,14 +41,17 @@ class EnhancedActivityPlannerService:
         self.max_retries = 3
 
     async def plan_weekly_activities(
-        self, user_id: int, target_week: Optional[date] = None
+        self,
+        user_id: int,
+        target_week: Optional[date] = None,
+        additional_notes: Optional[str] = None,
     ) -> List[dict]:
         """Plan weekly activities for a family."""
         try:
             # 1. Gather all required data
             family_profile = self.family_profile_service.get_family_profile(user_id)
             weekly_context = await self._build_weekly_context(
-                family_profile, target_week
+                family_profile, target_week, additional_notes
             )
             available_activities = await self._get_filtered_activities(
                 family_profile, weekly_context
@@ -79,7 +82,10 @@ class EnhancedActivityPlannerService:
             raise
 
     async def _build_weekly_context(
-        self, family_profile: FamilyProfile, target_week: Optional[date]
+        self,
+        family_profile: FamilyProfile,
+        target_week: Optional[date],
+        additional_notes: Optional[str] = None,
     ) -> WeeklyContext:
         """Build weekly context with weather and other factors."""
         if not target_week:
@@ -109,6 +115,7 @@ class EnhancedActivityPlannerService:
             weather_forecast=weather_forecast,
             season=season,
             school_schedule=school_schedule,
+            additional_notes=additional_notes,
         )
 
     async def _get_filtered_activities(
@@ -270,7 +277,9 @@ Return ONLY valid JSON array with no additional text:
 - Week starting: {weekly_context.target_week_start.strftime('%B %d, %Y')}
 - Season: {weekly_context.season}
 - Weather outlook: {weather_summary}
-- School status: {weekly_context.school_schedule or 'Unknown'}"""
+- School status: {weekly_context.school_schedule or 'Unknown'}
+- Additional notes: {weekly_context.additional_notes or 'None'}
+"""
 
         # Build repetition guidance
         repetition_desc = f"""REPETITION GUIDANCE:

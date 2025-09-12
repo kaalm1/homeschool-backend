@@ -21,6 +21,7 @@ class WeeklyContext(BaseModel):
     season: str
     local_events: Optional[List[str]] = None
     school_schedule: Optional[str] = None
+    additional_notes: Optional[str] = None
 
 
 class ActivityRepetitionInfo(BaseModel):

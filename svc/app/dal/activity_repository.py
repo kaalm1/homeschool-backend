@@ -167,15 +167,15 @@ class ActivityRepository(BaseRepository[Activity]):
 
         # Theme filtering
         if themes:
-            query = query.filter(Activity.themes.op('&&')(themes))
+            query = query.filter(Activity.themes.op("&&")(themes))
 
         # Activity type filtering
         if activity_types:
-            query = query.filter(Activity.activity_types.op('&&')(activity_types))
+            query = query.filter(Activity.activity_types.op("&&")(activity_types))
 
         # Cost filtering
         if cost_ranges:
-            query = query.filter(Activity.costs.op('&&')(cost_ranges))
+            query = query.filter(Activity.costs.op("&&")(cost_ranges))
 
         # Exclude specific activities
         if exclude_ids:

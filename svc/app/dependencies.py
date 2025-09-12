@@ -6,6 +6,9 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from openai import OpenAI
 from sqlalchemy.orm import Session
 
+from svc.app.dal.user_behavior_analytic_repository import (
+    UserBehaviorAnalyticsRepository,
+)
 from svc.app.dal.activity_repository import ActivityRepository
 from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
 from svc.app.dal.family_preference_repository import FamilyPreferenceRepository
@@ -28,6 +31,7 @@ from svc.app.services.settings_service import SettingsService
 from svc.app.services.user_service import UserService
 from svc.app.services.weather_service import WeatherService
 from svc.app.services.week_activity_service import WeekActivityService
+from svc.app.services.behavior_analytics_service import BehaviorAnalyticsService
 from svc.app.llm.client import llm_client
 
 security = HTTPBearer(auto_error=True)
@@ -66,6 +70,12 @@ def get_activity_suggestion_repository(
     db: DatabaseSession,
 ) -> ActivitySuggestionRepository:
     return ActivitySuggestionRepository(db)
+
+
+def get_user_behaviour_anlaytics_repository(
+    db: DatabaseSession,
+) -> UserBehaviorAnalyticsRepository:
+    return UserBehaviorAnalyticsRepository(db)
 
 
 # Service dependencies
@@ -111,13 +121,29 @@ def get_activity_planner_service(
     return ActivityPlannerService(activity_service, kid_service)
 
 
-def get_historical_activity_analyzer(
-    week_activity_repo: Annotated[
-        WeekActivityRepository, Depends(get_week_activity_repository)
+def get_behaviour_analytics_service(
+    analytics_repo: Annotated[
+        UserBehaviorAnalyticsRepository,
+        Depends(get_user_behaviour_anlaytics_repository),
     ],
-    activity_repo: Annotated[ActivityRepository, Depends(get_activity_repository)],
+    suggestion_repo: Annotated[
+        ActivitySuggestionRepository, Depends(get_activity_suggestion_repository)
+    ],
+) -> BehaviorAnalyticsService:
+    return BehaviorAnalyticsService(analytics_repo, suggestion_repo)
+
+
+def get_historical_activity_analyzer(
+    activity_suggestion_repo: Annotated[
+        ActivitySuggestionRepository, Depends(get_activity_suggestion_repository)
+    ],
+    behaviour_analytics_service: Annotated[
+        BehaviorAnalyticsService, Depends(get_behaviour_analytics_service)
+    ],
 ) -> HistoricalActivityAnalyzer:
-    return HistoricalActivityAnalyzer(week_activity_repo, activity_repo)
+    return HistoricalActivityAnalyzer(
+        activity_suggestion_repo, behaviour_analytics_service
+    )
 
 
 def get_weather_service() -> WeatherService:

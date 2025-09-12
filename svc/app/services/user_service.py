@@ -26,8 +26,6 @@ class UserService:
 
     def update_user(self, user_id: int, update_data: UserUpdate) -> UserResponse:
         """Update user information."""
-        user = self.get_user_by_id(user_id)
-
         update_dict = update_data.model_dump(exclude_unset=True)
         updated_user = self.user_repo.update(user_id, update_dict)
 

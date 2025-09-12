@@ -171,7 +171,7 @@ class EnhancedActivityPlannerService:
 
         for attempt in range(self.max_retries):
             try:
-                response = await self.llm_client.chat.completions.create(
+                response = await self.llm_client.client.chat.completions.create(
                     model=self.model,
                     messages=[
                         {"role": "system", "content": system_prompt},

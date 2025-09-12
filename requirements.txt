@@ -12,3 +12,7 @@ psycopg2-binary>=2.9.9,<3.0.0
 python-dotenv>=1.0.0,<2.0.0
 openai
 requests
+google
+google-auth
+google-auth-oauthlib
+google-auth-httplib2

@@ -47,3 +47,28 @@ class UserRepository(BaseRepository[User]):
         user.family_profile_updated_at = datetime.utcnow()
         self.db.commit()
         return user
+
+    def get_by_google_id(self, google_id: str) -> Optional[User]:
+        """Get user by Google ID."""
+        return self.get_by_field("google_id", google_id)
+
+    def create_google_user(
+        self, email: str, google_id: str, avatar_url: Optional[str] = None
+    ) -> User:
+        """Create a new user from Google OAuth."""
+        return self.create(
+            {
+                "email": email,
+                "google_id": google_id,
+                "google_avatar_url": avatar_url,
+                "is_active": True,
+                "password_hash": None,  # No password for OAuth users
+            }
+        )
+
+    def link_google_account(
+        self, user_id: int, google_id: str, avatar_url: Optional[str] = None
+    ) -> User:
+        """Link Google account to existing user."""
+        update_data = {"google_id": google_id, "google_avatar_url": avatar_url}
+        return self.update(user_id, update_data)

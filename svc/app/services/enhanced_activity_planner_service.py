@@ -1,9 +1,10 @@
 import json
-import re
 import logging
+import re
 from datetime import date, datetime, timedelta
 from typing import Any, Dict, List, Optional
 
+from svc.app.config import settings
 from svc.app.dal.activity_repository import ActivityRepository
 from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
 from svc.app.dal.week_activity_repository import WeekActivityRepository
@@ -18,7 +19,6 @@ from svc.app.datatypes.user_behavior_analytic import (
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
 from svc.app.services.family_profile_service import FamilyProfileService
 from svc.app.services.weather_service import WeatherService
-from svc.app.config import settings
 
 logger = logging.getLogger(__name__)
 

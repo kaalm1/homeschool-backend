@@ -26,7 +26,10 @@ class KidService:
     def create_kid(self, kid_data: KidCreate, parent_id: int) -> KidResponse:
         """Create a new kid."""
         kid = self.kid_repo.create_kid(
-            name=kid_data.name, color=kid_data.color, dob=kid_data.dob, parent_id=parent_id
+            name=kid_data.name,
+            color=kid_data.color,
+            dob=kid_data.dob,
+            parent_id=parent_id,
         )
         return KidResponse.model_validate(kid)
 

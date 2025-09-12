@@ -41,6 +41,7 @@ class WeekActivity(BaseModel):
         String, nullable=True
     )  # Optional notes from user
 
+    llm_notes: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     llm_suggestion: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
 
     # Relationships

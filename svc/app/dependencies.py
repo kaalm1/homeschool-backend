@@ -6,21 +6,23 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from openai import OpenAI
 from sqlalchemy.orm import Session
 
-from svc.app.dal.user_behavior_analytic_repository import (
-    UserBehaviorAnalyticsRepository,
-)
 from svc.app.dal.activity_repository import ActivityRepository
 from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
 from svc.app.dal.family_preference_repository import FamilyPreferenceRepository
 from svc.app.dal.kid_repository import KidRepository
+from svc.app.dal.user_behavior_analytic_repository import (
+    UserBehaviorAnalyticsRepository,
+)
 from svc.app.dal.user_repository import UserRepository
 from svc.app.dal.week_activity_repository import WeekActivityRepository
 from svc.app.database import get_db_session
+from svc.app.llm.client import llm_client
 from svc.app.llm.services.planner_service import ActivityPlannerService
 from svc.app.models.user import User
 from svc.app.services.activity_service import ActivityService
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
 from svc.app.services.auth_service import AuthService
+from svc.app.services.behavior_analytics_service import BehaviorAnalyticsService
 from svc.app.services.enhanced_activity_planner_service import (
     EnhancedActivityPlannerService,
 )
@@ -31,8 +33,6 @@ from svc.app.services.settings_service import SettingsService
 from svc.app.services.user_service import UserService
 from svc.app.services.weather_service import WeatherService
 from svc.app.services.week_activity_service import WeekActivityService
-from svc.app.services.behavior_analytics_service import BehaviorAnalyticsService
-from svc.app.llm.client import llm_client
 
 security = HTTPBearer(auto_error=True)
 

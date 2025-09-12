@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 
 from svc.app.datatypes.user import UserResponse, UserUpdate
-from svc.app.dependencies import CurrentUser, get_user_service, get_current_user
+from svc.app.dependencies import CurrentUser, get_current_user, get_user_service
 from svc.app.services.user_service import UserService
 
 router = APIRouter(tags=["users"])

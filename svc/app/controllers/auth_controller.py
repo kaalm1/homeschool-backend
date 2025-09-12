@@ -2,7 +2,12 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
 
-from svc.app.datatypes.auth import LoginRequest, RegisterRequest, TokenResponse
+from svc.app.datatypes.auth import (
+    GoogleAuthRequest,
+    LoginRequest,
+    RegisterRequest,
+    TokenResponse,
+)
 from svc.app.datatypes.user import UserResponse
 from svc.app.dependencies import CurrentUser, get_auth_service
 from svc.app.services.auth_service import AuthService
@@ -40,3 +45,23 @@ async def get_current_user_info(current_user: CurrentUser):
 async def logout():
     """Logout user (client-side token removal)."""
     return {"success": True, "message": "Successfully logged out"}
+
+
+@router.get("/google/url", status_code=status.HTTP_200_OK)
+async def get_google_auth_url(
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+):
+    """Get Google OAuth authorization URL."""
+    auth_url = auth_service.get_google_auth_url()
+    return {"auth_url": auth_url}
+
+
+@router.post(
+    "/google/callback", response_model=TokenResponse, status_code=status.HTTP_200_OK
+)
+async def google_callback(
+    google_auth: GoogleAuthRequest,
+    auth_service: Annotated[AuthService, Depends(get_auth_service)],
+):
+    """Handle Google OAuth callback."""
+    return auth_service.handle_google_callback(google_auth)

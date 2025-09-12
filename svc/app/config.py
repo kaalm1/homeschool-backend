@@ -14,6 +14,13 @@ class Settings(BaseSettings):
         default=60 * 24 * 30, description="Access token expiration in minutes"
     )
 
+    # Google Auth
+    google_client_id: str = Field(default="unused")
+    google_client_secret: str = Field(default="unused")
+    google_redirect_uri: str = Field(
+        default="http://localhost:5137/auth/google/callback"
+    )
+
     # Database
     database_url: str = Field(
         default="postgresql://homeschool_user:random@localhost:5432/homeschool_db",

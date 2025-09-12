@@ -5,11 +5,11 @@ from fastapi import APIRouter, Depends, Query
 
 from svc.app.datatypes.week_activity import (
     BulkWeekActivityCreate,
+    PlanWeekActivityRequest,
     WeekActivityCreate,
     WeekActivityResponse,
     WeekActivityUpdate,
     WeekSummary,
-    PlanWeekActivityRequest,
 )
 from svc.app.dependencies import (
     CurrentUser,
@@ -88,7 +88,7 @@ async def plan_week_activities(
                 ):
                     # Update with the planning reason
                     update_data = WeekActivityUpdate(
-                        notes=f"AI Recommended: {planned_activities[i]['why_it_fits']}"
+                        llm_notes=f"AI Recommended: {planned_activities[i]['why_it_fits']}"
                     )
                     created_activities[i] = week_service.update_week_activity(
                         created_activity.id, update_data

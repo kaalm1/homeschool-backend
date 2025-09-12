@@ -30,3 +30,19 @@ class TokenData(BaseModel):
 
     email: Optional[str] = None
     user_id: Optional[int] = None
+
+
+class GoogleAuthRequest(BaseModel):
+    """Google auth request model."""
+
+    code: str
+    state: Optional[str] = None
+
+
+class GoogleUserInfo(BaseModel):
+    """Google user information."""
+
+    id: str
+    email: str
+    name: str
+    picture: Optional[str] = None

@@ -43,6 +43,9 @@ class WeekActivityUpdate(BaseModel):
     rating: Optional[int] = Field(
         default=None, ge=1, le=5, description="Rating from 1-5 stars"
     )
+    llm_notes: Optional[str] = Field(
+        default=None, max_length=500, description="Optional notes about the experience"
+    )
     notes: Optional[str] = Field(
         default=None, max_length=500, description="Optional notes about the experience"
     )
@@ -66,6 +69,7 @@ class WeekActivityResponse(BaseModel):
     completed_at: Optional[datetime]
     rating: Optional[int]
     notes: Optional[str]
+    llm_notes: Optional[str]
 
     # Include related activity and user info
     activity_title: Optional[str] = None

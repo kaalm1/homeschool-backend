@@ -23,7 +23,9 @@ class KidRepository(BaseRepository[Kid]):
 
     def create_kid(self, name: str, color: str, dob: str, parent_id: int) -> Kid:
         """Create a new kid."""
-        return self.create({"name": name, "color": color, "dob": dob, "parent_id": parent_id})
+        return self.create(
+            {"name": name, "color": color, "dob": dob, "parent_id": parent_id}
+        )
 
     def get_kid_by_parent(self, kid_id: int, parent_id: int) -> Kid:
         """Get kid by ID and parent ID for security."""

@@ -30,22 +30,6 @@ async def seed_demo_data():
         db.add(demo_user)
         db.flush()  # Get the user ID
 
-        # Create demo kids
-        ava = Kid(
-            name="Ava",
-            color="#fde68a",
-            parent_id=demo_user.id
-        )
-
-        ben = Kid(
-            name="Ben",
-            color="#93c5fd",
-            parent_id=demo_user.id
-        )
-
-        db.add_all([ava, ben])
-        db.flush()  # Get the kid IDs
-
         # Create demo activities with flexible assignment
         activities = [
             Activity(

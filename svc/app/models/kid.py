@@ -1,6 +1,7 @@
+from datetime import date
 from typing import TYPE_CHECKING, List
 
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ARRAY, DATE, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseModel
@@ -17,6 +18,13 @@ class Kid(BaseModel):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
+    dob: Mapped[date] = mapped_column(DATE, nullable=True)
+    interests: Mapped[List[str]] = mapped_column(
+        ARRAY(String), default=list, nullable=False
+    )
+    special_needs: Mapped[List[str]] = mapped_column(
+        ARRAY(String), default=list, nullable=False
+    )
     color: Mapped[str] = mapped_column(String(7), default="#a7f3d0", nullable=False)
     parent_id: Mapped[int] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
@@ -30,6 +38,18 @@ class Kid(BaseModel):
         back_populates="assigned_to_kid",
         cascade="all, delete-orphan",
     )
+
+    @property
+    def age(self) -> int | None:
+        """Calculate age in years based on date of birth."""
+        if self.dob is None:
+            return None
+        today = date.today()
+        return (
+            today.year
+            - self.dob.year
+            - ((today.month, today.day) < (self.dob.month, self.dob.day))
+        )
 
     def __repr__(self) -> str:
         return f"<Kid(id={self.id}, name='{self.name}', parent_id={self.parent_id})>"

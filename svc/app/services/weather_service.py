@@ -1,5 +1,6 @@
+from datetime import date
+
 import requests
-from datetime import datetime
 
 
 class WeatherService:
@@ -105,7 +106,7 @@ class WeatherService:
 
         return {"weather_summary": weather_summary}
 
-    def get_weekly_forecast(self, location: str) -> dict:
+    def get_weekly_forecast(self, location: str, target_week: date) -> dict:
         """High-level method: geocode + fetch + summarize forecast."""
         geo = self.geocode_location(location)
         forecast = self.fetch_weekly_weather_forecast(geo["lat"], geo["lon"])

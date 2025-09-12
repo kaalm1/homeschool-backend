@@ -92,6 +92,7 @@ class FilterEnum(str, Enum):
         field_enum_map_str = {
             "primary_type": ActivityType,
             "primary_theme": Theme,
+            "activity_scale": ActivityScale,
         }
 
         for field_name, enum_class in field_enum_map_str.items():
@@ -259,6 +260,194 @@ class ActivityType(FilterEnum):
     )
 
 
+class ActivityScale(FilterEnum):
+    SMALL = (
+        "small",
+        "Small",
+        "Activities families can do weekly or multiple times per week. Free or very low cost. Very close (≤30 minutes). Minimal effort or preparation. Highly repeatable without boredom.",
+    )
+    MEDIUM = (
+        "medium",
+        "Medium",
+        "Activities families might do once or twice a month. Balance of factors: may be free but farther (30–60 minutes), or nearby but with more effort, planning, or moderate cost. Not weekly, but repeatable several times per year.",
+    )
+    LARGE = (
+        "large",
+        "Large",
+        "Activities families typically do a few times per year (seasonal or quarterly). Require more planning, higher effort, longer distance (1–2 hours), or higher cost. Not easily repeatable without losing novelty.",
+    )
+    EXTRA_LARGE = (
+        "extra_large",
+        "Extra Large",
+        "Activities families usually do only once or twice a year. Expensive, high effort, and far (2–3 hours drive). Full-day commitment and special occasion outings.",
+    )
+
+
+class LearningPriority(FilterEnum):
+    STEM = (
+        "stem",
+        "🔬 STEM",
+        "science, technology, engineering, mathematics, coding, robotics, experiments, scientific method, problem-solving, logic, data analysis, research skills",
+    )
+    ARTS = (
+        "arts",
+        "🎨 Arts",
+        "creative expression, visual arts, music, dance, theater, drawing, painting, crafts, sculpture, photography, design, artistic techniques, aesthetic appreciation",
+    )
+    SOCIAL_SKILLS = (
+        "social-skills",
+        "🤝 Social Skills",
+        "communication, teamwork, collaboration, empathy, conflict resolution, leadership, public speaking, interpersonal relationships, emotional intelligence, cooperation",
+    )
+    PHYSICAL_DEVELOPMENT = (
+        "physical-development",
+        "🏃 Physical",
+        "motor skills, fitness, coordination, sports, exercise, outdoor activities, balance, strength, endurance, body awareness, gross motor, fine motor skills",
+    )
+    CREATIVITY = (
+        "creativity",
+        "💡 Creativity",
+        "innovation, imagination, creative thinking, brainstorming, artistic expression, storytelling, invention, original ideas, creative problem-solving, divergent thinking",
+    )
+    INDEPENDENCE = (
+        "independence",
+        "🎯 Independence",
+        "self-reliance, confidence, autonomy, decision-making, responsibility, self-directed learning, initiative, personal accountability, goal-setting, time management",
+    )
+    LITERACY = (
+        "literacy",
+        "📚 Literacy",
+        "reading, writing, language arts, vocabulary, comprehension, storytelling, grammar, communication skills, literature appreciation, verbal expression",
+    )
+    CRITICAL_THINKING = (
+        "critical-thinking",
+        "🧠 Critical Thinking",
+        "analytical skills, reasoning, logic, evaluation, questioning, evidence-based thinking, problem analysis, decision-making, skeptical inquiry",
+    )
+    CULTURAL_AWARENESS = (
+        "cultural-awareness",
+        "🌍 Cultural Awareness",
+        "diversity, multicultural understanding, global citizenship, history, geography, different perspectives, tolerance, inclusion, world cultures",
+    )
+    LIFE_SKILLS = (
+        "life-skills",
+        "🛠️ Life Skills",
+        "practical skills, cooking, money management, organization, planning, self-care, household tasks, time management, basic maintenance, daily living",
+    )
+    EMOTIONAL_DEVELOPMENT = (
+        "emotional-development",
+        "❤️ Emotional Development",
+        "emotional intelligence, self-awareness, empathy, emotional regulation, mental health, mindfulness, resilience, coping strategies, self-expression",
+    )
+    ENTREPRENEURSHIP = (
+        "entrepreneurship",
+        "💼 Entrepreneurship",
+        "business skills, innovation, risk-taking, leadership, project management, financial literacy, marketing, creativity in business, initiative",
+    )
+
+
+class PreferredTimeSlot(FilterEnum):
+    MORNING = (
+        "morning",
+        "🌅 Morning",
+        "early hours, before noon, 6am-12pm, sunrise activities, fresh start of day, energetic beginning",
+    )
+    AFTERNOON = (
+        "afternoon",
+        "☀️ Afternoon",
+        "midday, after lunch, 12pm-5pm, peak daylight, warm weather activities, post-meal energy",
+    )
+    EVENING = (
+        "evening",
+        "🌆 Evening",
+        "late day, after work/school, 5pm-9pm, sunset activities, winding down, family time after daily responsibilities",
+    )
+
+
+class GroupActivityComfort(FilterEnum):
+    LOW = (
+        "low",
+        "👤 Small Groups",
+        "intimate settings, few people, family-only, close friends, quiet environments, one-on-one, small intimate gatherings, shy children, introverted",
+    )
+    MEDIUM = (
+        "medium",
+        "👥 Medium Groups",
+        "moderate crowd, familiar faces, neighborhood groups, small classes, manageable social settings, some new people mixed with familiar ones",
+    )
+    HIGH = (
+        "high",
+        "👫 Large Groups",
+        "big crowds, social events, public activities, festivals, team sports, extroverted, enjoys meeting new people, comfortable in busy social environments",
+    )
+
+
+class NewExperienceOpenness(FilterEnum):
+    VERY_CONSERVATIVE = (
+        "very-conservative",
+        "🏠 Stick to Familiar",
+        "only tried activities, strong comfort zone preference, routine-based, minimal change, traditional approaches only",
+    )
+    CONSERVATIVE = (
+        "conservative",
+        "🛡️ Mostly Familiar",
+        "traditional activities, well-known experiences, comfort zone, familiar environments, low risk, established routines",
+    )
+    MODERATE = (
+        "moderate",
+        "🌱 Some Adventure",
+        "occasional new experiences, moderate novelty, willing to try with guidance, balanced approach, gradual exploration",
+    )
+    ADVENTUROUS = (
+        "adventurous",
+        "🚀 Love New Things",
+        "eager for novelty, experimental, moderate risk-taking, innovative activities, enjoys variety and change",
+    )
+    VERY_ADVENTUROUS = (
+        "very-adventurous",
+        "⚡ Thrill Seeker",
+        "extreme novelty, high-risk activities, cutting-edge experiences, unconventional adventures, constant change and excitement",
+    )
+
+
+class DaysOfWeek(FilterEnum):
+    SUNDAY = (
+        "sunday",
+        "📅 Sunday",
+        "weekend, family day, relaxed pace, Sunday activities, end of week, preparation for new week, leisurely schedule",
+    )
+    MONDAY = (
+        "monday",
+        "📅 Monday",
+        "start of week, fresh beginning, back to routine, Monday motivation, new week energy, structured schedule begins",
+    )
+    TUESDAY = (
+        "tuesday",
+        "📅 Tuesday",
+        "midweek momentum, Tuesday productivity, established routine, steady pace, consistent scheduling",
+    )
+    WEDNESDAY = (
+        "wednesday",
+        "📅 Wednesday",
+        "midweek, hump day, middle of routine, Wednesday activities, balanced weekday, established rhythm",
+    )
+    THURSDAY = (
+        "thursday",
+        "📅 Thursday",
+        "late week, Thursday activities, anticipating weekend, sustained energy, consistent participation",
+    )
+    FRIDAY = (
+        "friday",
+        "📅 Friday",
+        "end of work/school week, Friday fun, weekend preparation, celebration mode, transition to weekend activities",
+    )
+    SATURDAY = (
+        "saturday",
+        "📅 Saturday",
+        "weekend, Saturday activities, family time, leisurely pace, weekend adventures, flexible scheduling, fun day",
+    )
+
+
 DEFAULT_ENUMS_LLM: Dict[str, Any] = {
     "activity_types": [e.ai_value for e in ActivityType],
     "themes": [e.ai_value for e in Theme],
@@ -269,4 +458,24 @@ DEFAULT_ENUMS_LLM: Dict[str, Any] = {
     "seasons": [e.ai_value for e in Season],
     "age_groups": [e.ai_value for e in AgeGroup],
     "frequency": [e.ai_value for e in Frequency],
+    "activity_scale": [e.ai_value for e in ActivityScale],
 }
+
+
+class RepetitionTolerance(Enum):
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+    VERY_LOW = "very_low"
+
+
+class CompletionStatus(Enum):
+    COMPLETED = "completed"
+    LIKELY_COMPLETED = "likely_completed"
+    POSSIBLY_COMPLETED = "possibly_completed"
+    PENDING = "pending"
+    UNKNOWN = "unknown"
+    LIKELY_SKIPPED = "likely_skipped"
+    ASSUMED_SKIPPED = "assumed_skipped"
+    WEATHER_PREVENTED = "weather_prevented"
+    EXPLICITLY_SKIPPED = "explicitly_skipped"

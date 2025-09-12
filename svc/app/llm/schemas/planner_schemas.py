@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
-from svc.app.datatypes.enums import ActivityType, Theme, Cost, Location
+from svc.app.datatypes.enums import ActivityType, Cost, Location, Theme
 
 
 # TODO: Update this

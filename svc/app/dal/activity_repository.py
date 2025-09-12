@@ -141,3 +141,44 @@ class ActivityRepository(BaseRepository[Activity]):
             query = query.filter(and_(*filters))
 
         return cast(List[Activity], query.all())
+
+    def get_filtered_activities(
+        self,
+        user_location: tuple[float, float],
+        max_distance: int,
+        age_ranges: List[tuple[int, int]],
+        themes: Optional[List[str]] = None,
+        activity_types: Optional[List[str]] = None,
+        cost_ranges: Optional[List[str]] = None,
+        exclude_ids: Optional[List[int]] = None,
+    ) -> List[Activity]:
+        """Get activities filtered by family profile criteria."""
+        query = self.session.query(Activity)
+
+        # Location filtering (if activity has location)
+        if user_location:
+            lat, lng = user_location
+            # Add distance calculation here - depends on your location schema
+
+        # Age filtering
+        if age_ranges:
+            # This depends on how you store age ranges in activities
+            pass
+
+        # Theme filtering
+        if themes:
+            query = query.filter(Activity.themes.overlap(themes))
+
+        # Activity type filtering
+        if activity_types:
+            query = query.filter(Activity.activity_types.overlap(activity_types))
+
+        # Cost filtering
+        if cost_ranges:
+            query = query.filter(Activity.costs.overlap(cost_ranges))
+
+        # Exclude specific activities
+        if exclude_ids:
+            query = query.filter(~Activity.id.in_(exclude_ids))
+
+        return query.all()

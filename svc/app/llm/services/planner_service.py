@@ -10,9 +10,9 @@ from svc.app.llm.prompts.activity_planner import (
 )
 from svc.app.llm.schemas.planner_schemas import PlannedActivity, PlannedActivityLlmData
 from svc.app.llm.utils.parsers import parse_response_to_json
-from svc.app.utils.exceptions import LLMProcessingError
 from svc.app.services.activity_service import ActivityService
 from svc.app.services.kid_service import KidService
+from svc.app.utils.exceptions import LLMProcessingError
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +85,7 @@ class ActivityPlannerService:
 
         for i, item in enumerate(activities):
             if isinstance(item, dict):
-                activity_id = item.get('id')
+                activity_id = item.get("id")
                 if not isinstance(activity_id, int):
                     logger.warning(
                         f"Removed non-integer value '{activity_id}' (type: {type(activity_id).__name__}) at index {i}"

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
@@ -13,6 +13,9 @@ class KidBase(BaseModel):
     color: str = Field(
         default="#a7f3d0", pattern=r"^#[0-9A-Fa-f]{6}$", description="Kid's color (hex)"
     )
+    dob: Optional[date] = Field(default=None)
+    interests: List[str] = Field(default=list)
+    special_needs: List[str] = Field(default=list)
 
 
 class KidCreate(KidBase):
@@ -21,15 +24,10 @@ class KidCreate(KidBase):
     pass
 
 
-class KidUpdate(BaseModel):
+class KidUpdate(KidBase):
     """Kid update model."""
 
-    name: Optional[str] = Field(
-        None, min_length=1, max_length=100, description="Kid's name"
-    )
-    color: Optional[str] = Field(
-        None, pattern=r"^#[0-9A-Fa-f]{6}$", description="Kid's color (hex)"
-    )
+    pass
 
 
 class KidResponse(KidBase, TimestampMixin):

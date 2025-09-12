@@ -8,9 +8,12 @@ from svc.app.config import get_settings
 from svc.app.controllers import (
     activity_controller,
     auth_controller,
+    family_preferences_controller,
     kid_controller,
     llm_controller,
     reward_controller,
+    settings_controller,
+    user_controller,
     week_activity_controller,
 )
 from svc.app.database import create_tables
@@ -56,6 +59,7 @@ def create_app() -> FastAPI:
     app.include_router(
         auth_controller.router, prefix="/api/v1/auth", tags=["Authentication"]
     )
+    app.include_router(user_controller.router, prefix="/api/v1/user", tags=["Users"])
     app.include_router(kid_controller.router, prefix="/api/v1/kids", tags=["Kids"])
     app.include_router(
         activity_controller.router, prefix="/api/v1/activities", tags=["Activities"]
@@ -68,6 +72,14 @@ def create_app() -> FastAPI:
     app.include_router(llm_controller.router, prefix="/api/v1/llm", tags=["LLM"])
     app.include_router(
         reward_controller.router, prefix="/api/v1/rewards", tags=["Rewards"]
+    )
+    app.include_router(
+        settings_controller.router, prefix="/api/v1/settings", tags=["Settings"]
+    )
+    app.include_router(
+        family_preferences_controller.router,
+        prefix="/api/v1/family-preferences",
+        tags=["FamilyPreferences"],
     )
 
     @app.get("/health")

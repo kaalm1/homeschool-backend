@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: eb6d15dd6e63
+Revision ID: c5a76f1b10c6
 Revises: 
-Create Date: 2025-09-04 12:42:05.076521
+Create Date: 2025-09-11 10:01:42.331528
 
 """
 
@@ -13,7 +13,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "eb6d15dd6e63"
+revision: str = "c5a76f1b10c6"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -38,6 +38,13 @@ def upgrade() -> None:
         sa.Column("longitude", sa.Float(), nullable=True),
         sa.Column("location_updated_at", sa.DateTime(), nullable=True),
         sa.Column("location_accuracy", sa.Float(), nullable=True),
+        sa.Column("family_size", sa.Integer(), nullable=True),
+        sa.Column("adults_count", sa.Integer(), nullable=True),
+        sa.Column("has_car", sa.Boolean(), nullable=False),
+        sa.Column("max_travel_distance", sa.Integer(), nullable=True),
+        sa.Column("weekly_activity_budget", sa.Float(), nullable=True),
+        sa.Column("max_activities_per_week", sa.Integer(), nullable=False),
+        sa.Column("family_profile_updated_at", sa.DateTime(), nullable=True),
         sa.Column("last_login", sa.DateTime(), nullable=True),
         sa.Column(
             "created_at",
@@ -59,9 +66,133 @@ def upgrade() -> None:
     op.create_index(op.f("ix_users_id"), "users", ["id"], unique=False)
     op.create_index(op.f("ix_users_zip_code"), "users", ["zip_code"], unique=False)
     op.create_table(
+        "family_preferences",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("user_id", sa.Integer(), nullable=False),
+        sa.Column(
+            "preferred_themes",
+            sa.ARRAY(
+                postgresql.ENUM(
+                    "ADVENTURE",
+                    "CREATIVE",
+                    "EDUCATIONAL",
+                    "FITNESS",
+                    "FOOD_DRINK",
+                    "FESTIVE",
+                    "MINDFULNESS",
+                    "NATURE",
+                    "RELAXATION",
+                    "SOCIAL",
+                    name="theme_enum",
+                )
+            ),
+            nullable=True,
+        ),
+        sa.Column(
+            "preferred_activity_types",
+            sa.ARRAY(
+                postgresql.ENUM(
+                    "AMUSEMENT_PARK",
+                    "ARTS_CRAFTS",
+                    "BOARD_GAMES",
+                    "CLASSES",
+                    "DANCE",
+                    "FESTIVAL",
+                    "GAMES",
+                    "GARDENING",
+                    "HIKING",
+                    "INDOOR",
+                    "MUSIC",
+                    "OUTDOOR",
+                    "PARK",
+                    "PUZZLES",
+                    "SCIENCE_TECH",
+                    "STORYTELLING",
+                    "TRAVEL",
+                    "VIDEO_GAMES",
+                    "VOLUNTEERING",
+                    "SPORTS",
+                    "ZOO_AQUARIUM",
+                    name="activity_type_enum",
+                )
+            ),
+            nullable=True,
+        ),
+        sa.Column(
+            "preferred_cost_ranges",
+            sa.ARRAY(
+                postgresql.ENUM("FREE", "LOW", "MEDIUM", "HIGH", name="cost_enum")
+            ),
+            nullable=True,
+        ),
+        sa.Column(
+            "preferred_locations",
+            sa.ARRAY(
+                postgresql.ENUM(
+                    "HOME_INDOOR",
+                    "HOME_OUTDOOR",
+                    "LOCAL",
+                    "REGIONAL",
+                    "TRAVEL",
+                    name="location_enum",
+                )
+            ),
+            nullable=True,
+        ),
+        sa.Column(
+            "available_days",
+            sa.ARRAY(
+                postgresql.ENUM(
+                    "SUNDAY",
+                    "MONDAY",
+                    "TUESDAY",
+                    "WEDNESDAY",
+                    "THURSDAY",
+                    "FRIDAY",
+                    "SATURDAY",
+                    name="days_of_week",
+                )
+            ),
+            nullable=True,
+        ),
+        sa.Column(
+            "preferred_time_slots",
+            sa.ARRAY(
+                postgresql.ENUM(
+                    "MORNING", "AFTERNOON", "EVENING", name="preferred_time_slot"
+                )
+            ),
+            nullable=True,
+        ),
+        sa.Column("group_activity_comfort", sa.String(length=20), nullable=True),
+        sa.Column("new_experience_openness", sa.String(length=20), nullable=True),
+        sa.Column("educational_priorities", sa.ARRAY(sa.String()), nullable=True),
+        sa.Column("equipment_owned", sa.ARRAY(sa.String()), nullable=True),
+        sa.Column("accessibility_needs", sa.ARRAY(sa.String()), nullable=True),
+        sa.Column("special_requirements", sa.Text(), nullable=True),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        op.f("ix_family_preferences_user_id"),
+        "family_preferences",
+        ["user_id"],
+        unique=False,
+    )
+    op.create_table(
         "kids",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("name", sa.String(length=100), nullable=False),
+        sa.Column("dob", sa.DATE(), nullable=True),
+        sa.Column("interests", sa.ARRAY(sa.String()), nullable=False),
+        sa.Column("special_needs", sa.ARRAY(sa.String()), nullable=False),
         sa.Column("color", sa.String(length=7), nullable=False),
         sa.Column("parent_id", sa.Integer(), nullable=False),
         sa.Column(
@@ -81,6 +212,39 @@ def upgrade() -> None:
     )
     op.create_index(op.f("ix_kids_id"), "kids", ["id"], unique=False)
     op.create_index(op.f("ix_kids_parent_id"), "kids", ["parent_id"], unique=False)
+    op.create_table(
+        "user_behavior_analytics",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("user_id", sa.Integer(), nullable=False),
+        sa.Column("marking_rate", sa.Float(), nullable=False),
+        sa.Column("marks_big_activities_only", sa.Boolean(), nullable=False),
+        sa.Column("big_activity_marking_rate", sa.Float(), nullable=False),
+        sa.Column("small_activity_marking_rate", sa.Float(), nullable=False),
+        sa.Column("successful_themes", sa.JSON(), nullable=True),
+        sa.Column("successful_activity_types", sa.JSON(), nullable=True),
+        sa.Column("successful_cost_ranges", sa.JSON(), nullable=True),
+        sa.Column("successful_durations", sa.JSON(), nullable=True),
+        sa.Column("weather_sensitivity", sa.Float(), nullable=False),
+        sa.Column("seasonal_patterns", sa.JSON(), nullable=True),
+        sa.Column("last_calculated", sa.DateTime(), nullable=False),
+        sa.Column("calculation_confidence", sa.Float(), nullable=False),
+        sa.Column("sample_size", sa.Integer(), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
+        sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("user_id"),
+    )
     op.create_table(
         "activities",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -287,6 +451,13 @@ def upgrade() -> None:
             nullable=True,
         ),
         sa.Column(
+            "activity_scale",
+            postgresql.ENUM(
+                "SMALL", "MEDIUM", "LARGE", "EXTRA_LARGE", name="activity_scale_enum"
+            ),
+            nullable=True,
+        ),
+        sa.Column(
             "created_at",
             sa.DateTime(timezone=True),
             server_default=sa.text("now()"),
@@ -313,6 +484,62 @@ def upgrade() -> None:
     op.create_index(op.f("ix_activities_id"), "activities", ["id"], unique=False)
     op.create_index(
         op.f("ix_activities_user_id"), "activities", ["user_id"], unique=False
+    )
+    op.create_table(
+        "activity_suggestions",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("user_id", sa.Integer(), nullable=False),
+        sa.Column("activity_id", sa.Integer(), nullable=False),
+        sa.Column("suggested_date", sa.Date(), nullable=False),
+        sa.Column("target_week_start", sa.Date(), nullable=False),
+        sa.Column("suggested_reason", sa.Text(), nullable=True),
+        sa.Column("completion_status", sa.String(length=20), nullable=False),
+        sa.Column("completion_date", sa.Date(), nullable=True),
+        sa.Column("user_feedback", sa.Text(), nullable=True),
+        sa.Column("user_rating", sa.Integer(), nullable=True),
+        sa.Column("inferred_completion_likelihood", sa.Float(), nullable=True),
+        sa.Column("weather_conditions", sa.JSON(), nullable=True),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("updated_at", sa.DateTime(), nullable=False),
+        sa.ForeignKeyConstraint(["activity_id"], ["activities.id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        "idx_activity_suggestions_activity_date",
+        "activity_suggestions",
+        ["activity_id", "suggested_date"],
+        unique=False,
+    )
+    op.create_index(
+        "idx_activity_suggestions_user_date",
+        "activity_suggestions",
+        ["user_id", "suggested_date"],
+        unique=False,
+    )
+    op.create_index(
+        op.f("ix_activity_suggestions_activity_id"),
+        "activity_suggestions",
+        ["activity_id"],
+        unique=False,
+    )
+    op.create_index(
+        op.f("ix_activity_suggestions_suggested_date"),
+        "activity_suggestions",
+        ["suggested_date"],
+        unique=False,
+    )
+    op.create_index(
+        op.f("ix_activity_suggestions_target_week_start"),
+        "activity_suggestions",
+        ["target_week_start"],
+        unique=False,
+    )
+    op.create_index(
+        op.f("ix_activity_suggestions_user_id"),
+        "activity_suggestions",
+        ["user_id"],
+        unique=False,
     )
     op.create_table(
         "week_activities",
@@ -361,13 +588,39 @@ def downgrade() -> None:
     op.drop_index(op.f("ix_week_activities_user_id"), table_name="week_activities")
     op.drop_index(op.f("ix_week_activities_activity_id"), table_name="week_activities")
     op.drop_table("week_activities")
+    op.drop_index(
+        op.f("ix_activity_suggestions_user_id"), table_name="activity_suggestions"
+    )
+    op.drop_index(
+        op.f("ix_activity_suggestions_target_week_start"),
+        table_name="activity_suggestions",
+    )
+    op.drop_index(
+        op.f("ix_activity_suggestions_suggested_date"),
+        table_name="activity_suggestions",
+    )
+    op.drop_index(
+        op.f("ix_activity_suggestions_activity_id"), table_name="activity_suggestions"
+    )
+    op.drop_index(
+        "idx_activity_suggestions_user_date", table_name="activity_suggestions"
+    )
+    op.drop_index(
+        "idx_activity_suggestions_activity_date", table_name="activity_suggestions"
+    )
+    op.drop_table("activity_suggestions")
     op.drop_index(op.f("ix_activities_user_id"), table_name="activities")
     op.drop_index(op.f("ix_activities_id"), table_name="activities")
     op.drop_index(op.f("ix_activities_assigned_to_kid_id"), table_name="activities")
     op.drop_table("activities")
+    op.drop_table("user_behavior_analytics")
     op.drop_index(op.f("ix_kids_parent_id"), table_name="kids")
     op.drop_index(op.f("ix_kids_id"), table_name="kids")
     op.drop_table("kids")
+    op.drop_index(
+        op.f("ix_family_preferences_user_id"), table_name="family_preferences"
+    )
+    op.drop_table("family_preferences")
     op.drop_index(op.f("ix_users_zip_code"), table_name="users")
     op.drop_index(op.f("ix_users_id"), table_name="users")
     op.drop_index(op.f("ix_users_google_id"), table_name="users")

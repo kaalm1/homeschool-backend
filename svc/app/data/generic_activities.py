@@ -10,6 +10,7 @@ from svc.app.datatypes.enums import (
     Participants,
     Season,
     Theme,
+    ActivityScale,
 )
 from svc.app.models.activity import Activity
 
@@ -31,6 +32,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.PARK, ActivityType.OUTDOOR, ActivityType.SPORTS],
         primary_type=ActivityType.PARK,
         primary_theme=Theme.NATURE,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Family board game night",
@@ -53,6 +55,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         ],
         primary_type=ActivityType.BOARD_GAMES,
         primary_theme=Theme.SOCIAL,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Nature walk",
@@ -71,6 +74,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.HIKING, ActivityType.OUTDOOR],
         primary_type=ActivityType.HIKING,
         primary_theme=Theme.NATURE,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Home art & crafts",
@@ -89,6 +93,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.ARTS_CRAFTS, ActivityType.INDOOR],
         primary_type=ActivityType.ARTS_CRAFTS,
         primary_theme=Theme.CREATIVE,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Family cooking",
@@ -107,6 +112,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.CLASSES],
         primary_type=ActivityType.CLASSES,
         primary_theme=Theme.FOOD_DRINK,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Story time",
@@ -125,6 +131,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.STORYTELLING, ActivityType.INDOOR],
         primary_type=ActivityType.STORYTELLING,
         primary_theme=Theme.EDUCATIONAL,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Puzzle challenge",
@@ -143,6 +150,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.PUZZLES, ActivityType.INDOOR],
         primary_type=ActivityType.PUZZLES,
         primary_theme=Theme.CREATIVE,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Backyard sports",
@@ -161,6 +169,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.SPORTS, ActivityType.OUTDOOR],
         primary_type=ActivityType.OUTDOOR,
         primary_theme=Theme.FITNESS,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Visit a local library",
@@ -179,6 +188,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.CLASSES, ActivityType.INDOOR],
         primary_type=ActivityType.INDOOR,
         primary_theme=Theme.EDUCATIONAL,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Nature scavenger hunt",
@@ -197,6 +207,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.HIKING, ActivityType.OUTDOOR],
         primary_type=ActivityType.OUTDOOR,
         primary_theme=Theme.NATURE,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Dance party",
@@ -215,6 +226,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.DANCE, ActivityType.INDOOR],
         primary_type=ActivityType.DANCE,
         primary_theme=Theme.FITNESS,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Garden planting",
@@ -233,6 +245,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.GARDENING, ActivityType.OUTDOOR],
         primary_type=ActivityType.GARDENING,
         primary_theme=Theme.NATURE,
+        activity_scale=ActivityScale.SMALL,
     ),
     Activity(
         title="Volunteer together",
@@ -251,6 +264,7 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.VOLUNTEERING],
         primary_type=ActivityType.VOLUNTEERING,
         primary_theme=Theme.SOCIAL,
+        activity_scale=ActivityScale.MEDIUM,
     ),
     Activity(
         title="Stargazing night",
@@ -269,5 +283,6 @@ GENERIC_FAMILY_ACTIVITIES: List[Activity] = [
         activity_types=[ActivityType.OUTDOOR, ActivityType.SCIENCE_TECH],
         primary_type=ActivityType.OUTDOOR,
         primary_theme=Theme.MINDFULNESS,
+        activity_scale=ActivityScale.MEDIUM,
     ),
 ]

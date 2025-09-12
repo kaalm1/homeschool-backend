@@ -79,6 +79,7 @@ class UserSeedingService:
                 "user_id": user.id,
                 "assigned_to_kid_id": None,  # Will be assigned when kids are added
                 "done": False,
+                "llm_generated": False,
                 "costs": generic_activity.costs,
                 "durations": generic_activity.durations,
                 "participants": generic_activity.participants,

@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from scripts.seed_data import seed_demo_data
 from svc.app.config import get_settings
 from svc.app.controllers import (
     activity_controller,
@@ -25,7 +24,6 @@ async def lifespan(app: FastAPI):
     """Application lifespan events."""
     # Startup
     create_tables()
-    await seed_demo_data()
     yield
     # Shutdown
     pass

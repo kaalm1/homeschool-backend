@@ -21,14 +21,10 @@ class FamilyProfileService:
     def __init__(
         self,
         user_repo: UserRepository,
-        preferences_repo: FamilyPreferenceRepository,
-        analytics_repo: UserBehaviorAnalyticsRepository,
         kid_service: "KidService",
         family_preference_service: FamilyPreferenceService,
     ):
         self.user_repo = user_repo
-        self.preferences_repo = preferences_repo
-        self.analytics_repo = analytics_repo
         self.kid_service = kid_service
         self.family_preference_service = family_preference_service
 
@@ -42,7 +38,7 @@ class FamilyProfileService:
         preferences_data = self.family_preference_service.get_family_preferences(
             user_id
         )
-        kids = self.kid_service.get_kids_by_parent(user_id)
+        kids = self.kid_service.kid_repo.get_by_parent_id(user_id)
 
         return FamilyProfile(
             # Core demographics from User model

@@ -111,13 +111,6 @@ def get_activity_planner_service(
     return ActivityPlannerService(activity_service, kid_service)
 
 
-def get_family_profile_service(
-    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
-    kid_repo: Annotated[KidRepository, Depends(get_kid_repository)],
-) -> FamilyProfileService:
-    return FamilyProfileService(user_repo, kid_repo)
-
-
 def get_historical_activity_analyzer(
     week_activity_repo: Annotated[
         WeekActivityRepository, Depends(get_week_activity_repository)
@@ -129,6 +122,31 @@ def get_historical_activity_analyzer(
 
 def get_weather_service() -> WeatherService:
     return WeatherService()
+
+
+def get_settings_service() -> SettingsService:
+    """Get settings service dependency."""
+    return SettingsService()
+
+
+def get_family_preference_service(
+    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+    family_preference_repo: Annotated[
+        FamilyPreferenceRepository, Depends(get_family_preference_repository)
+    ],
+) -> FamilyPreferenceService:
+    """Dependency to get family preference service."""
+    return FamilyPreferenceService(family_preference_repo, user_repo)
+
+
+def get_family_profile_service(
+    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+    kid_service: Annotated[KidService, Depends(get_kid_service)],
+    family_preference_service: Annotated[
+        FamilyPreferenceService, Depends(get_family_preference_service)
+    ],
+) -> FamilyProfileService:
+    return FamilyProfileService(user_repo, kid_service, family_preference_service)
 
 
 def get_enhanced_activity_planner_service(
@@ -153,21 +171,6 @@ def get_enhanced_activity_planner_service(
         weather_service=weather_service,
         llm_client=openai_client,
     )
-
-
-def get_settings_service() -> SettingsService:
-    """Get settings service dependency."""
-    return SettingsService()
-
-
-def get_family_preference_service(
-    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
-    family_preference_repo: Annotated[
-        FamilyPreferenceRepository, Depends(get_family_preference_repository)
-    ],
-) -> FamilyPreferenceService:
-    """Dependency to get family preference service."""
-    return FamilyPreferenceService(family_preference_repo, user_repo)
 
 
 # Authentication dependency

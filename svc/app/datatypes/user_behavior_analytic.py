@@ -43,10 +43,16 @@ class ActivityCooldownInfo(BaseModel):
 
 
 class PastActivityContext(BaseModel):
-    encourage_repetition: List[ActivityRepetitionInfo] = Field(max_items=10)
-    moderate_cooldown: List[ActivityCooldownInfo] = Field(max_items=15)
-    avoid_repetition: List[ActivityCooldownInfo] = Field(max_items=20)
-    successful_patterns: Dict[str, Any] = Field(default={})
-    avoided_patterns: Dict[str, Any] = Field(default={})
-    favorite_themes: List[tuple[str, int]] = Field(max_items=5)
-    preferred_durations: List[str] = Field(max_items=3)
+    encourage_repetition: List[ActivityRepetitionInfo] = Field(
+        default_factory=list, max_length=10
+    )
+    moderate_cooldown: List[ActivityCooldownInfo] = Field(
+        default_factory=list, max_length=15
+    )
+    avoid_repetition: List[ActivityCooldownInfo] = Field(
+        default_factory=list, max_length=20
+    )
+    successful_patterns: Dict[str, Any] = Field(default_factory=dict)
+    avoided_patterns: Dict[str, Any] = Field(default_factory=dict)
+    favorite_themes: List[tuple[str, int]] = Field(default_factory=list, max_length=5)
+    preferred_durations: List[str] = Field(default_factory=list, max_length=3)

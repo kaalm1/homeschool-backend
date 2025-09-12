@@ -1,4 +1,5 @@
 import json
+import re
 import logging
 from datetime import date, datetime, timedelta
 from typing import Any, Dict, List, Optional
@@ -171,7 +172,7 @@ class EnhancedActivityPlannerService:
 
         for attempt in range(self.max_retries):
             try:
-                response = await self.llm_client.client.chat.completions.create(
+                response = self.llm_client.client.chat.completions.create(
                     model=self.model,
                     messages=[
                         {"role": "system", "content": system_prompt},
@@ -185,15 +186,12 @@ class EnhancedActivityPlannerService:
                 if not content:
                     raise ValueError("Empty response from LLM")
 
-                # Parse JSON response
-                import json
-
                 try:
+                    start = content.find("[")
+                    if start != -1:
+                        content = content[start:]
                     activities = json.loads(content.strip())
                 except json.JSONDecodeError:
-                    # Try to extract JSON from response if wrapped in markdown
-                    import re
-
                     json_match = re.search(
                         r"```(?:json)?\s*(\[.*?\])\s*```", content, re.DOTALL
                     )
@@ -253,7 +251,12 @@ OUTPUT REQUIREMENTS:
 - Use provided activity IDs only
 
 Return ONLY valid JSON array with no additional text:
-[{"id": int, "title": string, "why_it_fits": string}]"""
+[{"id": int, "title": string, "why_it_fits": string}]
+
+You MUST return ONLY a valid JSON array. 
+Do not include explanations, introductions, or reasoning outside the JSON. 
+If you add any extra text, the output will be rejected.
+"""
 
     def _build_user_prompt(
         self,

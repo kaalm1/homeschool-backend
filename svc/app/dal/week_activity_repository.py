@@ -249,6 +249,7 @@ class WeekActivityRepository(BaseRepository[WeekActivity]):
                 user_id=user_id,
                 activity_id=wa_data.activity_id,
                 date_obj=target_date,
+                llm_suggestion=wa_data.llm_suggestion,
             )
             week_activities.append(week_activity)
 

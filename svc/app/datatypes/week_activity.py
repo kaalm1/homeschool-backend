@@ -31,6 +31,7 @@ class WeekActivityCreate(BaseModel):
     activity_year: Optional[int] = Field(
         default=None, description="Year of the activity"
     )
+    llm_suggestion: Optional[bool] = Field(default=None)
 
 
 class WeekActivityUpdate(BaseModel):

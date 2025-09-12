@@ -64,7 +64,10 @@ async def plan_week_activities(
     week_activity_assignments = []
     for activity in planned_activities:
         assignment = WeekActivityCreate(
-            activity_id=activity["id"], activity_year=year, activity_week=week
+            activity_id=activity["id"],
+            activity_year=year,
+            activity_week=week,
+            llm_suggestion=True,
         )
         week_activity_assignments.append(assignment)
 

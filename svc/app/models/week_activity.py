@@ -41,6 +41,8 @@ class WeekActivity(BaseModel):
         String, nullable=True
     )  # Optional notes from user
 
+    llm_suggestion: Mapped[Optional[bool]] = mapped_column(Boolean, null=True)
+
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="week_activities")
     activity: Mapped["Activity"] = relationship(
@@ -48,7 +50,13 @@ class WeekActivity(BaseModel):
     )
 
     @classmethod
-    def assign(cls, user_id: int, activity_id: int, date_obj: date) -> "WeekActivity":
+    def assign(
+        cls,
+        user_id: int,
+        activity_id: int,
+        date_obj: date,
+        llm_suggestion: Optional[bool] = None,
+    ) -> "WeekActivity":
         year, week, _ = date_obj.isocalendar()
         return cls(
             user_id=user_id,
@@ -56,6 +64,7 @@ class WeekActivity(BaseModel):
             year=year,
             week=week,
             completed=False,
+            llm_suggestion=llm_suggestion,
         )
 
     def mark_completed(

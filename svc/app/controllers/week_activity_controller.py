@@ -33,16 +33,13 @@ router = APIRouter()
 async def plan_week_activities(
     current_user: Annotated[CurrentUser, Depends(get_current_user)],
     request: PlanWeekActivityRequest,
-    target_week_start: Optional[date] = Query(
-        None, description="Start date of the week to plan (defaults to current week)"
-    ),
     planner_service: EnhancedActivityPlannerService = Depends(
         get_enhanced_activity_planner_service
     ),
     week_service: WeekActivityService = Depends(get_week_activity_service),
 ):
     """Plan activities for a week using AI recommendations and create week activity assignments."""
-
+    target_week_start = request.target_week_start
     # Get AI-generated activity recommendations
     planned_activities = await planner_service.plan_weekly_activities(
         user_id=current_user.id,

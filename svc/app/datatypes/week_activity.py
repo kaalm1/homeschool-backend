@@ -1,11 +1,20 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Optional
 
 from pydantic import BaseModel, Field, validator
 
 
+def get_current_week_monday() -> date:
+    today = date.today()
+    return today - timedelta(days=today.weekday())
+
+
 class PlanWeekActivityRequest(BaseModel):
     additional_notes: Optional[str] = Field(default=None)
+    target_week_start: Optional[date] = Field(
+        default_factory=get_current_week_monday,
+        description="Start date of the week to plan (defaults to current week Monday)",
+    )
 
 
 class WeekActivityCreate(BaseModel):

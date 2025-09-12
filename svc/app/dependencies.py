@@ -30,6 +30,7 @@ from svc.app.services.family_preference_service import FamilyPreferenceService
 from svc.app.services.family_profile_service import FamilyProfileService
 from svc.app.services.kid_service import KidService
 from svc.app.services.settings_service import SettingsService
+from svc.app.services.user_seeding_service import UserSeedingService
 from svc.app.services.user_service import UserService
 from svc.app.services.weather_service import WeatherService
 from svc.app.services.week_activity_service import WeekActivityService
@@ -89,6 +90,12 @@ def get_user_service(
     user_repo: Annotated[UserRepository, Depends(get_user_repository)]
 ) -> UserService:
     return UserService(user_repo)
+
+
+def get_user_seeding_service(
+    activity_repo: Annotated[ActivityRepository, Depends(get_activity_repository)],
+) -> UserSeedingService:
+    return UserSeedingService(activity_repo)
 
 
 def get_kid_service(

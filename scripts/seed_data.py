@@ -6,7 +6,7 @@ from svc.app.models.user import User
 from svc.app.models.kid import Kid
 from svc.app.models.activity import Activity
 from svc.app.utils.security import hash_password
-from svc.app.data.seed import GENERIC_FAMILY_ACTIVITIES
+from svc.app.data.generic_activities import GENERIC_FAMILY_ACTIVITIES
 
 
 async def seed_demo_data():

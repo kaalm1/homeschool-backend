@@ -60,12 +60,12 @@ async def seed_demo_data():
 
         # Print summary of created activities
         family_activities = [a for a in activities if a.assigned_to_kid_id is None]
-        ava_activities = [a for a in activities if a.assigned_to_kid_id == ava.id]
-        ben_activities = [a for a in activities if a.assigned_to_kid_id == ben.id]
+        # ava_activities = [a for a in activities if a.assigned_to_kid_id == ava.id]
+        # ben_activities = [a for a in activities if a.assigned_to_kid_id == ben.id]
 
         print(f"  - {len(family_activities)} family activities")
-        print(f"  - {len(ava_activities)} activities for Ava")
-        print(f"  - {len(ben_activities)} activities for Ben")
+        # print(f"  - {len(ava_activities)} activities for Ava")
+        # print(f"  - {len(ben_activities)} activities for Ben")
 
     except Exception as e:
         db.rollback()

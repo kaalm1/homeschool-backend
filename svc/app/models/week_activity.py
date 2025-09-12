@@ -41,7 +41,7 @@ class WeekActivity(BaseModel):
         String, nullable=True
     )  # Optional notes from user
 
-    llm_suggestion: Mapped[Optional[bool]] = mapped_column(Boolean, null=True)
+    llm_suggestion: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
 
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="week_activities")

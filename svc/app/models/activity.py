@@ -66,6 +66,9 @@ class Activity(BaseModel):
     llm_generated: Mapped[Optional[bool]] = mapped_column(
         Boolean, default=False, nullable=True
     )
+    equipment: Mapped[Optional[List[str]]] = mapped_column(ARRAY, nullable=True)
+    instructions: Mapped[Optional[List[str]]] = mapped_column(ARRAY, nullable=True)
+    adhd_tips: Mapped[Optional[List[str]]] = mapped_column(ARRAY, nullable=True)
 
     # Foreign key to User (family) - every activity belongs to a family
     user_id: Mapped[int] = mapped_column(

@@ -2,7 +2,6 @@ from typing import Annotated
 
 from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from openai import OpenAI
 from sqlalchemy.orm import Session
 
 from svc.app.dal.activity_repository import ActivityRepository
@@ -15,9 +14,9 @@ from svc.app.dal.user_behavior_analytic_repository import (
 from svc.app.dal.user_repository import UserRepository
 from svc.app.dal.week_activity_repository import WeekActivityRepository
 from svc.app.database import get_db_session
-from svc.app.llm.client import llm_client
 from svc.app.llm.services.planner_service import ActivityPlannerService
 from svc.app.models.user import User
+from svc.app.services.activity_checklist_service import ActivityChecklistService
 from svc.app.services.activity_service import ActivityService
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
 from svc.app.services.auth_service import AuthService
@@ -177,6 +176,14 @@ def get_family_profile_service(
     ],
 ) -> FamilyProfileService:
     return FamilyProfileService(user_repo, kid_service, family_preference_service)
+
+
+def get_activity_checklist_service(
+    family_profile_service: Annotated[
+        FamilyProfileService, Depends(get_family_profile_service)
+    ],
+) -> ActivityChecklistService:
+    return ActivityChecklistService(family_profile_service)
 
 
 def get_enhanced_activity_planner_service(

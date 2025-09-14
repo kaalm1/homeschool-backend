@@ -22,7 +22,7 @@ class ActivityChecklistService:
         The JSON object must have exactly these keys:
         {
           "equipment": [list of strings],
-          "steps": [list of strings],
+          "instructions": [list of strings],
           "adhd_tips": [list of strings]
         }
 
@@ -50,7 +50,7 @@ class ActivityChecklistService:
                     "content": f"Activity: {activity}\nFamily context (JSON): {family_context}",
                 },
             ],
-            temperature=0.7,
+            temperature=self.temperature,
             response_format={"type": "json_object"},  # ensure valid JSON
         )
 

@@ -184,6 +184,7 @@ class EnhancedActivityPlannerService:
                     ],
                     temperature=self.temperature,
                     max_tokens=2000,
+                    response_format={"type": "json_object"},
                 )
 
                 content = response.choices[0].message.content
@@ -191,10 +192,13 @@ class EnhancedActivityPlannerService:
                     raise ValueError("Empty response from LLM")
 
                 try:
-                    start = content.find("[")
-                    if start != -1:
-                        content = content[start:]
-                    activities = json.loads(content.strip())
+                    if isinstance(content, list):
+                        activities = content
+                    else:
+                        start = content.find("[")
+                        if start != -1:
+                            content = content[start:]
+                        activities = json.loads(content.strip())
                 except json.JSONDecodeError:
                     json_match = re.search(
                         r"```(?:json)?\s*(\[.*?\])\s*```", content, re.DOTALL

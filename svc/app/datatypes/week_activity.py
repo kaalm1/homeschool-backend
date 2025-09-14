@@ -1,5 +1,5 @@
 from datetime import date, datetime, timedelta
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, Field, validator
 
@@ -74,6 +74,9 @@ class WeekActivityResponse(BaseModel):
     # Include related activity and user info
     activity_title: Optional[str] = None
     activity_description: Optional[str] = None
+    activity_equipment: Optional[List[str]] = None
+    activity_instructions: Optional[List[str]] = None
+    activity_adhd_tips: Optional[List[str]] = None
     user_name: Optional[str] = None
 
     class Config:

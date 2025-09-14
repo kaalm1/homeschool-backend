@@ -67,7 +67,9 @@ class Activity(BaseModel):
         Boolean, default=False, nullable=True
     )
     equipment: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
-    instructions: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
+    instructions: Mapped[Optional[List[str]]] = mapped_column(
+        ARRAY(String), nullable=True
+    )
     adhd_tips: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
 
     # Foreign key to User (family) - every activity belongs to a family

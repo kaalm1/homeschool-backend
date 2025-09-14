@@ -238,6 +238,21 @@ class WeekActivityService:
                 if hasattr(week_activity, "activity") and week_activity.activity
                 else None
             ),
+            activity_equipment=(
+                week_activity.activity.equipment
+                if hasattr(week_activity, "activity") and week_activity.activity
+                else None
+            ),
+            activity_instructions=(
+                week_activity.activity.instructions
+                if hasattr(week_activity, "activity") and week_activity.activity
+                else None
+            ),
+            activity_adhd_tips=(
+                week_activity.activity.adhd_tips
+                if hasattr(week_activity, "activity") and week_activity.activity
+                else None
+            ),
         )
 
     def _mark_suggestion_as_removed(self, week_activity) -> None:

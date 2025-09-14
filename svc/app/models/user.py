@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import DateTime, Float, String, Text
+from sqlalchemy import Boolean, DateTime, Float, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseModel
@@ -85,6 +85,20 @@ class User(BaseModel):
 
     # Timestamps
     last_login: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+    premium_subscription: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
+    premium_subscription_started_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime, nullable=True
+    )
+    premium_subscription_expires_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime, nullable=True
+    )
+    premium_subscription_tier: Mapped[Optional[str]] = mapped_column(
+        String(50), nullable=True
+    )
+    premium_subscription_tokens: Mapped[Optional[int]] = mapped_column(
+        Integer, default=0, nullable=True
+    )
 
     # Relationships
     kids: Mapped[List["Kid"]] = relationship(

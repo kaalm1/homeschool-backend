@@ -90,6 +90,10 @@ class ActivityUpdate(BaseModel):
     themes: Optional[List[Theme]] = Field(None, description="Theme IDs")
     types: Optional[List[ActivityType]] = Field(None, description="ActivityType IDs")
 
+    equipment: Optional[List[str]] = Field(None, description="Activity equipment")
+    instructions: Optional[List[str]] = Field(None, description="Activity instructions")
+    adhd_tips: Optional[List[str]] = Field(None, description="Activity adhd tips")
+
 
 class ActivityResponse(ActivityBase, TimestampMixin):
     id: int = Field(..., description="Activity ID")

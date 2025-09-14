@@ -1,6 +1,5 @@
 from svc.app.config import settings
-from svc.app.dal import activity_repository
-from svc.app.datatypes.activity import ActivityResponse
+from svc.app.datatypes.activity import ActivityResponse, ActivityUpdate
 from svc.app.datatypes.family_preference import FamilyProfile
 from svc.app.llm.client import llm_client
 from svc.app.services.activity_service import ActivityService
@@ -66,7 +65,9 @@ class ActivityChecklistService:
         )
 
         parsed_response = response.choices[0].message.parsed
-        return self.activity_service.update_activity(activity_id, parsed_response)
+        return self.activity_service.update_activity(
+            activity_id, ActivityUpdate(**parsed_response), user_id
+        )
 
     def _format_family_context(self, profile: FamilyProfile) -> dict:
         """Convert FamilyProfile into a structured JSON context with only relevant fields."""

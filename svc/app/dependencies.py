@@ -182,8 +182,9 @@ def get_activity_checklist_service(
     family_profile_service: Annotated[
         FamilyProfileService, Depends(get_family_profile_service)
     ],
+    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
 ) -> ActivityChecklistService:
-    return ActivityChecklistService(family_profile_service)
+    return ActivityChecklistService(family_profile_service, activity_service)
 
 
 def get_enhanced_activity_planner_service(

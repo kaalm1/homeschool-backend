@@ -14,7 +14,13 @@ from svc.app.datatypes.enums import (
     Season,
     Theme,
 )
-from svc.app.dependencies import CurrentUser, get_activity_service, get_current_user
+from svc.app.dependencies import (
+    CurrentUser,
+    get_activity_checklist_service,
+    get_activity_service,
+    get_current_user,
+)
+from svc.app.services.activity_checklist_service import ActivityChecklistService
 from svc.app.services.activity_service import ActivityService
 
 router = APIRouter(tags=["activities"])
@@ -113,3 +119,19 @@ async def delete_activity(
     """Delete an activity."""
     activity_service.delete_activity(activity_id, current_user.id)
     return None
+
+
+@router.get(
+    "{activity_id}/checklist",
+    response_model=ActivityResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def get_checklist(
+    activity_id: int,
+    current_user: Annotated[CurrentUser, Depends(get_current_user)],
+    activity_checklist_service: Annotated[
+        ActivityChecklistService, Depends(get_activity_service)
+    ],
+):
+    """Get activities for the current user. Optionally filter by kid."""
+    return activity_checklist_service.generate_checklist(activity_id, current_user.id)

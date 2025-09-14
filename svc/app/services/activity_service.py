@@ -36,6 +36,10 @@ class ActivityService:
         self.activity_repo = activity_repository
         self.kid_repo = kid_repository
 
+    def get_activity(self, activity_id: int, user_id: int) -> ActivityResponse:
+        activity = self.activity_repo.get_activity_by_parent(activity_id, user_id)
+        return ActivityResponse.from_activity(activity)
+
     def get_activities_by_parent(self, parent_id: int) -> List[ActivityResponse]:
         """Get all activities for a parent's kids."""
         activities = self.activity_repo.get_by_parent_id(parent_id)

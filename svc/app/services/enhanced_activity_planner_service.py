@@ -16,6 +16,7 @@ from svc.app.datatypes.user_behavior_analytic import (
     WeatherDay,
     WeeklyContext,
 )
+from svc.app.llm.client import llm_client
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
 from svc.app.services.family_profile_service import FamilyProfileService
 from svc.app.services.weather_service import WeatherService
@@ -32,7 +33,6 @@ class EnhancedActivityPlannerService:
         week_activity_repo: WeekActivityRepository,
         historical_analyzer: HistoricalActivityAnalyzer,
         weather_service: WeatherService,
-        llm_client,
     ):
         self.family_profile_service = family_profile_service
         self.activity_repo = activity_repo

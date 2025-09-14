@@ -1,4 +1,3 @@
-import os
 from typing import Annotated
 
 from fastapi import Depends
@@ -39,11 +38,6 @@ security = HTTPBearer(auto_error=True)
 
 # Database dependency
 DatabaseSession = Annotated[Session, Depends(get_db_session)]
-
-
-def get_openai_client():
-    """Get configured OpenAI client."""
-    return llm_client
 
 
 # Repository dependencies
@@ -200,7 +194,6 @@ def get_enhanced_activity_planner_service(
         HistoricalActivityAnalyzer, Depends(get_historical_activity_analyzer)
     ],
     weather_service: Annotated[WeatherService, Depends(get_weather_service)],
-    openai_client: Annotated[OpenAI, Depends(get_openai_client)],
 ) -> EnhancedActivityPlannerService:
     return EnhancedActivityPlannerService(
         family_profile_service=family_profile_service,
@@ -209,7 +202,6 @@ def get_enhanced_activity_planner_service(
         week_activity_repo=week_activity_repo,
         historical_analyzer=historical_analyzer,
         weather_service=weather_service,
-        llm_client=openai_client,
     )
 
 

@@ -19,7 +19,7 @@ class FamilyProfile(BaseModel):
     # Core Demographics
     family_size: int = Field(ge=1, le=20)
     adults_count: int = Field(ge=1, le=10)
-    kids: List[Dict] = Field(default=[])
+    kids: List[Dict] = Field(default_factory=list)
 
     # Location & Mobility
     home_location: str
@@ -29,16 +29,16 @@ class FamilyProfile(BaseModel):
 
     # Financial Constraints
     weekly_activity_budget: Optional[float] = None
-    preferred_cost_ranges: List[str] = Field(default=[])
+    preferred_cost_ranges: List[str] = Field(default_factory=list)
 
     # Time Availability
-    available_days: List[DaysOfWeek] = Field(default=[])
-    preferred_time_slots: List[PreferredTimeSlot] = Field(default=[])
+    available_days: List[DaysOfWeek] = Field(default_factory=list)
+    preferred_time_slots: List[PreferredTimeSlot] = Field(default_factory=list)
     max_activities_per_week: int = Field(default=5, ge=1, le=10)
 
     # Preferences
-    preferred_themes: List[Theme] = Field(default=[])
-    preferred_activity_types: List[ActivityType] = Field(default=[])
+    preferred_themes: List[Theme] = Field(default_factory=list)
+    preferred_activity_types: List[ActivityType] = Field(default_factory=list)
     group_activity_comfort: Optional[GroupActivityComfort] = Field(default=None)
     new_experience_openness: Optional[NewExperienceOpenness] = Field(default=None)
 
@@ -93,22 +93,22 @@ class FamilyPreferenceResponse(BaseModel):
     id: Optional[int] = Field(None, description="Preference ID")
     user_id: Optional[int] = Field(None, description="User ID")
     preferred_themes: List[Theme] = Field(
-        default=[], description="Preferred activity themes"
+        default_factory=list, description="Preferred activity themes"
     )
     preferred_activity_types: List[ActivityType] = Field(
-        default=[], description="Preferred activity types"
+        default_factory=list, description="Preferred activity types"
     )
     preferred_cost_ranges: List[Cost] = Field(
-        default=[], description="Preferred cost ranges"
+        default_factory=list, description="Preferred cost ranges"
     )
     preferred_locations: List[Location] = Field(
-        default=[], description="Preferred locations"
+        default_factory=list, description="Preferred locations"
     )
     available_days: List[DaysOfWeek] = Field(
-        default=[], description="Available days of the week"
+        default_factory=list, description="Available days of the week"
     )
     preferred_time_slots: List[PreferredTimeSlot] = Field(
-        default=[], description="Preferred time slots"
+        default_factory=list, description="Preferred time slots"
     )
     group_activity_comfort: Optional[GroupActivityComfort] = Field(
         default=None, description="Group activity comfort level"
@@ -117,13 +117,13 @@ class FamilyPreferenceResponse(BaseModel):
         default=None, description="Openness to new experiences"
     )
     educational_priorities: List[str] = Field(
-        default=[], description="Educational priorities"
+        default_factory=list, description="Educational priorities"
     )
     equipment_owned: List[str] = Field(
-        default=[], description="Equipment owned by family"
+        default_factory=list, description="Equipment owned by family"
     )
     accessibility_needs: List[str] = Field(
-        default=[], description="Accessibility needs"
+        default_factory=list, description="Accessibility needs"
     )
     special_requirements: Optional[str] = Field(
         default=None, description="Special requirements"

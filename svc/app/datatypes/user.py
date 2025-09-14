@@ -43,4 +43,4 @@ class UserResponse(UserBase, TimestampMixin):
 class UserWithKidsResponse(UserResponse):
     """User response with kids included."""
 
-    kids: List[KidResponse] = Field(default=[], description="User's kids")
+    kids: List[KidResponse] = Field(default_factory=list, description="User's kids")

@@ -64,6 +64,10 @@ class ActivityBase(BaseModel):
         None, description="Activity type"
     )
 
+    equipment: Optional[List[str]] = Field(None, description="Activity equipment")
+    instructions: Optional[List[str]] = Field(None, description="Activity instructions")
+    adhd_tips: Optional[List[str]] = Field(None, description="Activity adhd tips")
+
 
 class ActivityCreate(ActivityBase):
     kid_id: Optional[int] = Field(None, description="Kid ID")

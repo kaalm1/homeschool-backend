@@ -14,7 +14,6 @@ from svc.app.dal.user_behavior_analytic_repository import (
 from svc.app.dal.user_repository import UserRepository
 from svc.app.dal.week_activity_repository import WeekActivityRepository
 from svc.app.database import get_db_session
-from svc.app.llm.services.planner_service import ActivityPlannerService
 from svc.app.models.user import User
 from svc.app.services.activity_checklist_service import ActivityChecklistService
 from svc.app.services.activity_service import ActivityService
@@ -115,13 +114,6 @@ def get_week_activity_service(
     activity_repo: Annotated[ActivityRepository, Depends(get_activity_repository)],
 ) -> WeekActivityService:
     return WeekActivityService(week_activity_repo, user_repo, activity_repo)
-
-
-def get_activity_planner_service(
-    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
-    kid_service: Annotated[KidService, Depends(get_kid_service)],
-) -> ActivityPlannerService:
-    return ActivityPlannerService(activity_service, kid_service)
 
 
 def get_behaviour_analytics_service(

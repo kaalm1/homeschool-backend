@@ -1,17 +1,18 @@
 import random
 from collections import Counter, defaultdict
 from typing import List, Set
+
+from svc.app.datatypes.enums import ActivityScale, ActivityType, Cost
 from svc.app.models.activity import Activity
-from svc.app.datatypes.enums import Cost, ActivityType, ActivityScale
 
 
 def build_min_based_batches(
-    activities: List[Activity],
+    activities: List[dict],
     min_batch_size: int = 50,
     stretch_per_batch: int = 5,
     diversity_weight: float = 10.0,
     controlled_shuffle: bool = True,
-) -> List[List[Activity]]:
+) -> List[List[dict]]:
     """
     Build batches where each batch starts at min_batch_size and remaining activities
     are distributed evenly across batches.
@@ -21,6 +22,7 @@ def build_min_based_batches(
         min_batch_size: Minimum allowed batch size
         stretch_per_batch: Number of fully random "wildcard" activities to inject
         diversity_weight: Scaling factor for secondary tag underrepresentation
+        controlled_shuffle: Flag whether to do a controlled shuffle
     Returns:
         List of batches (each batch is a list of Activity objects)
     """
@@ -49,7 +51,7 @@ def build_min_based_batches(
         batches = []
         idx = 0
         for size in batch_sizes:
-            batches.append(shuffled[idx: idx + size])
+            batches.append(shuffled[idx : idx + size])
             idx += size
         return batches
 
@@ -81,11 +83,15 @@ def build_min_based_batches(
                 continue
 
             secondary_tags = (
-                candidate.durations or []
-            ) + (candidate.participants or []) + (candidate.age_groups or []) \
-              + (candidate.locations or []) + (candidate.seasons or []) \
-              + (candidate.frequency or []) + (candidate.themes or []) \
-              + (candidate.activity_types or [])
+                (candidate.durations or [])
+                + (candidate.participants or [])
+                + (candidate.age_groups or [])
+                + (candidate.locations or [])
+                + (candidate.seasons or [])
+                + (candidate.frequency or [])
+                + (candidate.themes or [])
+                + (candidate.activity_types or [])
+            )
 
             score = 1.0
             for t in secondary_tags:
@@ -104,7 +110,9 @@ def build_min_based_batches(
         if remaining_candidates:
             random.shuffle(remaining_candidates)
             batch.extend(remaining_candidates[:stretch_per_batch])
-            used_activity_ids.update(a.id for a in remaining_candidates[:stretch_per_batch])
+            used_activity_ids.update(
+                a.id for a in remaining_candidates[:stretch_per_batch]
+            )
 
         batches.append(batch)
 

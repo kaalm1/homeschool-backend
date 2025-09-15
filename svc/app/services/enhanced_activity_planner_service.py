@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import re
@@ -16,10 +17,12 @@ from svc.app.datatypes.user_behavior_analytic import (
     WeatherDay,
     WeeklyContext,
 )
+from svc.app.helpers.activity_helpers import build_min_based_batches
 from svc.app.llm.client import llm_client
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
 from svc.app.services.family_profile_service import FamilyProfileService
 from svc.app.services.weather_service import WeatherService
+from svc.app.utils.parsing import parse_content
 
 logger = logging.getLogger(__name__)
 
@@ -162,6 +165,47 @@ class EnhancedActivityPlannerService:
 
     async def _generate_llm_recommendations(
         self,
+        family_profile: "FamilyProfile",
+        weekly_context: "WeeklyContext",
+        available_activities: List[dict],
+        past_context: "PastActivityContext",
+    ) -> List[dict]:
+        """Generate recommendations using LLM, with batching and async calls."""
+
+        # 🔹 Step 1: Build batches (min batch size logic comes from helper)
+        batches = build_min_based_batches(available_activities, min_batch_size=50)
+
+        # 🔹 Step 2: Process batches in parallel
+        batch_tasks = [
+            self._process_batch(family_profile, weekly_context, batch, past_context)
+            for batch in batches
+        ]
+        batch_results = await asyncio.gather(*batch_tasks, return_exceptions=True)
+
+        # Filter out failed batches
+        finalists = []
+        for result in batch_results:
+            if isinstance(result, Exception):
+                logger.warning(f"Batch failed with error: {result}")
+            elif result:
+                finalists.extend(result)
+
+        if not finalists:
+            logger.error("No finalists produced from batches")
+            return []
+
+        # 🔹 Step 3: Run one final LLM call with the finalists
+        final_recommendations = await self._process_batch(
+            family_profile,
+            weekly_context,
+            finalists,
+            past_context,
+        )
+
+        return final_recommendations or []
+
+    async def _process_batch(
+        self,
         family_profile: FamilyProfile,
         weekly_context: WeeklyContext,
         available_activities: List[dict],
@@ -189,34 +233,21 @@ class EnhancedActivityPlannerService:
 
                 content = response.choices[0].message.content
                 if not content:
-                    raise ValueError("Empty response from LLM")
+                    logger.error("Empty response from LLM")
+                    return []
 
-                try:
-                    if isinstance(content, list):
-                        activities = content
-                    else:
-                        start = content.find("[")
-                        if start != -1:
-                            content = content[start:]
-                        activities = json.loads(content.strip())
-                except json.JSONDecodeError:
-                    json_match = re.search(
-                        r"```(?:json)?\s*(\[.*?\])\s*```", content, re.DOTALL
-                    )
-                    if json_match:
-                        activities = json.loads(json_match.group(1))
-                    else:
-                        raise
+                activities: list = parse_content(content)
 
                 if not isinstance(activities, list):
-                    raise ValueError("Response is not a JSON array")
+                    logger.error("Response is not a JSON array")
+                    return []
 
                 return activities
 
             except Exception as e:
                 logger.warning(f"LLM attempt {attempt + 1} failed: {e}")
                 if attempt == self.max_retries - 1:
-                    raise ValueError(
+                    logger.error(
                         f"Failed to get LLM recommendations after {self.max_retries} attempts"
                     )
 

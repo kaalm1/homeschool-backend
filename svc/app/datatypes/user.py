@@ -26,6 +26,8 @@ class UserUpdate(BaseModel):
     is_active: Optional[bool] = Field(None, description="User active status")
     address: Optional[str] = Field(None, description="User location address")
     family_size: Optional[int] = Field(None, description="User family size")
+    latitude: Optional[float] = Field(None, description="User latitude")
+    longitude: Optional[float] = Field(None, description="User longitude")
 
 
 class UserResponse(UserBase, TimestampMixin):

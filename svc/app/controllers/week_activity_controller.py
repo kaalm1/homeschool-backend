@@ -26,7 +26,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/week-activities/plan-week",
+    "/plan-week",
     response_model=List[WeekActivityResponse],
     status_code=201,
 )
@@ -110,7 +110,7 @@ async def plan_week_activities(
         return successfully_created
 
 
-@router.post("/week-activities", response_model=WeekActivityResponse, status_code=201)
+@router.post("/", response_model=WeekActivityResponse, status_code=201)
 def create_week_activity(
     current_user: Annotated[CurrentUser, Depends(get_current_user)],
     week_activity: WeekActivityCreate,
@@ -120,7 +120,7 @@ def create_week_activity(
     return service.create_week_activity(current_user.id, week_activity)
 
 
-@router.put("/week-activities/{week_activity_id}", response_model=WeekActivityResponse)
+@router.put("/{week_activity_id}", response_model=WeekActivityResponse)
 def update_week_activity(
     week_activity_id: int,
     update_data: WeekActivityUpdate,
@@ -131,7 +131,7 @@ def update_week_activity(
 
 
 @router.post(
-    "/week-activities/{week_activity_id}/toggle", response_model=WeekActivityResponse
+    "/{week_activity_id}/toggle", response_model=WeekActivityResponse
 )
 def toggle_week_activity(
     week_activity_id: int,
@@ -142,7 +142,7 @@ def toggle_week_activity(
 
 
 @router.post(
-    "/week-activities/bulk", response_model=List[WeekActivityResponse], status_code=201
+    "/bulk", response_model=List[WeekActivityResponse], status_code=201
 )
 def bulk_create_week_activities(
     bulk_data: BulkWeekActivityCreate,
@@ -152,7 +152,7 @@ def bulk_create_week_activities(
     return service.bulk_create_week_activities(bulk_data)
 
 
-@router.get("/week-activities/current", response_model=List[WeekActivityResponse])
+@router.get("/current", response_model=List[WeekActivityResponse])
 def get_current_week_activities(
     current_user: Annotated[CurrentUser, Depends(get_current_user)],
     service: WeekActivityService = Depends(get_week_activity_service),
@@ -161,7 +161,7 @@ def get_current_week_activities(
     return service.get_current_week_activities(user_id=current_user.id)
 
 
-@router.get("/week-activities", response_model=List[WeekActivityResponse])
+@router.get("/", response_model=List[WeekActivityResponse])
 def get_week_activities(
     current_user: Annotated[CurrentUser, Depends(get_current_user)],
     year: Optional[int] = Query(None, description="Year to filter by"),
@@ -177,7 +177,7 @@ def get_week_activities(
     )
 
 
-@router.get("/week-activities/summary", response_model=WeekSummary)
+@router.get("/summary", response_model=WeekSummary)
 def get_week_summary(
     current_user: Annotated[CurrentUser, Depends(get_current_user)],
     year: Optional[int] = Query(None, description="Year (defaults to current year)"),
@@ -190,7 +190,7 @@ def get_week_summary(
     return service.get_week_summary(year=year, week=week, user_id=current_user.id)
 
 
-@router.get("/week-activities/weeks", response_model=List[dict])
+@router.get("/weeks", response_model=List[dict])
 def get_available_weeks(
     current_user: Annotated[CurrentUser, Depends(get_current_user)],
     service: WeekActivityService = Depends(get_week_activity_service),
@@ -199,7 +199,7 @@ def get_available_weeks(
     return service.get_available_weeks(user_id=current_user.id)
 
 
-@router.delete("/week-activities/{week_activity_id}", status_code=204)
+@router.delete("{week_activity_id}", status_code=204)
 def delete_week_activity(
     week_activity_id: int,
     service: WeekActivityService = Depends(get_week_activity_service),
@@ -208,7 +208,7 @@ def delete_week_activity(
     service.delete_week_activity(week_activity_id)
 
 
-@router.delete("/week-activities/remove", status_code=204)
+@router.delete("/remove", status_code=204)
 def remove_activity_from_week(
     current_user: Annotated[CurrentUser, Depends(get_current_user)],
     activity_id: int = Query(..., description="Activity ID"),

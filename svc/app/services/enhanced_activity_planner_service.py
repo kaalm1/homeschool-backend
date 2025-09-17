@@ -1,8 +1,7 @@
 import asyncio
 import json
 import logging
-import re
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from typing import Any, Dict, List, Optional
 
 from svc.app.config import settings
@@ -17,6 +16,7 @@ from svc.app.datatypes.user_behavior_analytic import (
     WeatherDay,
     WeeklyContext,
 )
+from svc.app.datatypes.weather import WeatherInputs
 from svc.app.helpers.activity_helpers import build_min_based_batches
 from svc.app.llm.client import llm_client
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
@@ -98,13 +98,13 @@ class EnhancedActivityPlannerService:
         """Build weekly context with weather and other factors."""
         # Get weather forecast
         weather_forecast = []
-        if family_profile.home_coordinates:
-            try:
-                weather_forecast = self.weather_service.get_weekly_forecast(
-                    family_profile.home_location, target_week
-                )
-            except Exception as e:
-                logger.warning(f"Could not get weather forecast: {e}")
+
+        try:
+            weather_forecast = self.weather_service.get_weekly_forecast(
+                family_profile.home_location, target_week
+            )
+        except Exception as e:
+            logger.warning(f"Could not get weather forecast: {e}")
 
         # Determine season
         season = self._get_season(target_week)
@@ -378,14 +378,39 @@ Activities to choose from: {json.dumps(available_activities, indent=2)}"""
         return f"{family_desc}\n\n{context_desc}\n\n{repetition_desc}\n\n{preferences_desc}\n\n{activities_desc}"
 
     def _summarize_weather_forecast(self, forecast: List[WeatherDay]) -> str:
-        """Summarize weather forecast for the week."""
+        """
+        Produce a weekly summary of the forecast for LLM input.
+        No per-day details or activity recommendations.
+        Focuses on aggregated conditions, averages, totals, and risks.
+        """
         if not forecast:
-            return "Weather data unavailable"
+            return "Weather data unavailable."
 
-        outdoor_suitable_days = sum(1 for day in forecast if day.suitable_for_outdoor)
-        conditions = [day.condition for day in forecast]
+        total_precip = sum(day.precipitation_mm for day in forecast)
+        avg_high = sum(day.temperature_range[1] for day in forecast) / len(forecast)
+        avg_low = sum(day.temperature_range[0] for day in forecast) / len(forecast)
+        conditions = {day.condition for day in forecast}
+        avg_precip_chance = sum(day.precipitation_chance for day in forecast) / len(
+            forecast
+        )
+        outdoor_days = sum(1 for day in forecast if day.suitable_for_outdoor)
+        advisories = {advisory for day in forecast for advisory in day.advisories}
 
-        return f"{outdoor_suitable_days}/{len(forecast)} days suitable for outdoor activities. Conditions: {', '.join(set(conditions))}"
+        summary = (
+            "WEEKLY WEATHER SUMMARY:\n"
+            f"- Total days: {len(forecast)}\n"
+            f"- Average high: {avg_high:.1f}°C\n"
+            f"- Average low: {avg_low:.1f}°C\n"
+            f"- Total precipitation: {total_precip:.1f} mm\n"
+            f"- Average precipitation chance: {avg_precip_chance:.0f}%\n"
+            f"- General conditions: {', '.join(sorted(conditions))}\n"
+            f"- Days suitable for outdoor activities: {outdoor_days}/{len(forecast)}\n"
+        )
+
+        if advisories:
+            summary += f"- Advisories/risks: {', '.join(sorted(advisories))}\n"
+
+        return summary
 
     def _format_encourage_list(
         self, encourage_list: List[ActivityRepetitionInfo]

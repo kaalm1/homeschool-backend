@@ -1,6 +1,9 @@
 from datetime import date
+from typing import List
 
 import requests
+
+from svc.app.datatypes.weather import WeatherDay, WeatherInputs
 
 
 class WeatherService:
@@ -61,7 +64,7 @@ class WeatherService:
             }
         raise ValueError(f"Location not found: {location}")
 
-    def fetch_weekly_weather_forecast(self, lat: float, lon: float) -> dict:
+    def fetch_weekly_weather_forecast(self, lat: float, lon: float) -> List[WeatherDay]:
         """
         Get 7-day forecasts from Open-Meteo including highs, lows, precipitation, and condition.
         """
@@ -88,29 +91,28 @@ class WeatherService:
         snow = daily.get("snowfall_sum", [])
         codes = daily.get("weathercode", [])
 
-        weather_summary = []
+        forecast: List[WeatherDay] = []
         for i, day in enumerate(days):
             code = codes[i]
             condition = self.WEATHER_CODE_MAP.get(code, "Unknown")
-            weather_summary.append(
-                {
-                    "day": day,
-                    "condition": condition,
-                    "high_temp_c": highs[i],
-                    "low_temp_c": lows[i],
-                    "precipitation_mm": precip[i],
-                    "rain_mm": rain[i],
-                    "snow_mm": snow[i],
-                }
+            day_obj = WeatherDay(
+                date=date.fromisoformat(day),
+                condition=condition,
+                temperature_range=(lows[i], highs[i]),
+                precipitation_mm=float(precip[i]) if i < len(precip) else 0.0,
+                rain_mm=float(rain[i]) if i < len(rain) else 0.0,
+                snow_mm=float(snow[i]) if i < len(snow) else 0.0,
             )
+            forecast.append(day_obj)
 
-        return {"weather_summary": weather_summary}
+        return forecast
 
-    def get_weekly_forecast(self, location: str, target_week: date) -> dict:
+    def get_weekly_forecast(self, inputs: WeatherInputs) -> List[WeatherDay]:
         """High-level method: geocode + fetch + summarize forecast."""
-        geo = self.geocode_location(location)
-        forecast = self.fetch_weekly_weather_forecast(geo["lat"], geo["lon"])
-        return {
-            "location": {"name": geo["name"], "country": geo["country"]},
-            **forecast,
-        }
+        if not inputs.lat or not inputs.lng:
+            geo = self.geocode_location(inputs.location)
+            lat, lng = geo["lat"], geo["lon"]
+        else:
+            lat, lng = inputs.lat, inputs.lng
+        forecast = self.fetch_weekly_weather_forecast(lat, lng)
+        return forecast

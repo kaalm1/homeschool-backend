@@ -6,15 +6,6 @@ from pydantic import BaseModel, Field
 from svc.app.datatypes.enums import RepetitionTolerance
 
 
-# Pydantic Schemas
-class WeatherDay(BaseModel):
-    date: date
-    condition: str
-    temperature_range: tuple[int, int]
-    precipitation_chance: int
-    suitable_for_outdoor: bool
-
-
 class WeeklyContext(BaseModel):
     target_week_start: date
     weather_forecast: List[WeatherDay]

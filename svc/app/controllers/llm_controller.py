@@ -4,11 +4,7 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from svc.app.dependencies import (
-    CurrentUser,
-    get_activity_service,
-    get_current_user,
-)
+from svc.app.dependencies import CurrentUser, get_activity_service, get_current_user
 from svc.app.llm.schemas.tagging_schemas import (
     ActivityTaggingRequest,
     ActivityTaggingResponse,

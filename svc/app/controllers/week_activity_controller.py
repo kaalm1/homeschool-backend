@@ -130,9 +130,7 @@ def update_week_activity(
     return service.update_week_activity(week_activity_id, update_data)
 
 
-@router.post(
-    "/{week_activity_id}/toggle", response_model=WeekActivityResponse
-)
+@router.post("/{week_activity_id}/toggle", response_model=WeekActivityResponse)
 def toggle_week_activity(
     week_activity_id: int,
     service: WeekActivityService = Depends(get_week_activity_service),
@@ -141,9 +139,7 @@ def toggle_week_activity(
     return service.toggle_week_activity(week_activity_id)
 
 
-@router.post(
-    "/bulk", response_model=List[WeekActivityResponse], status_code=201
-)
+@router.post("/bulk", response_model=List[WeekActivityResponse], status_code=201)
 def bulk_create_week_activities(
     bulk_data: BulkWeekActivityCreate,
     service: WeekActivityService = Depends(get_week_activity_service),

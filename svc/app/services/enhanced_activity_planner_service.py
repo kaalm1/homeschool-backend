@@ -100,9 +100,13 @@ class EnhancedActivityPlannerService:
         weather_forecast = []
 
         try:
-            weather_forecast = self.weather_service.get_weekly_forecast(
-                family_profile.home_location, target_week
+            inputs = WeatherInputs(
+                location=family_profile.address,
+                lat=family_profile.lat,
+                lng=family_profile.lng,
+                target_week=target_week,
             )
+            weather_forecast = self.weather_service.get_weekly_forecast(inputs)
         except Exception as e:
             logger.warning(f"Could not get weather forecast: {e}")
 
@@ -310,7 +314,7 @@ If you add any extra text, the output will be rejected.
         kids_desc = ", ".join([f"age {kid['age']}" for kid in family_profile.kids])
         family_desc = f"""FAMILY PROFILE:
 - {family_profile.family_size} family members ({family_profile.adults_count} adults, {len(family_profile.kids)} children: {kids_desc})
-- Location: {family_profile.home_location}
+- Location: {family_profile.address}
 - Available days: {', '.join(family_profile.available_days)}
 - Budget preference: {', '.join(family_profile.preferred_cost_ranges)}
 - Transportation: {'Car available' if family_profile.has_car else 'Public transit/walking only'}

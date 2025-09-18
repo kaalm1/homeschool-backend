@@ -22,8 +22,9 @@ class FamilyProfile(BaseModel):
     kids: List[Dict] = Field(default_factory=list)
 
     # Location & Mobility
-    home_location: str
-    home_coordinates: Optional[tuple[float, float]] = None
+    address: Optional[str] = None
+    lat: Optional[float] = None
+    lng: Optional[float] = None
     max_travel_distance: int = Field(default=30)
     has_car: bool = Field(default=True)
 

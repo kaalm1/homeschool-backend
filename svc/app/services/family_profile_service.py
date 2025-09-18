@@ -1,11 +1,6 @@
 import logging
-from datetime import timedelta
 from typing import Any, Dict
 
-from svc.app.dal.family_preference_repository import FamilyPreferenceRepository
-from svc.app.dal.user_behavior_analytic_repository import (
-    UserBehaviorAnalyticsRepository,
-)
 from svc.app.dal.user_repository import UserRepository
 from svc.app.datatypes.enums import Cost, NewExperienceOpenness
 from svc.app.datatypes.family_preference import FamilyProfile
@@ -46,7 +41,7 @@ class FamilyProfileService:
             adults_count=getattr(user, "adults_count", 1),
             kids=[self._kid_to_dict(kid) for kid in kids],
             # Location
-            home_location=user.location_for_llm or f"{user.city}, {user.state}",
+            home_location=user.location_for_llm or user.address or f"{user.city}, {user.state}",
             home_coordinates=(
                 (user.latitude, user.longitude)
                 if user.latitude and user.longitude

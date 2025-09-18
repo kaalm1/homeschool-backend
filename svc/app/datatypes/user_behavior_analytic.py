@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
 from svc.app.datatypes.enums import RepetitionTolerance
+from svc.app.datatypes.weather import WeatherDay
 
 
 class WeeklyContext(BaseModel):

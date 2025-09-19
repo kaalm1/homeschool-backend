@@ -14,6 +14,7 @@ from svc.app.datatypes.enums import (
     Participants,
     Season,
     Theme,
+    ActivityScale,
 )
 
 
@@ -63,6 +64,7 @@ class ActivityBase(BaseModel):
     activity_types: Optional[List[ActivityType]] = Field(
         None, description="Activity type"
     )
+    activity_scale: Optional[ActivityScale] = Field(None, description="Activity scale")
 
     equipment: Optional[List[str]] = Field(None, description="Activity equipment")
     instructions: Optional[List[str]] = Field(None, description="Activity instructions")
@@ -92,7 +94,9 @@ class ActivityUpdate(BaseModel):
     )
     frequency: Optional[List[Frequency]] = Field(None, description="Activity frequency")
     themes: Optional[List[Theme]] = Field(None, description="Theme IDs")
-    types: Optional[List[ActivityType]] = Field(None, description="ActivityType IDs")
+    activity_types: Optional[List[ActivityType]] = Field(None, description="ActivityType IDs")
+
+    activity_scale: Optional[ActivityScale] = Field(None, description="Activity scale")
 
     equipment: Optional[List[str]] = Field(None, description="Activity equipment")
     instructions: Optional[List[str]] = Field(None, description="Activity instructions")

@@ -90,6 +90,7 @@ class UserSeedingService:
                 "activity_types": generic_activity.activity_types,
                 "primary_type": generic_activity.primary_type,
                 "primary_theme": generic_activity.primary_theme,
+                "activity_scale": generic_activity.activity_scale,
             }
             activities_data.append(activity_data)
 

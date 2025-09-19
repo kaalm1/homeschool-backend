@@ -12,7 +12,7 @@ from svc.app.datatypes.enums import (
     Location,
     Participants,
     Season,
-    Theme,
+    Theme, ActivityScale,
 )
 from svc.app.dependencies import (
     CurrentUser,
@@ -39,6 +39,7 @@ async def get_activity_filters():
         "frequency": Frequency.to_frontend(),
         "themes": Theme.to_frontend(),
         "activity_types": ActivityType.to_frontend(),
+        "activity_scale": ActivityScale.to_frontend(),
     }
 
 
@@ -51,6 +52,7 @@ async def get_activities(
     """Get activities for the current user. Optionally filter by kid."""
     if kid_id:
         return activity_service.get_activities_by_kid(kid_id, current_user.id)
+
     return activity_service.get_activities_by_parent(current_user.id)
 
 

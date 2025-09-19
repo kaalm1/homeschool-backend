@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from svc.app.config import settings
 from svc.app.datatypes.enums import DEFAULT_ENUMS_LLM

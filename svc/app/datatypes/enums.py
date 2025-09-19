@@ -1,5 +1,9 @@
+import logging
 from enum import Enum
 from typing import Any, Dict, List, Optional
+
+
+logger = logging.getLogger(__name__)
 
 
 class FilterEnum(str, Enum):
@@ -35,6 +39,11 @@ class FilterEnum(str, Enum):
 
         db_values = []
         for ai_value in ai_values:
+            if not ai_value:
+                logger.warning(
+                    f"Warning: Could not match '{ai_value}' to any {cls.__name__} value"
+                )
+                continue
             # Try exact match first
             found = False
             for enum_item in cls:
@@ -57,7 +66,7 @@ class FilterEnum(str, Enum):
 
             if not found:
                 # Log unmatched values but continue processing
-                print(
+                logger.warning(
                     f"Warning: Could not match '{ai_value}' to any {cls.__name__} value"
                 )
 
@@ -269,17 +278,17 @@ class ActivityScale(FilterEnum):
     MEDIUM = (
         "medium",
         "Medium",
-        "Activities families might do once or twice a month. Balance of factors: may be free but farther, between 30–60 minutes, or nearby but with more effort, planning, or moderate cost. Not weekly, but repeatable several times per year.",
+        "Activities families might do once or twice a month. Balance of factors: may be free but farther, between 30 to 60 minutes, or nearby but with more effort, planning, or moderate cost. Not weekly, but repeatable several times per year.",
     )
     LARGE = (
         "large",
         "Large",
-        "Activities families typically do a few times per year, seasonal or quarterly. Require more planning, higher effort, longer distance, between 1–2 hours, or higher cost. Not easily repeatable without losing novelty.",
+        "Activities families typically do a few times per year, seasonal or quarterly. Require more planning, higher effort, longer distance, between 1 to 2 hours, or higher cost. Not easily repeatable without losing novelty.",
     )
     EXTRA_LARGE = (
         "extra_large",
         "Extra Large",
-        "Activities families usually do only once or twice a year. Expensive, high effort, and far, at least 2–3 hours drive. Full-day commitment and special occasion outings.",
+        "Activities families usually do only once or twice a year. Expensive, high effort, and far, at least 2 to 3 hours drive. Full-day commitment and special occasion outings.",
     )
 
 

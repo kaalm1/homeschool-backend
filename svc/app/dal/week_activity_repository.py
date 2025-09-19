@@ -250,6 +250,7 @@ class WeekActivityRepository(BaseRepository[WeekActivity]):
                 activity_id=wa_data.activity_id,
                 date_obj=target_date,
                 llm_suggestion=wa_data.llm_suggestion,
+                llm_notes=wa_data.llm_notes,
             )
             week_activities.append(week_activity)
 

@@ -68,6 +68,7 @@ async def plan_week_activities(
             activity_year=year,
             activity_week=week,
             llm_suggestion=True,
+            llm_notes=activity["why_it_fits"],
         )
         week_activity_assignments.append(assignment)
 
@@ -78,21 +79,6 @@ async def plan_week_activities(
         created_activities = week_service.bulk_create_week_activities(
             current_user.id, bulk_data
         )
-
-        # Enhance the response with the AI planning reasoning
-        for i, created_activity in enumerate(created_activities):
-            if i < len(planned_activities):
-                # Add the AI reasoning to the notes if no notes exist
-                if not created_activity.notes and planned_activities[i].get(
-                    "why_it_fits"
-                ):
-                    # Update with the planning reason
-                    update_data = WeekActivityUpdate(
-                        llm_notes=f"AI Recommended: {planned_activities[i]['why_it_fits']}"
-                    )
-                    created_activities[i] = week_service.update_week_activity(
-                        created_activity.id, update_data
-                    )
 
         return created_activities
 

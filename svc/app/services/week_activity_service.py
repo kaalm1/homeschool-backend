@@ -228,6 +228,7 @@ class WeekActivityService:
             completed_at=week_activity.completed_at,
             rating=week_activity.rating,
             notes=week_activity.notes,
+            llm_notes=week_activity.llm_notes,
             activity_title=(
                 week_activity.activity.title
                 if hasattr(week_activity, "activity") and week_activity.activity

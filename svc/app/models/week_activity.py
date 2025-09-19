@@ -57,6 +57,7 @@ class WeekActivity(BaseModel):
         activity_id: int,
         date_obj: date,
         llm_suggestion: Optional[bool] = None,
+        llm_notes: Optional[str] = None,
     ) -> "WeekActivity":
         year, week, _ = date_obj.isocalendar()
         return cls(
@@ -66,6 +67,7 @@ class WeekActivity(BaseModel):
             week=week,
             completed=False,
             llm_suggestion=llm_suggestion,
+            llm_notes=llm_notes,
         )
 
     def mark_completed(

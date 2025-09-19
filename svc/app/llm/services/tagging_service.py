@@ -3,6 +3,7 @@ import logging
 from typing import Any, Dict, List
 
 from svc.app.config import settings
+from svc.app.datatypes.enums import DEFAULT_ENUMS_LLM
 from svc.app.llm.client import llm_client
 from svc.app.llm.prompts.activity_tagging import (
     ACTIVITY_TAGGING_SYSTEM_PROMPT,
@@ -10,7 +11,6 @@ from svc.app.llm.prompts.activity_tagging import (
 )
 from svc.app.llm.schemas.tagging_schemas import TaggedActivity
 from svc.app.llm.utils.parsers import parse_response_to_json
-from svc.app.utils.exceptions import LLMProcessingError
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +26,7 @@ class ActivityTaggingService:
     ) -> List[TaggedActivity]:
         """Tag activities using LLM"""
         prompt = build_activity_tagging_prompt(activities, enums)
+        schema = self.build_activity_tagging_schema(enums)
         logger.info(prompt)
 
         try:
@@ -36,11 +37,19 @@ class ActivityTaggingService:
                     {"role": "user", "content": prompt},
                 ],
                 temperature=self.temperature,
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "activity_array",
+                        "schema": schema,
+                    },
+                },
             )
 
             content = response.choices[0].message.content
             if not content:
-                raise LLMProcessingError("Empty response from LLM")
+                logger.error("Empty response from LLM")
+                return []
 
             content_parsed: list = parse_response_to_json(content)
             # Validate structure
@@ -50,7 +59,8 @@ class ActivityTaggingService:
                 content_parsed
             )
             if not isinstance(tagged_activities, list):
-                raise LLMProcessingError("LLM response is not a JSON array")
+                logger.error("LLM response is not a JSON array")
+                return []
 
             logger.info(f"Successfully tagged {len(tagged_activities)} activities")
             return tagged_activities
@@ -60,9 +70,61 @@ class ActivityTaggingService:
         except Exception as e:
             logger.error(f"LLM tagging error: {e}")
 
+    def build_activity_tagging_schema(
+        self, enums: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Build a JSON schema for activity tagging with enum restrictions
+        derived from DEFAULT_ENUMS_LLM.
+        """
+        if enums is None:
+            enums = DEFAULT_ENUMS_LLM
+
+        # base object schema
+        properties: Dict[str, Any] = {
+            "title": {"type": "string", "maxLength": 50},  # enforce 8 words-ish
+            "description": {"type": "string", "maxLength": 300},
+            "price": {"type": "number"},
+            "price_verified": {"type": "boolean"},
+            "website": {"type": "string"},
+        }
+        required = ["title", "description"]
+
+        # add enums dynamically
+        for key, (values, value_type) in enums.items():
+            if value_type == "list":
+                properties[key] = {
+                    "type": "array",
+                    "items": {"type": "string", "enum": values},
+                    "uniqueItems": True,
+                }
+            elif value_type == "string":
+                properties[key] = {"type": "string", "enum": values}
+
+        # add convenience single-value enums for primary type/theme if present
+        if "activity_types" in enums:
+            properties["primary_type"] = {
+                "type": "string",
+                "enum": enums["activity_types"][0],
+            }
+        if "themes" in enums:
+            properties["primary_theme"] = {"type": "string", "enum": enums["themes"][0]}
+
+        return {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": properties,
+                "required": required,
+                "additionalProperties": False,
+            },
+            "minItems": 1,
+            # "maxItems": 20,  # you can cap this
+        }
+
     def _validate_tagged_activities(
         self, activities: List[Dict], enums: Dict[str, Any]
-    ):
+    ) -> None:
         """Validate and clean the structure of tagged activities against enum definitions"""
         valid_keys = set(enums.keys())
 

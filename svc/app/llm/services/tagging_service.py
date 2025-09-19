@@ -130,13 +130,13 @@ class ActivityTaggingService:
 
         for activity in activities:
             # --- Clean values for each enum key ---
-            for enum_field, allowed_values in enums.items():
+            for enum_field, (allowed_values, value_type) in enums.items():
                 if enum_field in activity:
                     current_values = activity[enum_field]
 
                     if isinstance(current_values, list):
                         valid_values = [
-                            v for v in current_values if v in allowed_values[0]
+                            v for v in current_values if v in allowed_values
                         ]
                         invalid_values = set(current_values) - set(valid_values)
 
@@ -149,7 +149,7 @@ class ActivityTaggingService:
                     elif isinstance(current_values, str):
                         activity[enum_field] = (
                             current_values
-                            if current_values in allowed_values[0]
+                            if current_values in allowed_values
                             else None
                         )
 

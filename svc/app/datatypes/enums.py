@@ -264,22 +264,22 @@ class ActivityScale(FilterEnum):
     SMALL = (
         "small",
         "Small",
-        "Activities families can do weekly or multiple times per week. Free or very low cost. Very close (≤30 minutes). Minimal effort or preparation. Highly repeatable without boredom.",
+        "Activities families can do weekly or multiple times per week. Free or very low cost. Very close, under 30 minutes. Minimal effort or preparation. Highly repeatable without boredom.",
     )
     MEDIUM = (
         "medium",
         "Medium",
-        "Activities families might do once or twice a month. Balance of factors: may be free but farther (30–60 minutes), or nearby but with more effort, planning, or moderate cost. Not weekly, but repeatable several times per year.",
+        "Activities families might do once or twice a month. Balance of factors: may be free but farther, between 30–60 minutes, or nearby but with more effort, planning, or moderate cost. Not weekly, but repeatable several times per year.",
     )
     LARGE = (
         "large",
         "Large",
-        "Activities families typically do a few times per year (seasonal or quarterly). Require more planning, higher effort, longer distance (1–2 hours), or higher cost. Not easily repeatable without losing novelty.",
+        "Activities families typically do a few times per year, seasonal or quarterly. Require more planning, higher effort, longer distance, between 1–2 hours, or higher cost. Not easily repeatable without losing novelty.",
     )
     EXTRA_LARGE = (
         "extra_large",
         "Extra Large",
-        "Activities families usually do only once or twice a year. Expensive, high effort, and far (2–3 hours drive). Full-day commitment and special occasion outings.",
+        "Activities families usually do only once or twice a year. Expensive, high effort, and far, at least 2–3 hours drive. Full-day commitment and special occasion outings.",
     )
 
 

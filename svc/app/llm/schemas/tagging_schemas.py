@@ -28,7 +28,7 @@ class TaggedActivity(BaseModel):
     seasons: List[str] = []
     age_groups: List[str] = []
     frequency: List[str] = []
-    activity_scale: str = ""
+    activity_scale: Optional[str] = None
 
     @classmethod
     def from_llm(cls, content: str) -> List["TaggedActivity"]:

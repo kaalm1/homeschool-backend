@@ -66,10 +66,10 @@ class WeekActivityResponse(BaseModel):
     year: int
     week: int
     completed: bool
-    completed_at: Optional[datetime]
-    rating: Optional[int]
-    notes: Optional[str]
-    llm_notes: Optional[str]
+    completed_at: Optional[datetime] = None
+    rating: Optional[int] = None
+    notes: Optional[str] = None
+    llm_notes: Optional[str] = None
 
     # Include related activity and user info
     activity_title: Optional[str] = None

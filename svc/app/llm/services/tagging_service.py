@@ -47,9 +47,7 @@ class ActivityTaggingService:
                 # Validate structure
                 self._validate_tagged_activities(content_parsed, enums)
                 # Parse and validate JSON
-                tagged_activities: List[TaggedActivity] = TaggedActivity.from_json(
-                    content_parsed
-                )
+                tagged_activities: List[TaggedActivity] = TaggedActivity.from_json(content_parsed)
                 if not isinstance(tagged_activities, list):
                     raise LLMProcessingError("LLM response is not a JSON array")
 
@@ -80,19 +78,16 @@ class ActivityTaggingService:
                 if enum_field in activity:
                     current_values = activity[enum_field]
 
-                    # enforce list type for enum fields
-                    if not isinstance(current_values, list):
-                        current_values = [current_values]
+                    if isinstance(current_values, list):
+                        valid_values = [v for v in current_values if v in allowed_values[0]]
+                        invalid_values = set(current_values) - set(valid_values)
 
-                    valid_values = [v for v in current_values if v in allowed_values]
-                    invalid_values = set(current_values) - set(valid_values)
+                        if invalid_values:
+                            logger.error(
+                                f"Removed invalid {enum_field} values: {invalid_values}"
+                            )
 
-                    if invalid_values:
-                        logger.error(
-                            f"Removed invalid {enum_field} values: {invalid_values}"
-                        )
-
-                    activity[enum_field] = valid_values
+                        activity[enum_field] = valid_values
 
 
 # Singleton instance

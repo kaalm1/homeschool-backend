@@ -449,16 +449,16 @@ class DaysOfWeek(FilterEnum):
 
 
 DEFAULT_ENUMS_LLM: Dict[str, Any] = {
-    "activity_types": [e.ai_value for e in ActivityType],
-    "themes": [e.ai_value for e in Theme],
-    "costs": [e.ai_value for e in Cost],
-    "durations": [e.ai_value for e in Duration],
-    "participants": [e.ai_value for e in Participants],
-    "locations": [e.ai_value for e in Location],
-    "seasons": [e.ai_value for e in Season],
-    "age_groups": [e.ai_value for e in AgeGroup],
-    "frequency": [e.ai_value for e in Frequency],
-    "activity_scale": [e.ai_value for e in ActivityScale],
+    "activity_types": ([e.ai_value for e in ActivityType], "list"),
+    "themes": ([e.ai_value for e in Theme], "list"),
+    "costs": ([e.ai_value for e in Cost], "list"),
+    "durations": ([e.ai_value for e in Duration], "list"),
+    "participants": ([e.ai_value for e in Participants], "list"),
+    "locations": ([e.ai_value for e in Location], "list"),
+    "seasons": ([e.ai_value for e in Season], "list"),
+    "age_groups": ([e.ai_value for e in AgeGroup], "list"),
+    "frequency": ([e.ai_value for e in Frequency], "list"),
+    "activity_scale": ([e.ai_value for e in ActivityScale], "string"),
 }
 
 

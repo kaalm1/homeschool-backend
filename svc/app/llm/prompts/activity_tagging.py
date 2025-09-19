@@ -14,7 +14,12 @@ def build_activity_tagging_prompt(
     # dynamically build the lines for each enum key
     enum_lines = []
     for key, values in enums.items():
-        enum_lines.append(f"- {key} (list): Must be subset of {values}")
+        if values[1] == 'list':
+            enum_lines.append(f"- {key} (list): Must be subset of {values[0]}")
+        elif values[1] == 'string':
+            enum_lines.append(
+                f"- {key} (string): Must be a single value from {values[0]}"
+            )
 
     # add primary_type rule if activity_types exists
     if "activity_types" in enums:

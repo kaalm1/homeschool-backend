@@ -41,12 +41,9 @@ class FamilyProfileService:
             adults_count=getattr(user, "adults_count", 1),
             kids=[self._kid_to_dict(kid) for kid in kids],
             # Location
-            home_location=user.location_for_llm or user.address or f"{user.city}, {user.state}",
-            home_coordinates=(
-                (user.latitude, user.longitude)
-                if user.latitude and user.longitude
-                else None
-            ),
+            address=user.location_for_llm or user.address or f"{user.city}, {user.state}",
+            lat=user.latitude,
+            lng=user.longitude,
             max_travel_distance=user.max_travel_distance or 30,
             has_car=user.has_car,
             # Financial

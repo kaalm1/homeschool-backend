@@ -1,9 +1,12 @@
 from datetime import date
 from typing import List
+import logging
 
 import requests
 
 from svc.app.datatypes.weather import WeatherDay, WeatherInputs
+
+logger = logging.getLogger(__name__)
 
 
 class WeatherService:
@@ -49,9 +52,7 @@ class WeatherService:
 
     def geocode_location(self, location: str) -> dict:
         """Convert a place name into latitude/longitude using Open-Meteo Geocoding API."""
-        resp = requests.get(
-            self.GEO_URL, params={"name": location, "count": 1}, timeout=10
-        )
+        resp = requests.get(self.GEO_URL, params={"name": location, "count": 1}, timeout=10)
         resp.raise_for_status()
         data = resp.json()
         if "results" in data and data["results"]:
@@ -62,7 +63,9 @@ class WeatherService:
                 "name": result["name"],
                 "country": result["country"],
             }
-        raise ValueError(f"Location not found: {location}")
+
+        logger.error(f"Location not found: {location}")
+        return {}
 
     def fetch_weekly_weather_forecast(self, lat: float, lon: float) -> List[WeatherDay]:
         """
@@ -109,10 +112,19 @@ class WeatherService:
 
     def get_weekly_forecast(self, inputs: WeatherInputs) -> List[WeatherDay]:
         """High-level method: geocode + fetch + summarize forecast."""
+        if not inputs.location and not (inputs.lat or inputs.lng):
+            return []
+
+        lat, lng = None, None
         if not inputs.lat or not inputs.lng:
             geo = self.geocode_location(inputs.location)
-            lat, lng = geo["lat"], geo["lon"]
+            if 'lat' in geo and 'lon' in geo:
+                lat, lng = geo["lat"], geo["lon"]
         else:
             lat, lng = inputs.lat, inputs.lng
+
+        if not lat or not lng:
+            return []
+
         forecast = self.fetch_weekly_weather_forecast(lat, lng)
         return forecast

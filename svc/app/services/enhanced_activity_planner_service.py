@@ -232,7 +232,26 @@ class EnhancedActivityPlannerService:
                     ],
                     temperature=self.temperature,
                     max_tokens=2000,
-                    response_format={"type": "json_object"},
+                    response_format={
+                        "type": "json_schema",
+                        "json_schema": {
+                            "name": "activity_array",
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {"type": "integer"},
+                                        "title": {"type": "string"},
+                                        "why_it_fits": {"type": "string"},
+                                    },
+                                    "required": ["id", "title", "why_it_fits"],
+                                },
+                                "minItems": 4,
+                                "maxItems": 7,
+                            },
+                        },
+                    },
                 )
 
                 content = response.choices[0].message.content
@@ -293,12 +312,13 @@ OUTPUT REQUIREMENTS:
 - Each activity must include a compelling, specific "why_it_fits" explanation that references family patterns when relevant
 - Use provided activity IDs only
 
-Return ONLY valid JSON array with no additional text:
-[{"id": int, "title": string, "why_it_fits": string}]
-
-You MUST return ONLY a valid JSON array. 
-Do not include explanations, introductions, or reasoning outside the JSON. 
-If you add any extra text, the output will be rejected.
+Return a JSON array of 4 to 7 activities. 
+Example:
+[
+  {"id": 1, "title": "Park outing", "why_it_fits": "..."},
+  {"id": 5, "title": "Library visit", "why_it_fits": "..."}
+  ...
+]
 """
 
     def _build_user_prompt(

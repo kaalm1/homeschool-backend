@@ -66,9 +66,9 @@ class ActivityTaggingService:
             return tagged_activities
 
         except json.JSONDecodeError as e:
-            logger.warning(f"JSON decode error: {e}")
+            logger.exception(f"JSON decode error: {e}")
         except Exception as e:
-            logger.error(f"LLM tagging error: {e}")
+            logger.exception(f"LLM tagging error: {e}")
 
     def build_activity_tagging_schema(
         self, enums: Optional[Dict[str, Any]] = None
@@ -141,7 +141,7 @@ class ActivityTaggingService:
                         invalid_values = set(current_values) - set(valid_values)
 
                         if invalid_values:
-                            logger.error(
+                            logger.exception(
                                 f"Removed invalid {enum_field} values: {invalid_values}"
                             )
 

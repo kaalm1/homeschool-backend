@@ -57,8 +57,8 @@ async def tag_activities(
         )
 
     except LLMProcessingError as e:
-        logger.error(f"LLM processing error: {e}")
+        logger.exception(f"LLM processing error: {e}")
         raise HTTPException(status_code=422, detail=str(e))
     except Exception as e:
-        logger.error(f"Unexpected error in tag_activities: {e}")
+        logger.exception(f"Unexpected error in tag_activities: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")

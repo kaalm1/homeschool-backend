@@ -245,6 +245,6 @@ class AuthService:
 
         except Exception as e:
             # Log the error but don't fail the user creation
-            logger.error(f"Failed to seed data for user {user.id}: {str(e)}")
+            logger.exception(f"Failed to seed data for user {user.id}: {str(e)}")
             # Optionally, you could raise this error if seeding is critical
             # raise ValidationError(f"User created but seeding failed: {str(e)}")

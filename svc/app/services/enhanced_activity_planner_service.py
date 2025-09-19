@@ -86,7 +86,7 @@ class EnhancedActivityPlannerService:
             return validated_activities
 
         except Exception as e:
-            logger.error(f"Error planning activities for user {user_id}: {e}")
+            logger.exception(f"Error planning activities for user {user_id}: {e}")
             raise
 
     async def _build_weekly_context(

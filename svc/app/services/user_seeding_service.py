@@ -36,8 +36,7 @@ class UserSeedingService:
             )
 
         except Exception as e:
-            error_msg = f"Failed to seed data for user {user.id}: {str(e)}"
-            logger.error(error_msg)
+            logger.exception(f"Failed to seed data for user {user.id}: {str(e)}")
             seeding_summary["errors"].append(error_msg)
 
         return seeding_summary
@@ -65,7 +64,7 @@ class UserSeedingService:
             return len(created_activities)
 
         except Exception as e:
-            logger.error(f"Failed to seed activities for user {user.id}: {str(e)}")
+            logger.exception(f"Failed to seed activities for user {user.id}: {str(e)}")
             raise
 
     def _prepare_activities_data(self, user: User) -> List[dict]:
@@ -114,7 +113,7 @@ class UserSeedingService:
             logger.info(f"Created default preferences for user {user.id}")
 
         except Exception as e:
-            logger.error(f"Failed to seed preferences for user {user.id}: {str(e)}")
+            logger.exception(f"Failed to seed preferences for user {user.id}: {str(e)}")
             raise
 
     def reseed_activities(self, user: User, overwrite: bool = False) -> int:
@@ -133,5 +132,5 @@ class UserSeedingService:
             return self._seed_activities(user)
 
         except Exception as e:
-            logger.error(f"Failed to reseed activities for user {user.id}: {str(e)}")
+            logger.exception(f"Failed to reseed activities for user {user.id}: {str(e)}")
             raise

@@ -44,7 +44,7 @@ class FamilyProfileService:
             address=user.location_for_llm
             or user.address
             or f"{user.city}, {user.state}",
-            zipcode=user.zip_code,
+            zipcode=user.zipcode,
             lat=user.latitude,
             lng=user.longitude,
             max_travel_distance=user.max_travel_distance or 30,

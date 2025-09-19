@@ -28,45 +28,37 @@ class ActivityTaggingService:
         prompt = build_activity_tagging_prompt(activities, enums)
         logger.info(prompt)
 
-        for attempt in range(self.max_retries + 1):
-            try:
-                response = llm_client.client.chat.completions.create(
-                    model=self.model,
-                    messages=[
-                        {"role": "system", "content": ACTIVITY_TAGGING_SYSTEM_PROMPT},
-                        {"role": "user", "content": prompt},
-                    ],
-                    temperature=self.temperature,
-                )
+        try:
+            response = llm_client.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": ACTIVITY_TAGGING_SYSTEM_PROMPT},
+                    {"role": "user", "content": prompt},
+                ],
+                temperature=self.temperature,
+            )
 
-                content = response.choices[0].message.content
-                if not content:
-                    raise LLMProcessingError("Empty response from LLM")
+            content = response.choices[0].message.content
+            if not content:
+                raise LLMProcessingError("Empty response from LLM")
 
-                content_parsed: list = parse_response_to_json(content)
-                # Validate structure
-                self._validate_tagged_activities(content_parsed, enums)
-                # Parse and validate JSON
-                tagged_activities: List[TaggedActivity] = TaggedActivity.from_json(
-                    content_parsed
-                )
-                if not isinstance(tagged_activities, list):
-                    raise LLMProcessingError("LLM response is not a JSON array")
+            content_parsed: list = parse_response_to_json(content)
+            # Validate structure
+            self._validate_tagged_activities(content_parsed, enums)
+            # Parse and validate JSON
+            tagged_activities: List[TaggedActivity] = TaggedActivity.from_json(
+                content_parsed
+            )
+            if not isinstance(tagged_activities, list):
+                raise LLMProcessingError("LLM response is not a JSON array")
 
-                logger.info(f"Successfully tagged {len(tagged_activities)} activities")
-                return tagged_activities
+            logger.info(f"Successfully tagged {len(tagged_activities)} activities")
+            return tagged_activities
 
-            except json.JSONDecodeError as e:
-                logger.warning(f"JSON decode error on attempt {attempt + 1}: {e}")
-                if attempt == self.max_retries:
-                    raise LLMProcessingError(
-                        f"Failed to parse JSON after {self.max_retries + 1} attempts"
-                    )
-
-            except Exception as e:
-                logger.error(f"LLM tagging error on attempt {attempt + 1}: {e}")
-                if attempt == self.max_retries:
-                    raise LLMProcessingError(f"LLM tagging failed: {str(e)}")
+        except json.JSONDecodeError as e:
+            logger.warning(f"JSON decode error: {e}")
+        except Exception as e:
+            logger.error(f"LLM tagging error: {e}")
 
     def _validate_tagged_activities(
         self, activities: List[Dict], enums: Dict[str, Any]
@@ -92,6 +84,12 @@ class ActivityTaggingService:
                             )
 
                         activity[enum_field] = valid_values
+                    elif isinstance(current_values, str):
+                        activity[enum_field] = (
+                            current_values
+                            if current_values in allowed_values[0]
+                            else None
+                        )
 
 
 # Singleton instance

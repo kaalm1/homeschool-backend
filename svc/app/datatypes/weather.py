@@ -6,6 +6,7 @@ from pydantic import BaseModel, model_validator
 
 class WeatherInputs(BaseModel):
     location: Optional[str] = None
+    zipcode: Optional[str] = None
     lat: Optional[float] = None
     lng: Optional[float] = None
     target_week: date = date.today()

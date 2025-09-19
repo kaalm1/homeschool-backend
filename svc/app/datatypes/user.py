@@ -28,6 +28,9 @@ class UserUpdate(BaseModel):
     family_size: Optional[int] = Field(None, description="User family size")
     latitude: Optional[float] = Field(None, description="User latitude")
     longitude: Optional[float] = Field(None, description="User longitude")
+    zipcode: Optional[str] = Field(None, description="User zipcode")
+    city: Optional[str] = Field(None, description="User city")
+    state: Optional[str] = Field(None, description="User state")
 
 
 class UserResponse(UserBase, TimestampMixin):
@@ -36,6 +39,7 @@ class UserResponse(UserBase, TimestampMixin):
     id: int = Field(..., description="User ID")
     is_active: bool = Field(..., description="User active status")
     address: Optional[str] = Field(None, description="User location address")
+    zipcode: Optional[str] = Field(None, description="User zipcode")
     family_size: Optional[int] = Field(None, description="User family size")
 
     class Config:

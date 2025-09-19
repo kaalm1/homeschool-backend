@@ -43,7 +43,7 @@ class User(BaseModel):
     # Separate components for structured queries if needed
     city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, index=True)
     state: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
-    zip_code: Mapped[Optional[str]] = mapped_column(
+    zipcode: Mapped[Optional[str]] = mapped_column(
         String(20), nullable=True, index=True
     )
     country: Mapped[str] = mapped_column(String(50), nullable=False, default="US")

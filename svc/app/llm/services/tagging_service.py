@@ -47,7 +47,9 @@ class ActivityTaggingService:
                 # Validate structure
                 self._validate_tagged_activities(content_parsed, enums)
                 # Parse and validate JSON
-                tagged_activities: List[TaggedActivity] = TaggedActivity.from_json(content_parsed)
+                tagged_activities: List[TaggedActivity] = TaggedActivity.from_json(
+                    content_parsed
+                )
                 if not isinstance(tagged_activities, list):
                     raise LLMProcessingError("LLM response is not a JSON array")
 
@@ -79,7 +81,9 @@ class ActivityTaggingService:
                     current_values = activity[enum_field]
 
                     if isinstance(current_values, list):
-                        valid_values = [v for v in current_values if v in allowed_values[0]]
+                        valid_values = [
+                            v for v in current_values if v in allowed_values[0]
+                        ]
                         invalid_values = set(current_values) - set(valid_values)
 
                         if invalid_values:

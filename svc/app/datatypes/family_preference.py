@@ -23,6 +23,7 @@ class FamilyProfile(BaseModel):
 
     # Location & Mobility
     address: Optional[str] = None
+    zipcode: Optional[str] = None
     lat: Optional[float] = None
     lng: Optional[float] = None
     max_travel_distance: int = Field(default=30)

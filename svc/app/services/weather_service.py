@@ -1,6 +1,6 @@
+import logging
 from datetime import date
 from typing import List
-import logging
 
 import requests
 
@@ -52,7 +52,9 @@ class WeatherService:
 
     def geocode_location(self, location: str) -> dict:
         """Convert a place name into latitude/longitude using Open-Meteo Geocoding API."""
-        resp = requests.get(self.GEO_URL, params={"name": location, "count": 1}, timeout=10)
+        resp = requests.get(
+            self.GEO_URL, params={"name": location, "count": 1}, timeout=10
+        )
         resp.raise_for_status()
         data = resp.json()
         if "results" in data and data["results"]:
@@ -112,13 +114,13 @@ class WeatherService:
 
     def get_weekly_forecast(self, inputs: WeatherInputs) -> List[WeatherDay]:
         """High-level method: geocode + fetch + summarize forecast."""
-        if not inputs.location and not (inputs.lat or inputs.lng):
+        if not inputs.zipcode and not (inputs.lat or inputs.lng):
             return []
 
         lat, lng = None, None
         if not inputs.lat or not inputs.lng:
-            geo = self.geocode_location(inputs.location)
-            if 'lat' in geo and 'lon' in geo:
+            geo = self.geocode_location(inputs.zipcode)
+            if "lat" in geo and "lon" in geo:
                 lat, lng = geo["lat"], geo["lon"]
         else:
             lat, lng = inputs.lat, inputs.lng

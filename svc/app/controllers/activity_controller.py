@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, Query, status
 
 from svc.app.datatypes.activity import ActivityCreate, ActivityResponse, ActivityUpdate
 from svc.app.datatypes.enums import (
+    ActivityScale,
     ActivityType,
     AgeGroup,
     Cost,
@@ -12,7 +13,7 @@ from svc.app.datatypes.enums import (
     Location,
     Participants,
     Season,
-    Theme, ActivityScale,
+    Theme,
 )
 from svc.app.dependencies import (
     CurrentUser,

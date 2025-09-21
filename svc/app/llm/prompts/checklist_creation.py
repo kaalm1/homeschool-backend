@@ -1,9 +1,32 @@
-from svc.app.models.activity import Activity
 from svc.app.datatypes.family_preference import FamilyProfile
+from svc.app.models.activity import Activity
 
 
 class ActivityChecklistPrompts:
     def __init__(self):
+        self.schema = schema = {
+            "type": "object",
+            "properties": {
+                "equipment": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "List of equipment or materials needed for the activity.",
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Step-by-step instructions for completing the activity.",
+                },
+                "adhd_tips": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Simple, ADHD-friendly tips to make the activity easier to follow.",
+                },
+            },
+            "required": ["equipment", "steps", "adhd_tips"],
+            "additionalProperties": False,
+        }
+
         self.system_prompt = """
             You are a helpful assistant that turns family activities into ADHD-friendly checklists.
     
@@ -15,7 +38,7 @@ class ActivityChecklistPrompts:
             The JSON object must have exactly these keys:
             {
               "equipment": [list of strings],
-              "steps": [list of strings],
+              "instructions": [list of strings],
               "adhd_tips": [list of strings]
             }
     

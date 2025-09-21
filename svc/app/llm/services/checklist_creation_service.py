@@ -1,27 +1,29 @@
 import json
 import logging
-from typing import Any, Dict, List, Optional
 
 from svc.app.config import settings
+from svc.app.datatypes.activity import ActivityResponse, ActivityUpdate
+from svc.app.datatypes.family_preference import FamilyProfile
 from svc.app.llm.client import llm_client
 from svc.app.llm.prompts.checklist_creation import ActivityChecklistPrompts
 from svc.app.llm.utils.parsers import parse_response_to_json
 from svc.app.models.activity import Activity
-from svc.app.datatypes.family_preference import FamilyProfile
-from svc.app.llm.schemas.checklist_creation_schema import ChecklistCreation
+from svc.app.services.activity_service import ActivityService
 
 logger = logging.getLogger(__name__)
 
+
 class ChecklistCreationService:
-    def __init__(self):
+    def __init__(self, activity_service: ActivityService):
         self.model = settings.llm_model
         self.temperature = settings.llm_temperature
         self.max_retries = settings.llm_max_retries
         self.prompts = ActivityChecklistPrompts()
+        self.activity_service = activity_service
 
     async def checklist_creation(
-        self, activity: Activity, family_profile: FamilyProfile
-    ) -> Optional[ChecklistCreation]:
+        self, activity: Activity, family_profile: FamilyProfile, user_id: int
+    ) -> ActivityResponse:
         """Tag activities using LLM"""
         user_prompt = self.prompts.build_user_prompt(activity, family_profile)
 
@@ -37,7 +39,7 @@ class ChecklistCreationService:
                     "type": "json_schema",
                     "json_schema": {
                         "name": "checklist_array",
-                        "schema": schema,
+                        "schema": self.prompts.schema,
                     },
                 },
             )
@@ -45,16 +47,16 @@ class ChecklistCreationService:
             content = response.choices[0].message.content
             if not content:
                 logger.error("Empty response from LLM")
-                return None
+                return ActivityResponse.model_validate(activity)
 
-            content_parsed: list = parse_response_to_json(content)
+            content_parsed: dict = parse_response_to_json(content)[0]
 
-            # Parse and validate JSON
-            activity_with_checklist: ChecklistCreation = ChecklistCreation.from_json(
-                content_parsed
+            activity_update = ActivityUpdate(**content_parsed)
+            activity = self.activity_service.update_activity(
+                activity.id, activity_update, user_id
             )
 
-            return activity_with_checklist
+            return activity
 
         except json.JSONDecodeError as e:
             logger.exception(f"JSON decode error: {e}")

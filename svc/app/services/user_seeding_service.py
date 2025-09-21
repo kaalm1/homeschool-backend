@@ -133,5 +133,7 @@ class UserSeedingService:
             return self._seed_activities(user)
 
         except Exception as e:
-            logger.exception(f"Failed to reseed activities for user {user.id}: {str(e)}")
+            logger.exception(
+                f"Failed to reseed activities for user {user.id}: {str(e)}"
+            )
             raise

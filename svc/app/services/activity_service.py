@@ -146,7 +146,9 @@ class ActivityService:
                 for activity in activities_created
             ]
         except Exception as e:
-            logger.exception(f"Error creating tagged activities for user {user_id}: {e}")
+            logger.exception(
+                f"Error creating tagged activities for user {user_id}: {e}"
+            )
             raise
 
     def bulk_create_activities(self, activities_data: List[dict]) -> List[Activity]:

@@ -148,9 +148,7 @@ class ActivityTaggingService:
                         activity[enum_field] = valid_values
                     elif isinstance(current_values, str):
                         activity[enum_field] = (
-                            current_values
-                            if current_values in allowed_values
-                            else None
+                            current_values if current_values in allowed_values else None
                         )
 
 

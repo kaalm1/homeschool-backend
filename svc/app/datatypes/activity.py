@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 from svc.app.datatypes.common import TimestampMixin
 from svc.app.datatypes.enums import (
+    ActivityScale,
     ActivityType,
     AgeGroup,
     Cost,
@@ -14,7 +15,6 @@ from svc.app.datatypes.enums import (
     Participants,
     Season,
     Theme,
-    ActivityScale,
 )
 
 
@@ -94,7 +94,9 @@ class ActivityUpdate(BaseModel):
     )
     frequency: Optional[List[Frequency]] = Field(None, description="Activity frequency")
     themes: Optional[List[Theme]] = Field(None, description="Theme IDs")
-    activity_types: Optional[List[ActivityType]] = Field(None, description="ActivityType IDs")
+    activity_types: Optional[List[ActivityType]] = Field(
+        None, description="ActivityType IDs"
+    )
 
     activity_scale: Optional[ActivityScale] = Field(None, description="Activity scale")
 

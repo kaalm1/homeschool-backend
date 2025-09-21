@@ -34,8 +34,25 @@ def build_activity_tagging_prompt(
 
     return f"""
 You are a JSON tagging engine for a family activity planner. Your tasks:
-1. Split the following free-form text into individual activities. Activities may be completely free form, sentences, phrases, or comma-separated.
-2. Tag each activity according to the allowed filters below.
+
+You must carefully parse free-form, messy text into **distinct activities**. 
+Writers may have ADHD and use inconsistent formatting: missing commas, missing 'and', 
+line breaks, or streams of thought.
+
+Rules:
+- Each activity should represent something a family could realistically do as a 
+  separate outing or task. 
+- Treat line breaks, commas, 'and', or sudden topic changes as potential boundaries. 
+- If two concepts are different activities (e.g., 'splashpad apple picking'), 
+  split them into two. 
+- If words clearly belong together as one activity (e.g., 'arts and crafts', 
+  'playdate with Barbara and Tina', 'making pizza with cheese and sauce'), 
+  keep them together. 
+- When in doubt, err on the side of **separating into multiple activities** 
+  instead of merging too much.
+
+After splitting, tag each activity according to the allowed filters below.
+
 
 Return JSON list where each object has:
 - title (string): Clear activity name, **must be 8 words or less**

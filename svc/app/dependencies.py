@@ -31,6 +31,7 @@ from svc.app.services.user_seeding_service import UserSeedingService
 from svc.app.services.user_service import UserService
 from svc.app.services.weather_service import WeatherService
 from svc.app.services.week_activity_service import WeekActivityService
+from svc.app.services.activity_checklist_service import ActivityChecklistService
 
 security = HTTPBearer(auto_error=True)
 
@@ -139,6 +140,11 @@ def get_historical_activity_analyzer(
     return HistoricalActivityAnalyzer(
         activity_suggestion_repo, behaviour_analytics_service
     )
+
+def get_activity_checklist_service(
+    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
+) -> ActivityChecklistService:
+    return ActivityChecklistService(activity_service)
 
 
 def get_weather_service() -> WeatherService:

@@ -1,5 +1,5 @@
+from svc.app.datatypes.activity import ActivityResponse
 from svc.app.datatypes.family_preference import FamilyProfile
-from svc.app.models.activity import Activity
 
 
 class ActivityChecklistPrompts:
@@ -50,11 +50,11 @@ class ActivityChecklistPrompts:
             """
 
     def build_user_prompt(
-        self, activity: Activity, family_profile: FamilyProfile
+        self, activity: ActivityResponse, family_profile: FamilyProfile
     ) -> str:
         return f"Activity: {activity}\nFamily context:\n{self._format_family_context(family_profile)}"
 
-    def _format_activity_context(self, activity: Activity) -> str:
+    def _format_activity_context(self, activity: ActivityResponse) -> str:
         return f"{activity.title} {activity.description}"
 
     def _format_family_context(self, profile: FamilyProfile) -> str:

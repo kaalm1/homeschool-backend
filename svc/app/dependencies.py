@@ -14,8 +14,8 @@ from svc.app.dal.user_behavior_analytic_repository import (
 from svc.app.dal.user_repository import UserRepository
 from svc.app.dal.week_activity_repository import WeekActivityRepository
 from svc.app.database import get_db_session
+from svc.app.llm.services.checklist_creation_service import ChecklistCreationService
 from svc.app.models.user import User
-from svc.app.services.activity_checklist_service import ActivityChecklistService
 from svc.app.services.activity_service import ActivityService
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
 from svc.app.services.auth_service import AuthService
@@ -31,7 +31,6 @@ from svc.app.services.user_seeding_service import UserSeedingService
 from svc.app.services.user_service import UserService
 from svc.app.services.weather_service import WeatherService
 from svc.app.services.week_activity_service import WeekActivityService
-from svc.app.services.activity_checklist_service import ActivityChecklistService
 
 security = HTTPBearer(auto_error=True)
 
@@ -141,11 +140,6 @@ def get_historical_activity_analyzer(
         activity_suggestion_repo, behaviour_analytics_service
     )
 
-def get_activity_checklist_service(
-    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
-) -> ActivityChecklistService:
-    return ActivityChecklistService(activity_service)
-
 
 def get_weather_service() -> WeatherService:
     return WeatherService()
@@ -177,12 +171,12 @@ def get_family_profile_service(
 
 
 def get_activity_checklist_service(
+    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
     family_profile_service: Annotated[
         FamilyProfileService, Depends(get_family_profile_service)
     ],
-    activity_service: Annotated[ActivityService, Depends(get_activity_service)],
-) -> ActivityChecklistService:
-    return ActivityChecklistService(family_profile_service, activity_service)
+) -> ChecklistCreationService:
+    return ChecklistCreationService(activity_service, family_profile_service)
 
 
 def get_enhanced_activity_planner_service(

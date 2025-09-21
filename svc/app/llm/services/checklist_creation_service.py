@@ -9,22 +9,34 @@ from svc.app.llm.prompts.checklist_creation import ActivityChecklistPrompts
 from svc.app.llm.utils.parsers import parse_response_to_json
 from svc.app.models.activity import Activity
 from svc.app.services.activity_service import ActivityService
+from svc.app.services.family_profile_service import FamilyProfileService
 
 logger = logging.getLogger(__name__)
 
 
 class ChecklistCreationService:
-    def __init__(self, activity_service: ActivityService):
+    def __init__(
+        self,
+        activity_service: ActivityService,
+        family_profile_service: FamilyProfileService,
+    ):
         self.model = settings.llm_model
         self.temperature = settings.llm_temperature
         self.max_retries = settings.llm_max_retries
         self.prompts = ActivityChecklistPrompts()
         self.activity_service = activity_service
+        self.family_profile_service = family_profile_service
 
-    async def checklist_creation(
-        self, activity: Activity, family_profile: FamilyProfile, user_id: int
+    async def create_checklist(
+        self, activity_id: int, user_id: int
     ) -> ActivityResponse:
         """Tag activities using LLM"""
+        activity: ActivityResponse = self.activity_service.get_activity(
+            activity_id, user_id
+        )
+        family_profile: FamilyProfile = self.family_profile_service.get_family_profile(
+            user_id
+        )
         user_prompt = self.prompts.build_user_prompt(activity, family_profile)
 
         try:

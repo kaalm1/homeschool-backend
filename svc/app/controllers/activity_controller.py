@@ -21,7 +21,7 @@ from svc.app.dependencies import (
     get_activity_service,
     get_current_user,
 )
-from svc.app.services.activity_checklist_service import ActivityChecklistService
+from svc.app.llm.services.checklist_creation_service import ChecklistCreationService
 from svc.app.services.activity_service import ActivityService
 
 router = APIRouter(tags=["activities"])
@@ -124,17 +124,17 @@ async def delete_activity(
     return None
 
 
-@router.get(
+@router.post(
     "{activity_id}/checklist",
     response_model=ActivityResponse,
     status_code=status.HTTP_200_OK,
 )
-async def get_checklist(
+async def create_checklist(
     activity_id: int,
     current_user: Annotated[CurrentUser, Depends(get_current_user)],
     activity_checklist_service: Annotated[
-        ActivityChecklistService, Depends(get_activity_service)
+        ChecklistCreationService, Depends(get_activity_checklist_service)
     ],
 ):
     """Get activities for the current user. Optionally filter by kid."""
-    return activity_checklist_service.generate_checklist(activity_id, current_user.id)
+    return activity_checklist_service.create_checklist(activity_id, current_user.id)

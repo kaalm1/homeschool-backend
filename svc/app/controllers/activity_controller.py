@@ -125,7 +125,7 @@ async def delete_activity(
 
 
 @router.post(
-    "{activity_id}/checklist",
+    "/{activity_id}/checklist",
     response_model=ActivityResponse,
     status_code=status.HTTP_200_OK,
 )
@@ -137,4 +137,4 @@ async def create_checklist(
     ],
 ):
     """Get activities for the current user. Optionally filter by kid."""
-    return activity_checklist_service.create_checklist(activity_id, current_user.id)
+    return await activity_checklist_service.create_checklist(activity_id, current_user.id)

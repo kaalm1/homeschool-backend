@@ -71,41 +71,8 @@ class ActivityChecklistPrompts:
 
         context_parts = [
             f"Family size: {profile.family_size} (adults: {profile.adults_count}, kids: {kids_desc})",
-            f"Location: {profile.home_location}, max travel distance: {profile.max_travel_distance} km",
+            f"Location: {profile.zipcode}, max travel distance: {profile.max_travel_distance} km",
             f"Transportation: {'car available' if profile.has_car else 'no car'}",
         ]
-
-        if profile.weekly_activity_budget:
-            context_parts.append(
-                f"Weekly activity budget: ${profile.weekly_activity_budget}"
-            )
-        if profile.preferred_cost_ranges:
-            context_parts.append(
-                f"Preferred cost ranges: {', '.join(profile.preferred_cost_ranges)}"
-            )
-        if profile.available_days:
-            context_parts.append(
-                f"Available days: {', '.join([d.name for d in profile.available_days])}"
-            )
-        if profile.preferred_time_slots:
-            context_parts.append(
-                f"Preferred time slots: {', '.join([t.name for t in profile.preferred_time_slots])}"
-            )
-        if profile.preferred_themes:
-            context_parts.append(
-                f"Preferred themes: {', '.join([t.name for t in profile.preferred_themes])}"
-            )
-        if profile.preferred_activity_types:
-            context_parts.append(
-                f"Preferred activity types: {', '.join([a.name for a in profile.preferred_activity_types])}"
-            )
-        if profile.group_activity_comfort:
-            context_parts.append(
-                f"Group comfort level: {profile.group_activity_comfort.name}"
-            )
-        if profile.new_experience_openness:
-            context_parts.append(
-                f"New experience openness: {profile.new_experience_openness.name}"
-            )
 
         return "\n".join(context_parts)

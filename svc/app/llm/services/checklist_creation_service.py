@@ -55,7 +55,6 @@ class ChecklistCreationService:
                     },
                 },
             )
-
             content = response.choices[0].message.content
             if not content:
                 logger.error("Empty response from LLM")

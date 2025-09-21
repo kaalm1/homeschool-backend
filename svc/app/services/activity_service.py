@@ -38,7 +38,7 @@ class ActivityService:
 
     def get_activity(self, activity_id: int, user_id: int) -> ActivityResponse:
         activity = self.activity_repo.get_activity_by_parent(activity_id, user_id)
-        return ActivityResponse.from_activity(activity)
+        return ActivityResponse.model_validate(activity)
 
     def get_activities_by_parent(self, parent_id: int) -> List[ActivityResponse]:
         """Get all activities for a parent's kids."""

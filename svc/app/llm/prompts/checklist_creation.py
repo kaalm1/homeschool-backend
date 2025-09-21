@@ -12,7 +12,7 @@ class ActivityChecklistPrompts:
                     "items": {"type": "string"},
                     "description": "List of equipment or materials needed for the activity.",
                 },
-                "steps": {
+                "instructions": {
                     "type": "array",
                     "items": {"type": "string"},
                     "description": "Step-by-step instructions for completing the activity.",
@@ -23,7 +23,7 @@ class ActivityChecklistPrompts:
                     "description": "Simple, ADHD-friendly tips to make the activity easier to follow.",
                 },
             },
-            "required": ["equipment", "steps", "adhd_tips"],
+            "required": ["equipment", "instructions", "adhd_tips"],
             "additionalProperties": False,
         }
 

@@ -41,9 +41,15 @@ class WeekActivityService:
                 detail=f"Activity with id {week_activity_data.activity_id} not found",
             )
 
+        # Merge Activity defaults into assignment if missing
+        wa_data = week_activity_data.model_dump()
+        for field in ("equipment", "instructions", "adhd_tips"):
+            if not wa_data.get(field):
+                wa_data[field] = getattr(activity, field) or []
+
         try:
             week_activity = self.week_activity_repo.create_week_activity(
-                user_id, week_activity_data
+                user_id, wa_data
             )
             return self._convert_to_response(week_activity)
         except Exception as e:

@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: e49bcd3fe627
+Revision ID: 3c19bdfcfc97
 Revises: 
-Create Date: 2025-09-19 07:57:18.999943
+Create Date: 2025-09-22 09:05:44.210980
 
 """
 
@@ -13,7 +13,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "e49bcd3fe627"
+revision: str = "3c19bdfcfc97"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -565,6 +565,12 @@ def upgrade() -> None:
         sa.Column("notes", sa.String(), nullable=True),
         sa.Column("llm_notes", sa.String(), nullable=True),
         sa.Column("llm_suggestion", sa.Boolean(), nullable=True),
+        sa.Column("equipment", sa.ARRAY(sa.String()), nullable=True),
+        sa.Column("equipment_done", sa.ARRAY(sa.String()), nullable=True),
+        sa.Column("instructions", sa.ARRAY(sa.String()), nullable=True),
+        sa.Column("instructions_done", sa.ARRAY(sa.String()), nullable=True),
+        sa.Column("adhd_tips", sa.ARRAY(sa.String()), nullable=True),
+        sa.Column("adhd_tips_done", sa.ARRAY(sa.String()), nullable=True),
         sa.Column(
             "created_at",
             sa.DateTime(timezone=True),

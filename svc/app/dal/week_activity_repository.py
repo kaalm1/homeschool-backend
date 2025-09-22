@@ -50,10 +50,11 @@ class WeekActivityRepository(BaseRepository[WeekActivity]):
         self.db.refresh(week_activity)
         return week_activity
 
+    # Update the repository method
     def update_week_activity(
         self, week_activity_id: int, update_data: WeekActivityUpdate
     ) -> Optional[WeekActivity]:
-        """Update a week activity's completion status, rating, and notes."""
+        """Update a week activity's completion status, rating, notes, and checklist items."""
         week_activity = self.get(week_activity_id)
         if not week_activity:
             return None
@@ -74,6 +75,24 @@ class WeekActivityRepository(BaseRepository[WeekActivity]):
             week_activity.rating = update_data.rating
         if update_data.notes is not None:
             week_activity.notes = update_data.notes
+        if update_data.llm_notes is not None:
+            week_activity.llm_notes = update_data.llm_notes
+
+        # Update checklist fields if provided
+        if update_data.equipment:
+            week_activity.equipment = update_data.equipment
+        if update_data.instructions:
+            week_activity.instructions = update_data.instructions
+        if update_data.adhd_tips:
+            week_activity.adhd_tips = update_data.adhd_tips
+
+        # Update done checklists if provided
+        if update_data.equipment_done:
+            week_activity.equipment_done = update_data.equipment_done
+        if update_data.instructions_done:
+            week_activity.instructions_done = update_data.instructions_done
+        if update_data.adhd_tips_done:
+            week_activity.adhd_tips_done = update_data.adhd_tips_done
 
         self.db.commit()
         self.db.refresh(week_activity)

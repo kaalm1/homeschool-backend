@@ -90,6 +90,7 @@ class WeekActivity(BaseModel):
         done_list = value or []
 
         invalid = [item for item in done_list if item not in base_list]
+
         if invalid:
             raise ValueError(
                 f"Invalid {key}: {invalid} not found in {base_field} {base_list}"

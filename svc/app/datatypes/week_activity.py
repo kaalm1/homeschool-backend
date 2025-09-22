@@ -72,6 +72,12 @@ class WeekActivityResponse(BaseModel):
     notes: Optional[str] = None
     llm_notes: Optional[str] = None
 
+    # Unique to this week, takes default from activity, but will be its own
+    # Since they can "checkmark" or change it
+    equipment: Optional[List[str]] = None
+    instructions: Optional[List[str]] = None
+    adhd_tips: Optional[List[str]] = None
+
     # Include related activity and user info
     activity_title: Optional[str] = None
     activity_description: Optional[str] = None

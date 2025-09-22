@@ -137,4 +137,6 @@ async def create_checklist(
     ],
 ):
     """Get activities for the current user. Optionally filter by kid."""
-    return await activity_checklist_service.create_checklist(activity_id, current_user.id)
+    return await activity_checklist_service.create_checklist(
+        activity_id, current_user.id
+    )

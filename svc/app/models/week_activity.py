@@ -1,8 +1,16 @@
 from datetime import date, datetime
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import (
+    ARRAY,
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    UniqueConstraint,
+)
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from .base import BaseModel
 
@@ -44,11 +52,43 @@ class WeekActivity(BaseModel):
     llm_notes: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     llm_suggestion: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
 
+    # Seeded from ``Activity`` but can be different
+    equipment: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
+    equipment_done: Mapped[Optional[List[str]]] = mapped_column(
+        ARRAY(String), nullable=True
+    )
+
+    instructions: Mapped[Optional[List[str]]] = mapped_column(
+        ARRAY(String), nullable=True
+    )
+    instructions_done: Mapped[Optional[List[str]]] = mapped_column(
+        ARRAY(String), nullable=True
+    )
+
+    adhd_tips: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
+    adhd_tips_done: Mapped[Optional[List[str]]] = mapped_column(
+        ARRAY(String), nullable=True
+    )
+
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="week_activities")
     activity: Mapped["Activity"] = relationship(
         "Activity", back_populates="week_assignments"
     )
+
+    @validates("equipment_done", "instructions_done", "adhd_tips_done")
+    def validate_subset(self, key, value):
+        """Ensure *_done is a subset of the corresponding list."""
+        base_field = key.replace("_done", "")
+        base_list = getattr(self, base_field) or []
+        done_list = value or []
+
+        invalid = [item for item in done_list if item not in base_list]
+        if invalid:
+            raise ValueError(
+                f"Invalid {key}: {invalid} not found in {base_field} {base_list}"
+            )
+        return value
 
     @classmethod
     def assign(

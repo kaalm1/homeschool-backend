@@ -184,7 +184,7 @@ class WeekActivityService:
         self, user_id: int, bulk_data: BulkWeekActivityCreate
     ) -> List[WeekActivityResponse]:
         """Create multiple week activities at once."""
-        # Validate all assignments first
+        # Validate user exists
         user = self.user_repo.get(user_id)
         if not user:
             raise HTTPException(
@@ -192,6 +192,9 @@ class WeekActivityService:
                 detail=f"User with id {user_id} not found",
             )
 
+        enriched_assignments: list[WeekActivityCreate] = []
+
+        # Validate and enrich assignments
         for assignment in bulk_data.assignments:
             activity = self.activity_repo.get(assignment.activity_id)
             if not activity:
@@ -200,11 +203,21 @@ class WeekActivityService:
                     detail=f"Activity with id {assignment.activity_id} not found",
                 )
 
+            # Merge Activity defaults into assignment if missing
+            assignment_data = assignment.model_dump()
+            for field in ("equipment", "instructions", "adhd_tips"):
+                if not assignment_data.get(field):
+                    assignment_data[field] = getattr(activity, field) or []
+
+            enriched_assignments.append(WeekActivityCreate(**assignment_data))
+
+        # Create all week activities
         try:
             week_activities = self.week_activity_repo.bulk_create_week_activities(
-                user_id, bulk_data.assignments
+                user_id, enriched_assignments
             )
             return [self._convert_to_response(wa) for wa in week_activities]
+
         except Exception as e:
             if "uq_user_activity_week" in str(e):
                 raise HTTPException(

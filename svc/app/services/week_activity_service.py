@@ -1,3 +1,4 @@
+import logging
 from datetime import date
 from typing import List, Optional
 
@@ -14,6 +15,8 @@ from svc.app.datatypes.week_activity import (
     WeekActivityUpdate,
     WeekSummary,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class WeekActivityService:
@@ -47,12 +50,14 @@ class WeekActivityService:
             if not wa_data.get(field):
                 wa_data[field] = getattr(activity, field) or []
 
+        week_activity_data = WeekActivityCreate(**wa_data)
         try:
             week_activity = self.week_activity_repo.create_week_activity(
-                user_id, wa_data
+                user_id, week_activity_data
             )
             return self._convert_to_response(week_activity)
         except Exception as e:
+            logger.exception("Failed to create week activity")
             # Handle unique constraint violations
             if "uq_user_activity_week" in str(e):
                 raise HTTPException(

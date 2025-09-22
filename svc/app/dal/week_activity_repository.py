@@ -41,8 +41,8 @@ class WeekActivityRepository(BaseRepository[WeekActivity]):
 
         week_activity = WeekActivity.assign(
             user_id=user_id,
-            activity_id=week_activity_data.activity_id,
             date_obj=target_date,
+            week_activity_data=week_activity_data,
         )
 
         self.db.add(week_activity)

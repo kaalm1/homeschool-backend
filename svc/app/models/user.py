@@ -163,7 +163,7 @@ class User(BaseModel):
             parts.append(self.city)
         if self.state:
             parts.append(self.state)
-        if self.zip_code:
+        if self.zipcode:
             parts.append(self.zip_code)
 
         return ", ".join(parts) if parts else None

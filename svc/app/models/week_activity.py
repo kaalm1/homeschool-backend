@@ -12,6 +12,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
+from svc.app.datatypes.week_activity import WeekActivityCreate
+
 from .base import BaseModel
 
 if TYPE_CHECKING:
@@ -98,20 +100,24 @@ class WeekActivity(BaseModel):
     def assign(
         cls,
         user_id: int,
-        activity_id: int,
         date_obj: date,
-        llm_suggestion: Optional[bool] = None,
-        llm_notes: Optional[str] = None,
+        week_activity_data: WeekActivityCreate,
     ) -> "WeekActivity":
+        """Build WeekActivity from WeekActivityCreate plus system fields."""
         year, week, _ = date_obj.isocalendar()
+
+        # turn Pydantic into dict and drop `None`/empty values
+        base_data = week_activity_data.model_dump(exclude_none=True)
+
+        # keep only keys that exist in the SQLAlchemy model
+        valid_keys = set(cls.__table__.columns.keys())
+        filtered_data = {k: v for k, v in base_data.items() if k in valid_keys}
         return cls(
+            **filtered_data,
             user_id=user_id,
-            activity_id=activity_id,
             year=year,
             week=week,
             completed=False,
-            llm_suggestion=llm_suggestion,
-            llm_notes=llm_notes,
         )
 
     def mark_completed(
@@ -134,6 +140,23 @@ class WeekActivity(BaseModel):
         # Keep rating and notes for reference even when marked incomplete
 
     def __repr__(self) -> str:
-        status = "✅" if self.completed else "⬜"
-        rating_str = f" (⭐{self.rating})" if self.rating else ""
-        return f"<WeekActivity({status} user_id={self.user_id}, activity_id={self.activity_id}, year={self.year}, week={self.week}{rating_str})>"
+        # Status and rating first
+        status = "✅" if getattr(self, "completed", False) else "⬜"
+        rating = getattr(self, "rating", None)
+        rating_str = f" (⭐{rating})" if rating else ""
+
+        # Build a dict of column values dynamically
+        col_values = {}
+        for col in self.__table__.columns:
+            if col.name in ("completed", "rating"):
+                continue  # already handled
+            value = getattr(self, col.name)
+            # For long lists/strings, show a preview
+            if isinstance(value, list) and len(value) > 3:
+                value = f"[{', '.join(map(str, value[:3]))}...]"
+            elif isinstance(value, str) and len(value) > 30:
+                value = value[:27] + "..."
+            col_values[col.name] = value
+
+        cols_str = ", ".join(f"{k}={v!r}" for k, v in col_values.items())
+        return f"<WeekActivity({status} {cols_str}{rating_str})>"

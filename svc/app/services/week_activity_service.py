@@ -253,6 +253,12 @@ class WeekActivityService:
             rating=week_activity.rating,
             notes=week_activity.notes,
             llm_notes=week_activity.llm_notes,
+            equipment=week_activity.equipment,
+            instructions=week_activity.instructions,
+            adhd_tips=week_activity.adhd_tips,
+            equipment_done=week_activity.equipment_done,
+            instructions_done=week_activity.instructions_done,
+            adhd_tips_done=week_activity.adhd_tips_done,
             activity_title=(
                 week_activity.activity.title
                 if hasattr(week_activity, "activity") and week_activity.activity

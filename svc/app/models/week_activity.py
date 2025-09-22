@@ -53,21 +53,25 @@ class WeekActivity(BaseModel):
     llm_suggestion: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True)
 
     # Seeded from ``Activity`` but can be different
-    equipment: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
+    equipment: Mapped[Optional[List[str]]] = mapped_column(
+        ARRAY(String), nullable=True, default=list
+    )
     equipment_done: Mapped[Optional[List[str]]] = mapped_column(
-        ARRAY(String), nullable=True
+        ARRAY(String), nullable=True, default=list
     )
 
     instructions: Mapped[Optional[List[str]]] = mapped_column(
-        ARRAY(String), nullable=True
+        ARRAY(String), nullable=True, default=list
     )
     instructions_done: Mapped[Optional[List[str]]] = mapped_column(
-        ARRAY(String), nullable=True
+        ARRAY(String), nullable=True, default=list
     )
 
-    adhd_tips: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
+    adhd_tips: Mapped[Optional[List[str]]] = mapped_column(
+        ARRAY(String), nullable=True, default=list
+    )
     adhd_tips_done: Mapped[Optional[List[str]]] = mapped_column(
-        ARRAY(String), nullable=True
+        ARRAY(String), nullable=True, default=list
     )
 
     # Relationships

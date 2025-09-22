@@ -34,6 +34,10 @@ class WeekActivityCreate(BaseModel):
     llm_suggestion: Optional[bool] = Field(default=None)
     llm_notes: Optional[str] = Field(default=None)
 
+    equipment: Optional[List[str]] = Field(default_factory=list)
+    instructions: Optional[List[str]] = Field(default_factory=list)
+    adhd_tips: Optional[List[str]] = Field(default_factory=list)
+
 
 class WeekActivityUpdate(BaseModel):
     """Update completion status and rating for a week activity."""
@@ -50,6 +54,14 @@ class WeekActivityUpdate(BaseModel):
     notes: Optional[str] = Field(
         default=None, max_length=500, description="Optional notes about the experience"
     )
+
+    equipment: Optional[List[str]] = Field(default_factory=list)
+    instructions: Optional[List[str]] = Field(default_factory=list)
+    adhd_tips: Optional[List[str]] = Field(default_factory=list)
+
+    equipment_done: Optional[List[str]] = Field(default_factory=list)
+    instructions_done: Optional[List[str]] = Field(default_factory=list)
+    adhd_tips_done: Optional[List[str]] = Field(default_factory=list)
 
     @validator("rating")
     def validate_rating(cls, v):
@@ -77,6 +89,10 @@ class WeekActivityResponse(BaseModel):
     equipment: Optional[List[str]] = None
     instructions: Optional[List[str]] = None
     adhd_tips: Optional[List[str]] = None
+
+    equipment_done: Optional[List[str]] = None
+    instructions_done: Optional[List[str]] = None
+    adhd_tips_done: Optional[List[str]] = None
 
     # Include related activity and user info
     activity_title: Optional[str] = None

@@ -112,8 +112,13 @@ def get_week_activity_service(
     ],
     user_repo: Annotated[UserRepository, Depends(get_user_repository)],
     activity_repo: Annotated[ActivityRepository, Depends(get_activity_repository)],
+    suggestion_repo: Annotated[
+        ActivitySuggestionRepository, Depends(get_activity_repository)
+    ],
 ) -> WeekActivityService:
-    return WeekActivityService(week_activity_repo, user_repo, activity_repo)
+    return WeekActivityService(
+        week_activity_repo, user_repo, activity_repo, suggestion_repo
+    )
 
 
 def get_behaviour_analytics_service(

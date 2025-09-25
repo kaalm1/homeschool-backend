@@ -49,15 +49,11 @@ class WeatherDay(BaseModel):
     @model_validator(mode="after")
     def compute_derived(cls, values) -> "WeatherDay":
         """
-        Derive precipitation_chance, suitability, and advisories from inputs.
-        Heuristics:
-         - Map precip mm bands to chance %
-         - Mark thunderstorms, heavy rain, heavy snow as advisories
-         - Mark as unsuitable if thunderstorm / high precip chance / extreme temps / heavy snow
+        Compute derived fields after model creation.
         """
 
-        # keep this helper local to validator
-        def estimate_precip_chance(mm: float, rain_mm: float, snow_mm: float) -> int:
+        # helper to estimate precipitation chance
+        def estimate_precip_chance(mm: float) -> int:
             if mm <= 0.0:
                 return 5
             if mm < 1.0:
@@ -68,18 +64,20 @@ class WeatherDay(BaseModel):
                 return 80
             return 95
 
-        d_low, d_high = values.get("temperature_range", (None, None))
-        precip = float(values.get("precipitation_mm", 0.0) or 0.0)
-        rain = float(values.get("rain_mm", 0.0) or 0.0)
-        snow = float(values.get("snow_mm", 0.0) or 0.0)
-        condition = values.get("condition", "")
+        # safely access fields
+        low, high = values.temperature_range
+        precip = float(values.precipitation_mm or 0.0)
+        rain = float(values.rain_mm or 0.0)
+        snow = float(values.snow_mm or 0.0)
+        condition = values.condition
 
-        # precipitation chance heuristic
-        precip_pct = estimate_precip_chance(precip, rain, snow)
-        values["precipitation_chance"] = precip_pct
+        # compute precipitation chance
+        precip_pct = estimate_precip_chance(precip)
+        values.precipitation_chance = precip_pct
 
-        reasons: List[str] = []
+        # initialize advisories & reasons
         advisories: List[str] = []
+        reasons: List[str] = []
 
         # condition-based advisories
         if "Thunderstorm" in condition or "thunder" in condition.lower():
@@ -88,15 +86,13 @@ class WeatherDay(BaseModel):
             advisories.append("Heavy precipitation expected")
         if snow >= 5.0:
             advisories.append("Significant snowfall expected")
-        if d_high is not None and d_high >= 32:  # 32°C threshold for heat stress
+        if high >= 32:
             advisories.append("High temperatures (heat risk)")
-        if d_low is not None and d_low <= -5:  # cold advisory
+        if low <= -5:
             advisories.append("Very cold overnight temperatures")
 
-        # suitability heuristics: combine multiple signals
+        # suitability heuristics
         suitable = True
-
-        # immediate disqualifiers
         if (
             any("Thunderstorm" in a for a in advisories)
             or precip_pct >= 80
@@ -110,28 +106,25 @@ class WeatherDay(BaseModel):
             if any("Thunderstorms" in a for a in advisories):
                 reasons.append("Thunderstorm risk")
 
-        # temperature-based considerations
-        if d_high is not None and d_low is not None:
-            # comfortable high-range: 10-28°C (modify for your users)
-            if d_high < 5:
-                suitable = False
-                reasons.append(f"Too cold during the day (high {d_high}°C)")
-            if d_high >= 30:
-                # still may be possible but risky (heat); mark as less suitable
-                reasons.append(f"Warm to hot during the day (high {d_high}°C)")
-            # big diurnal swings
-            if (d_high - d_low) >= 15:
-                reasons.append(f"Large temp swing ({d_low}°C → {d_high}°C)")
+        # temperature considerations
+        if high < 5:
+            suitable = False
+            reasons.append(f"Too cold during the day (high {high}°C)")
+        if high >= 30:
+            reasons.append(f"Warm to hot during the day (high {high}°C)")
+        if (high - low) >= 15:
+            reasons.append(f"Large temp swing ({low}°C → {high}°C)")
 
-        # minor rain but still possible (e.g., sprinkling) - may still be suitable for some activities
+        # minor precipitation but still suitable
         if 20 <= precip_pct < 80 and not reasons:
             reasons.append(f"Light-to-moderate precipitation chance ({precip_pct}%)")
 
-        # if no reasons and no advisories, mark positive reasons
         if not reasons:
             reasons.append("Temperatures and precipitation favorable")
 
-        values["suitability_reasons"] = reasons
-        values["advisories"] = advisories
-        values["suitable_for_outdoor"] = suitable
+        # assign back to model
+        values.suitability_reasons = reasons
+        values.advisories = advisories
+        values.suitable_for_outdoor = suitable
+
         return values

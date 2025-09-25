@@ -108,7 +108,7 @@ class EnhancedActivityPlannerService:
             )
             weather_forecast = self.weather_service.get_weekly_forecast(inputs)
         except Exception as e:
-            logger.warning(f"Could not get weather forecast: {e}")
+            logger.exception(f"Could not get weather forecast: {e}")
 
         # Determine season
         season = self._get_season(target_week)

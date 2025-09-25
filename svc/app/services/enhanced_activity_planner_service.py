@@ -19,6 +19,8 @@ from svc.app.datatypes.user_behavior_analytic import (
 from svc.app.datatypes.weather import WeatherInputs
 from svc.app.helpers.activity_helpers import build_min_based_batches
 from svc.app.llm.client import llm_client
+from svc.app.models.activity import Activity
+from svc.app.models.week_activity import WeekActivity
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
 from svc.app.services.family_profile_service import FamilyProfileService
 from svc.app.services.weather_service import WeatherService
@@ -127,45 +129,25 @@ class EnhancedActivityPlannerService:
     async def _get_filtered_activities(
         self, family_profile: FamilyProfile, weekly_context: WeeklyContext, user_id: int
     ) -> List[dict]:
-        """Get activities filtered by family profile and context."""
-        # Get age ranges from kids
-        # age_ranges = [
-        #     (kid["age"] - 1, kid["age"] + 1)
-        #     for kid in family_profile.kids
-        #     if kid["age"]
-        # ]
+        """Get activities filtered by family profile and context, excluding already chosen ones."""
 
-        # Get activities from repository
-        # TODO: Figure out if we want to filter out actual activities or just
-        #   let the llm decide by feeding it "preferences"
-        activities = self.activity_repo.get_filtered_activities(
-            # user_location=family_profile.home_coordinates,
-            # max_distance=family_profile.max_travel_distance,
-            # age_ranges=age_ranges,
-            # themes=(
-            #     family_profile.preferred_themes
-            #     if family_profile.preferred_themes
-            #     else None
-            # ),
-            # activity_types=(
-            #     family_profile.preferred_activity_types
-            #     if family_profile.preferred_activity_types
-            #     else None
-            # ),
-            # cost_ranges=(
-            #     family_profile.preferred_cost_ranges
-            #     if family_profile.preferred_cost_ranges
-            #     else None
-            # ),
-        )
+        # 1️⃣ Fetch all activities
+        activities: List[Activity] = self.activity_repo.get_filtered_activities()
 
+        # 2️⃣ Fetch activities already chosen for the week
         year, week, _ = weekly_context.target_week_start.isocalendar()
-        activities_already_chosen = self.week_activity_repo.get_week_activities(
-            year, week, user_id
+        activities_already_chosen: List[WeekActivity] = (
+            self.week_activity_repo.get_week_activities(year, week, user_id)
         )
+        chosen_ids = {wa.activity_id for wa in activities_already_chosen}  # set of IDs
 
-        # Convert to dicts for LLM processing
-        return [self._activity_to_dict(activity) for activity in activities]
+        # 3️⃣ Filter out activities already chosen
+        filtered_activities = [
+            activity for activity in activities if activity.id not in chosen_ids
+        ]
+
+        # 4️⃣ Convert to dicts for LLM
+        return [self._activity_to_dict(activity) for activity in filtered_activities]
 
     async def _generate_llm_recommendations(
         self,

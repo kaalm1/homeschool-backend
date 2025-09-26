@@ -44,7 +44,7 @@ class UserResponse(UserBase, TimestampMixin):
     zipcode: Optional[str] = Field(None, description="User zipcode")
     family_size: Optional[int] = Field(None, description="User family size")
     max_activities_per_week: Optional[int] = Field()
-    has_car: bool = Field(..., description="User has car")
+    has_car: Optional[bool] = Field(..., description="User has car")
 
     class Config:
         from_attributes = True

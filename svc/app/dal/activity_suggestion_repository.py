@@ -88,6 +88,19 @@ class ActivitySuggestionRepository(BaseRepository):
             ),
         }
 
+    def get_activities_suggested_for_week(
+        self, user_id: int, target_week_start: date
+    ) -> List[ActivitySuggestion]:
+        """Get all activity suggestions for a specific user and target week."""
+        return (
+            self.db.query(ActivitySuggestion)
+            .filter(
+                ActivitySuggestion.user_id == user_id,
+                ActivitySuggestion.target_week_start == target_week_start,
+            )
+            .all()
+        )
+
     def get_suggestion_by_params(
         self, user_id: int, activity_id: int, target_week_start: date
     ) -> Optional[ActivitySuggestion]:

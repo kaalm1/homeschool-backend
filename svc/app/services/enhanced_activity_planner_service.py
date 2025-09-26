@@ -20,6 +20,7 @@ from svc.app.datatypes.weather import WeatherInputs
 from svc.app.helpers.activity_helpers import build_min_based_batches
 from svc.app.llm.client import llm_client
 from svc.app.models.activity import Activity
+from svc.app.models.activity_suggestion import ActivitySuggestion
 from svc.app.models.week_activity import WeekActivity
 from svc.app.services.activity_suggestion_service import HistoricalActivityAnalyzer
 from svc.app.services.family_profile_service import FamilyProfileService
@@ -141,9 +142,18 @@ class EnhancedActivityPlannerService:
         )
         chosen_ids = {wa.activity_id for wa in activities_already_chosen}  # set of IDs
 
+        suggested_activities: List[ActivitySuggestion] = (
+            self.suggestion_repo.get_activities_suggested_for_week(
+                user_id, weekly_context.target_week_start
+            )
+        )
+        suggested_ids = {sa.activity_id for sa in suggested_activities}
+
         # 3️⃣ Filter out activities already chosen
         filtered_activities = [
-            activity for activity in activities if activity.id not in chosen_ids
+            activity
+            for activity in activities
+            if activity.id not in chosen_ids and activity.id not in suggested_ids
         ]
 
         # 4️⃣ Convert to dicts for LLM

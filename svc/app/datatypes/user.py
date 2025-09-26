@@ -31,6 +31,8 @@ class UserUpdate(BaseModel):
     zipcode: Optional[str] = Field(None, description="User zipcode")
     city: Optional[str] = Field(None, description="User city")
     state: Optional[str] = Field(None, description="User state")
+    max_activities_per_week: Optional[int] = Field()
+    has_car: bool = Field(..., description="User has car")
 
 
 class UserResponse(UserBase, TimestampMixin):
@@ -41,6 +43,8 @@ class UserResponse(UserBase, TimestampMixin):
     address: Optional[str] = Field(None, description="User location address")
     zipcode: Optional[str] = Field(None, description="User zipcode")
     family_size: Optional[int] = Field(None, description="User family size")
+    max_activities_per_week: Optional[int] = Field()
+    has_car: bool = Field(..., description="User has car")
 
     class Config:
         from_attributes = True

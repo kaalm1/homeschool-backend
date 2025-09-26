@@ -76,7 +76,7 @@ class User(BaseModel):
     )
 
     # Activity Scheduling (changes seasonally)
-    max_activities_per_week: Mapped[int] = mapped_column(default=5, nullable=False)
+    max_activities_per_week: Mapped[int] = mapped_column(default=10, nullable=False)
 
     # Timestamps for cache invalidation
     family_profile_updated_at: Mapped[Optional[datetime]] = mapped_column(

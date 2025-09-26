@@ -169,6 +169,14 @@ class WeekActivityService:
             year = year or current_year
             week = week or current_week
 
+        # Check if this was an AI suggestion and mark it as removed
+        breakpoint()
+        if self.suggestion_repo:
+            week_activity = self.week_activity_repo.get_week_activity_by_params(
+                user_id=user_id, activity_id=activity_id, year=year, week=week
+            )
+            self._mark_suggestion_as_removed(week_activity)
+
         success = self.week_activity_repo.delete_week_activity_by_params(
             user_id=user_id, activity_id=activity_id, year=year, week=week
         )

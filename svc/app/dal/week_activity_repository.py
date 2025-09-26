@@ -209,6 +209,23 @@ class WeekActivityRepository(BaseRepository[WeekActivity]):
         """Delete a week activity assignment."""
         return self.delete(week_activity_id) is not None
 
+    def get_week_activity_by_params(
+        self, user_id: int, activity_id: int, year: int, week: int
+    ) -> WeekActivity | None:
+        """Get a week activity by user, activity, year, and week."""
+        week_activity = self.db.execute(
+            select(WeekActivity).where(
+                and_(
+                    WeekActivity.user_id == user_id,
+                    WeekActivity.activity_id == activity_id,
+                    WeekActivity.year == year,
+                    WeekActivity.week == week,
+                )
+            )
+        ).scalar_one_or_none()
+
+        return week_activity
+
     def delete_week_activity_by_params(
         self, user_id: int, activity_id: int, year: int, week: int
     ) -> bool:

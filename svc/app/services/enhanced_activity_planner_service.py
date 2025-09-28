@@ -216,7 +216,6 @@ class EnhancedActivityPlannerService:
         past_context: PastActivityContext,
     ) -> List[dict]:
         """Generate recommendations using LLM."""
-
         system_prompt = self._build_system_prompt(weekly_context.max_activities)
         user_prompt = self._build_user_prompt(
             family_profile, weekly_context, available_activities, past_context
@@ -318,8 +317,8 @@ OUTPUT REQUIREMENTS:
 Return a JSON array of {max_activities or '4 to 7'} activities. 
 Example:
 [
-  {"id": 1, "title": "Park outing", "why_it_fits": "..."},
-  {"id": 5, "title": "Library visit", "why_it_fits": "..."}
+  {{"id": 1, "title": "Park outing", "why_it_fits": "..."}},
+  {{"id": 5, "title": "Library visit", "why_it_fits": "..."}}
   ...
 ]
 """
@@ -539,16 +538,9 @@ Activities to choose from: {json.dumps(available_activities, indent=2)}"""
 
             validated.append(enhanced_activity)
 
-        # Ensure we have 4-7 activities
-        if len(validated) < 4:
-            logger.warning(
-                f"Only {len(validated)} activities recommended, below minimum of 4"
-            )
-        elif len(validated) > 7:
-            logger.warning(
-                f"{len(validated)} activities recommended, above maximum of 7"
-            )
-            validated = validated[:7]  # Trim to 7
+        # Ensure we have activities
+        if len(validated) < 1:
+            logger.warning(f"Only {len(validated)} activities, below minimum of 1")
 
         return validated
 

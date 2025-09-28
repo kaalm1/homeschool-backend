@@ -209,7 +209,7 @@ class EnhancedActivityPlannerService:
     ) -> List[dict]:
         """Generate recommendations using LLM."""
 
-        system_prompt = self._build_system_prompt()
+        system_prompt = self._build_system_prompt(family_profile)
         user_prompt = self._build_user_prompt(
             family_profile, weekly_context, available_activities, past_context
         )
@@ -266,9 +266,9 @@ class EnhancedActivityPlannerService:
                         f"Failed to get LLM recommendations after {self.max_retries} attempts"
                     )
 
-    def _build_system_prompt(self) -> str:
+    def _build_system_prompt(self, family_profile: FamilyProfile) -> str:
         """Build the system prompt for the LLM."""
-        return """You are an expert Family Activity Planner AI with deep understanding of activity repetition patterns and family preferences.
+        return f"""You are an expert Family Activity Planner AI with deep understanding of activity repetition patterns and family preferences.
 
 CORE PRINCIPLE: Not all repetition is bad. Some activities (parks, walks, reading) are MEANT to be repeated frequently and become better with consistency. Others (specific venues, events) become stale with too much repetition.
 
@@ -300,11 +300,13 @@ QUALITY STANDARDS:
 - Ensure activities are realistic for family's constraints and capabilities
 
 OUTPUT REQUIREMENTS:
-- Return exactly 4-7 activities
+- Return exactly {family_profile.max_activities_per_week or '4 to 7'} activities
 - Each activity must include a compelling, specific "why_it_fits" explanation that references family patterns when relevant
 - Use provided activity IDs only
+    - Do not invent or create new IDs.
+    - Do not include duplicate activities.
 
-Return a JSON array of 4 to 7 activities. 
+Return a JSON array of {family_profile.max_activities_per_week or '4 to 7'} activities. 
 Example:
 [
   {"id": 1, "title": "Park outing", "why_it_fits": "..."},

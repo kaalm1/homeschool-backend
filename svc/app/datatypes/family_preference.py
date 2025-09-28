@@ -28,6 +28,7 @@ class FamilyProfile(BaseModel):
     lng: Optional[float] = None
     max_travel_distance: int = Field(default=30)
     has_car: bool = Field(default=True)
+    max_activities_per_week: int = Field(ge=1, le=20)
 
     # Financial Constraints
     weekly_activity_budget: Optional[float] = None

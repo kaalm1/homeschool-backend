@@ -305,6 +305,7 @@ OUTPUT REQUIREMENTS:
 - Use provided activity IDs only
     - Do not invent or create new IDs.
     - Do not include duplicate activities.
+- If there are fewer available activities than required, return only the available ones. Never invent or duplicate.
 
 Return a JSON array of {family_profile.max_activities_per_week or '4 to 7'} activities. 
 Example:

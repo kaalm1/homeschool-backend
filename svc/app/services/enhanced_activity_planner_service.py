@@ -72,9 +72,12 @@ class EnhancedActivityPlannerService:
             )
 
             # 2. Generate LLM recommendations
-            planned_activities = await self._generate_llm_recommendations(
-                family_profile, weekly_context, available_activities, past_context
-            )
+            if weekly_context.max_activities > 0:
+                planned_activities = await self._generate_llm_recommendations(
+                    family_profile, weekly_context, available_activities, past_context
+                )
+            else:
+                planned_activities = []
 
             # 3. Validate and enhance recommendations
             validated_activities = self._validate_and_enhance_recommendations(
@@ -149,6 +152,11 @@ class EnhancedActivityPlannerService:
         )
         suggested_ids = {sa.activity_id for sa in suggested_activities}
 
+        # 3️⃣ Update max_activities based on already chosen activities
+        weekly_context.max_activities = max(
+            0, family_profile.max_activities_per_week - len(chosen_ids)
+        )
+
         # 3️⃣ Filter out activities already chosen
         filtered_activities = [
             activity
@@ -209,7 +217,7 @@ class EnhancedActivityPlannerService:
     ) -> List[dict]:
         """Generate recommendations using LLM."""
 
-        system_prompt = self._build_system_prompt(family_profile)
+        system_prompt = self._build_system_prompt(weekly_context.max_activities)
         user_prompt = self._build_user_prompt(
             family_profile, weekly_context, available_activities, past_context
         )
@@ -266,7 +274,7 @@ class EnhancedActivityPlannerService:
                         f"Failed to get LLM recommendations after {self.max_retries} attempts"
                     )
 
-    def _build_system_prompt(self, family_profile: FamilyProfile) -> str:
+    def _build_system_prompt(self, max_activities: Optional[int] = None) -> str:
         """Build the system prompt for the LLM."""
         return f"""You are an expert Family Activity Planner AI with deep understanding of activity repetition patterns and family preferences.
 
@@ -300,14 +308,14 @@ QUALITY STANDARDS:
 - Ensure activities are realistic for family's constraints and capabilities
 
 OUTPUT REQUIREMENTS:
-- Return exactly {family_profile.max_activities_per_week or '4 to 7'} activities
+- Return exactly {max_activities or '4 to 7'} activities
 - Each activity must include a compelling, specific "why_it_fits" explanation that references family patterns when relevant
 - Use provided activity IDs only
     - Do not invent or create new IDs.
     - Do not include duplicate activities.
 - If there are fewer available activities than required, return only the available ones. Never invent or duplicate.
 
-Return a JSON array of {family_profile.max_activities_per_week or '4 to 7'} activities. 
+Return a JSON array of {max_activities or '4 to 7'} activities. 
 Example:
 [
   {"id": 1, "title": "Park outing", "why_it_fits": "..."},

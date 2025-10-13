@@ -6,6 +6,7 @@ from typing import List, Optional
 import requests
 from bs4 import BeautifulSoup
 
+from svc.app.config import settings
 from svc.app.llm.client import llm_client
 
 
@@ -28,13 +29,15 @@ class Activity:
 
 
 class ActivityExtractor:
-    def __init__(self, anthropic_api_key: Optional[str] = None):
+    def __init__(self):
         """
         Initialize the extractor with optional Anthropic API key for LLM extraction.
         If no API key provided, will only use basic scraping.
         """
-        self.api_key = anthropic_api_key or os.getenv("ANTHROPIC_API_KEY")
         self.client = llm_client.client
+        self.model = settings.llm_model
+        self.temperature = settings.llm_temperature
+        self.max_retries = settings.llm_max_retries
 
     def fetch_webpage(self, url: str) -> str:
         """Fetch the HTML content of a webpage."""
@@ -136,8 +139,8 @@ Content:
 {text[:15000]}"""
 
         message = self.client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=4000,
+            model=self.model,
+            max_tokens=2000,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_schema", "json_schema": json_schema},
         )

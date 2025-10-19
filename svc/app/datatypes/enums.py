@@ -487,3 +487,39 @@ class CompletionStatus(Enum):
     ASSUMED_SKIPPED = "assumed_skipped"
     WEATHER_PREVENTED = "weather_prevented"
     EXPLICITLY_SKIPPED = "explicitly_skipped"
+
+
+class ItemType(str, Enum):
+    """Types of items that can be categorized"""
+
+    TODO = "todo"
+    SHOPPING = "shopping"
+    CALENDAR = "calendar"
+
+
+class ItemStatus(str, Enum):
+    """Status of an item"""
+
+    PENDING = "pending"
+    COMPLETED = "completed"
+    DELETED = "deleted"
+
+
+class Priority(str, Enum):
+    """Priority levels for todos"""
+
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+
+
+class ShoppingCategory(str, Enum):
+    """Shopping categories"""
+
+    GROCERIES = "groceries"
+    ELECTRONICS = "electronics"
+    CLOTHING = "clothing"
+    HOUSEHOLD = "household"
+    HEALTH = "health"
+    ENTERTAINMENT = "entertainment"
+    OTHER = "other"

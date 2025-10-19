@@ -9,8 +9,11 @@ from .base import BaseModel
 if TYPE_CHECKING:
     from svc.app.models.activity import Activity
     from svc.app.models.activity_suggestion import ActivitySuggestion
+    from svc.app.models.calendar_event import CalendarEvent
     from svc.app.models.family_preference import FamilyPreference
     from svc.app.models.kid import Kid
+    from svc.app.models.shopping_item import ShoppingItem
+    from svc.app.models.todo_item import TodoItem
     from svc.app.models.user_behavior_analytic import UserBehaviorAnalytic
 
 
@@ -125,6 +128,19 @@ class User(BaseModel):
 
     activity_suggestions: Mapped[List["ActivitySuggestion"]] = relationship(
         "ActivitySuggestion", back_populates="user", cascade="all, delete-orphan"
+    )
+
+    # Relationships
+    todos: Mapped[List["TodoItem"]] = relationship(
+        "TodoItem", back_populates="user", cascade="all, delete-orphan"
+    )
+
+    shopping_items: Mapped[List["ShoppingItem"]] = relationship(
+        "ShoppingItem", back_populates="user", cascade="all, delete-orphan"
+    )
+
+    calendar_events: Mapped[List["CalendarEvent"]] = relationship(
+        "CalendarEvent", back_populates="user", cascade="all, delete-orphan"
     )
 
     @property

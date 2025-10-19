@@ -50,6 +50,13 @@ class NotFoundError(HomeschoolException):
         super().__init__(message, status.HTTP_404_NOT_FOUND)
 
 
+class ItemNotFoundException(HomeschoolException):
+    """Resource not found exception."""
+
+    def __init__(self, message: str = "Resource not found"):
+        super().__init__(message, status.HTTP_404_NOT_FOUND)
+
+
 class ConflictError(HomeschoolException):
     """Resource conflict exception."""
 
@@ -61,6 +68,13 @@ class LLMProcessingError(Exception):
     """Raised when LLM processing fails"""
 
     def __init__(self, message: str = "LLM processing failed"):
+        super().__init__(message, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ParsingException(Exception):
+    """Raised when LLM processing fails"""
+
+    def __init__(self, message: str = "Parsing failed"):
         super().__init__(message, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

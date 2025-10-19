@@ -6,8 +6,11 @@ from sqlalchemy.orm import Session
 
 from svc.app.dal.activity_repository import ActivityRepository
 from svc.app.dal.activity_suggestion_repository import ActivitySuggestionRepository
+from svc.app.dal.calendar_repository import CalendarRepository
 from svc.app.dal.family_preference_repository import FamilyPreferenceRepository
 from svc.app.dal.kid_repository import KidRepository
+from svc.app.dal.shopping_repository import ShoppingRepository
+from svc.app.dal.todo_repository import TodoRepository
 from svc.app.dal.user_behavior_analytic_repository import (
     UserBehaviorAnalyticsRepository,
 )
@@ -25,8 +28,10 @@ from svc.app.services.enhanced_activity_planner_service import (
 )
 from svc.app.services.family_preference_service import FamilyPreferenceService
 from svc.app.services.family_profile_service import FamilyProfileService
+from svc.app.services.item_parser_service import ItemParserService
 from svc.app.services.kid_service import KidService
 from svc.app.services.settings_service import SettingsService
+from svc.app.services.smart_item_categorizer_service import ItemCategorizerService
 from svc.app.services.user_seeding_service import UserSeedingService
 from svc.app.services.user_service import UserService
 from svc.app.services.weather_service import WeatherService
@@ -69,6 +74,21 @@ def get_user_behaviour_anlaytics_repository(
     db: DatabaseSession,
 ) -> UserBehaviorAnalyticsRepository:
     return UserBehaviorAnalyticsRepository(db)
+
+
+def get_todo_repository(db: DatabaseSession) -> TodoRepository:
+    """Get todo repository"""
+    return TodoRepository(db)
+
+
+def get_shopping_repository(db: DatabaseSession) -> ShoppingRepository:
+    """Get shopping repository"""
+    return ShoppingRepository(db)
+
+
+def get_calendar_repository(db: DatabaseSession) -> CalendarRepository:
+    """Get calendar repository"""
+    return CalendarRepository(db)
 
 
 def get_user_seeding_service(
@@ -207,6 +227,26 @@ def get_enhanced_activity_planner_service(
         week_activity_repo=week_activity_repo,
         historical_analyzer=historical_analyzer,
         weather_service=weather_service,
+    )
+
+
+def get_parser_service() -> ItemParserService:
+    """Get parser service"""
+    return ItemParserService()
+
+
+def get_item_categorizer_service(
+    todo_repo: Annotated[TodoRepository, Depends(get_todo_repository)],
+    shopping_repo: Annotated[ShoppingRepository, Depends(get_shopping_repository)],
+    calendar_repo: Annotated[CalendarRepository, Depends(get_calendar_repository)],
+    item_parser_service: Annotated[ItemParserService, Depends(get_parser_service)],
+) -> ItemCategorizerService:
+    """Get item categorizer service"""
+    return ItemCategorizerService(
+        todo_repository=todo_repo,
+        shopping_repository=shopping_repo,
+        calendar_repository=calendar_repo,
+        parser_service=item_parser_service,
     )
 
 

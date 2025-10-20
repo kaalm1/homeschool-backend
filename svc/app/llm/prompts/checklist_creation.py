@@ -4,7 +4,7 @@ from svc.app.datatypes.family_preference import FamilyProfile
 
 class ActivityChecklistPrompts:
     def __init__(self):
-        self.schema = schema = {
+        self.schema = {
             "type": "object",
             "properties": {
                 "equipment": {

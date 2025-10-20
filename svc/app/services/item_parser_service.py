@@ -2,7 +2,7 @@ import json
 from typing import Optional
 
 from svc.app.datatypes.calendar import ParsedCalendar
-from svc.app.datatypes.results import ParsedResult
+from svc.app.datatypes.items import ParsedResult
 from svc.app.datatypes.shopping import ParsedShopping
 from svc.app.datatypes.todo import ParsedTodo
 from svc.app.llm.client import llm_client

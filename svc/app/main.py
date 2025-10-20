@@ -8,6 +8,7 @@ from svc.app.controllers import (
     activity_controller,
     auth_controller,
     family_preferences_controller,
+    item_controller,
     kid_controller,
     llm_controller,
     reward_controller,
@@ -79,6 +80,7 @@ def create_app() -> FastAPI:
         prefix="/api/v1/family-preferences",
         tags=["FamilyPreferences"],
     )
+    app.include_router(item_controller.router, prefix="/api/v1/items", tags=["Items"])
 
     @app.get("/health")
     async def health_check():

@@ -21,4 +21,7 @@ __all__ = [
     "UserBehaviorAnalytic",
     "ActivitySuggestion",
     "FamilyPreference",
+    "TodoItem",
+    "ShoppingItem",
+    "CalendarEvent",
 ]

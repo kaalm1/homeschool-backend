@@ -55,7 +55,7 @@ class CalendarEvent(BaseModel):
     )
 
     # Relationship
-    user: Mapped["User"] = relationship("User", back_populates="todos")
+    user: Mapped["User"] = relationship("User", back_populates="calendar_events")
 
     def mark_completed(self) -> None:
         """Mark as completed"""

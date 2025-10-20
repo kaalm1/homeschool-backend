@@ -57,7 +57,7 @@ class ShoppingItem(BaseModel):
     )
 
     # Relationship
-    user: Mapped["User"] = relationship("User", back_populates="todos")
+    user: Mapped["User"] = relationship("User", back_populates="shopping_items")
 
     def mark_purchased(self) -> None:
         """Mark as purchased"""

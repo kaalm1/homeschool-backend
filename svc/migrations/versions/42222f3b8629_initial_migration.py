@@ -1,8 +1,8 @@
 """initial migration
 
-Revision ID: 3c19bdfcfc97
+Revision ID: 42222f3b8629
 Revises: 
-Create Date: 2025-09-22 09:05:44.210980
+Create Date: 2025-10-20 08:17:13.882182
 
 """
 
@@ -13,7 +13,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "3c19bdfcfc97"
+revision: str = "42222f3b8629"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -70,6 +70,71 @@ def upgrade() -> None:
     op.create_index(op.f("ix_users_google_id"), "users", ["google_id"], unique=True)
     op.create_index(op.f("ix_users_id"), "users", ["id"], unique=False)
     op.create_index(op.f("ix_users_zipcode"), "users", ["zipcode"], unique=False)
+    op.create_table(
+        "calendar_events",
+        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column("title", sa.String(length=255), nullable=False),
+        sa.Column("description", sa.Text(), nullable=True),
+        sa.Column("location", sa.String(length=255), nullable=True),
+        sa.Column("start_time", sa.DateTime(), nullable=False),
+        sa.Column("end_time", sa.DateTime(), nullable=True),
+        sa.Column("all_day", sa.Boolean(), nullable=False),
+        sa.Column(
+            "status",
+            postgresql.ENUM(
+                "PENDING", "COMPLETED", "DELETED", name="calendar_status_enum"
+            ),
+            nullable=False,
+        ),
+        sa.Column(
+            "reminder_minutes",
+            sa.Integer(),
+            nullable=True,
+            comment="Minutes before event to send reminder",
+        ),
+        sa.Column("url", sa.String(length=500), nullable=True),
+        sa.Column("attendees", sa.Text(), nullable=True),
+        sa.Column("is_recurring", sa.Boolean(), nullable=False),
+        sa.Column(
+            "recurrence_rule",
+            sa.String(length=200),
+            nullable=True,
+            comment="RRULE format for recurring events",
+        ),
+        sa.Column("user_id", sa.Integer(), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        op.f("ix_calendar_events_id"), "calendar_events", ["id"], unique=False
+    )
+    op.create_index(
+        op.f("ix_calendar_events_start_time"),
+        "calendar_events",
+        ["start_time"],
+        unique=False,
+    )
+    op.create_index(
+        op.f("ix_calendar_events_status"), "calendar_events", ["status"], unique=False
+    )
+    op.create_index(
+        op.f("ix_calendar_events_title"), "calendar_events", ["title"], unique=False
+    )
+    op.create_index(
+        op.f("ix_calendar_events_user_id"), "calendar_events", ["user_id"], unique=False
+    )
     op.create_table(
         "family_preferences",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -217,6 +282,119 @@ def upgrade() -> None:
     )
     op.create_index(op.f("ix_kids_id"), "kids", ["id"], unique=False)
     op.create_index(op.f("ix_kids_parent_id"), "kids", ["parent_id"], unique=False)
+    op.create_table(
+        "shopping_items",
+        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column("item_name", sa.String(length=255), nullable=False),
+        sa.Column("quantity", sa.String(length=100), nullable=True),
+        sa.Column(
+            "category",
+            postgresql.ENUM(
+                "GROCERIES",
+                "ELECTRONICS",
+                "CLOTHING",
+                "HOUSEHOLD",
+                "HEALTH",
+                "ENTERTAINMENT",
+                "OTHER",
+                name="shopping_category_enum",
+            ),
+            nullable=True,
+        ),
+        sa.Column("notes", sa.Text(), nullable=True),
+        sa.Column(
+            "status",
+            postgresql.ENUM(
+                "PENDING", "COMPLETED", "DELETED", name="shopping_status_enum"
+            ),
+            nullable=False,
+        ),
+        sa.Column("estimated_price", sa.Float(), nullable=True),
+        sa.Column("actual_price", sa.Float(), nullable=True),
+        sa.Column("price_verified", sa.Boolean(), nullable=True),
+        sa.Column("store_name", sa.String(length=200), nullable=True),
+        sa.Column("purchased_at", sa.DateTime(), nullable=True),
+        sa.Column("priority", sa.Integer(), nullable=True),
+        sa.Column("user_id", sa.Integer(), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        op.f("ix_shopping_items_category"), "shopping_items", ["category"], unique=False
+    )
+    op.create_index(
+        op.f("ix_shopping_items_id"), "shopping_items", ["id"], unique=False
+    )
+    op.create_index(
+        op.f("ix_shopping_items_item_name"),
+        "shopping_items",
+        ["item_name"],
+        unique=False,
+    )
+    op.create_index(
+        op.f("ix_shopping_items_status"), "shopping_items", ["status"], unique=False
+    )
+    op.create_index(
+        op.f("ix_shopping_items_user_id"), "shopping_items", ["user_id"], unique=False
+    )
+    op.create_table(
+        "todo_items",
+        sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column("title", sa.String(length=255), nullable=False),
+        sa.Column("description", sa.Text(), nullable=True),
+        sa.Column(
+            "status",
+            postgresql.ENUM("PENDING", "COMPLETED", "DELETED", name="item_status_enum"),
+            nullable=False,
+        ),
+        sa.Column(
+            "priority",
+            postgresql.ENUM("HIGH", "MEDIUM", "LOW", name="priority_enum"),
+            nullable=True,
+        ),
+        sa.Column("due_date", sa.DateTime(), nullable=True),
+        sa.Column("completed_at", sa.DateTime(), nullable=True),
+        sa.Column("estimated_hours", sa.Float(), nullable=True),
+        sa.Column("tags", sa.String(length=500), nullable=True),
+        sa.Column("user_id", sa.Integer(), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.Column(
+            "updated_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        op.f("ix_todo_items_due_date"), "todo_items", ["due_date"], unique=False
+    )
+    op.create_index(op.f("ix_todo_items_id"), "todo_items", ["id"], unique=False)
+    op.create_index(
+        op.f("ix_todo_items_status"), "todo_items", ["status"], unique=False
+    )
+    op.create_index(op.f("ix_todo_items_title"), "todo_items", ["title"], unique=False)
+    op.create_index(
+        op.f("ix_todo_items_user_id"), "todo_items", ["user_id"], unique=False
+    )
     op.create_table(
         "user_behavior_analytics",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -633,6 +811,18 @@ def downgrade() -> None:
     op.drop_index(op.f("ix_activities_assigned_to_kid_id"), table_name="activities")
     op.drop_table("activities")
     op.drop_table("user_behavior_analytics")
+    op.drop_index(op.f("ix_todo_items_user_id"), table_name="todo_items")
+    op.drop_index(op.f("ix_todo_items_title"), table_name="todo_items")
+    op.drop_index(op.f("ix_todo_items_status"), table_name="todo_items")
+    op.drop_index(op.f("ix_todo_items_id"), table_name="todo_items")
+    op.drop_index(op.f("ix_todo_items_due_date"), table_name="todo_items")
+    op.drop_table("todo_items")
+    op.drop_index(op.f("ix_shopping_items_user_id"), table_name="shopping_items")
+    op.drop_index(op.f("ix_shopping_items_status"), table_name="shopping_items")
+    op.drop_index(op.f("ix_shopping_items_item_name"), table_name="shopping_items")
+    op.drop_index(op.f("ix_shopping_items_id"), table_name="shopping_items")
+    op.drop_index(op.f("ix_shopping_items_category"), table_name="shopping_items")
+    op.drop_table("shopping_items")
     op.drop_index(op.f("ix_kids_parent_id"), table_name="kids")
     op.drop_index(op.f("ix_kids_id"), table_name="kids")
     op.drop_table("kids")
@@ -640,6 +830,12 @@ def downgrade() -> None:
         op.f("ix_family_preferences_user_id"), table_name="family_preferences"
     )
     op.drop_table("family_preferences")
+    op.drop_index(op.f("ix_calendar_events_user_id"), table_name="calendar_events")
+    op.drop_index(op.f("ix_calendar_events_title"), table_name="calendar_events")
+    op.drop_index(op.f("ix_calendar_events_status"), table_name="calendar_events")
+    op.drop_index(op.f("ix_calendar_events_start_time"), table_name="calendar_events")
+    op.drop_index(op.f("ix_calendar_events_id"), table_name="calendar_events")
+    op.drop_table("calendar_events")
     op.drop_index(op.f("ix_users_zipcode"), table_name="users")
     op.drop_index(op.f("ix_users_id"), table_name="users")
     op.drop_index(op.f("ix_users_google_id"), table_name="users")

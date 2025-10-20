@@ -28,7 +28,7 @@ from svc.app.utils.exceptions import ParsingException
 logger = logging.getLogger(__name__)
 
 
-class ParserService:
+class ItemParserService:
     """Service for parsing user input using Claude AI with strict JSON schema"""
 
     # Strict JSON schema for structured output

@@ -212,11 +212,13 @@ Analyze the above input and extract all todos, shopping items, and calendar even
 
         try:
             # Use Claude's structured outputs with JSON schema
-            message = self.client.messages.create(
+            message = self.client.client.chat.completions.create(
                 model=settings.llm_model,
-                max_tokens=4000,
-                system=system_prompt,
-                messages=[{"role": "user", "content": user_prompt}],
+                max_tokens=2000,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
                 # Enable structured outputs with JSON schema
                 response_format={
                     "type": "json_schema",
@@ -229,7 +231,10 @@ Analyze the above input and extract all todos, shopping items, and calendar even
             )
 
             # Extract the JSON response
-            response_text = message.content[0].text.strip()
+            response_text = message.choices[0].message.content
+            if not response_text:
+                logger.error("Empty response from LLM")
+                return ParsedResult()
 
             # Parse JSON response
             data = json.loads(response_text)
